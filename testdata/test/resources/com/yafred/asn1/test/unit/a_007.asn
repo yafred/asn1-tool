@@ -1,0 +1,30 @@
+
+-- Imports symbols
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+IMPORTS 
+  A-type, a-value FROM Module-1 
+  B-type, b-value FROM Module-2;
+My-integer ::= INTEGER 
+END
+
+
+Module-1 DEFINITIONS ::= 
+BEGIN 
+
+A-type ::= INTEGER
+
+a-value A-type ::= 1
+
+END
+
+
+Module-2 DEFINITIONS ::= 
+BEGIN 
+
+B-type ::= BOOLEAN
+
+b-value B-type ::= TRUE
+
+END

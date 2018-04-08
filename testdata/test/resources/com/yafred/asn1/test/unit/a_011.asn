@@ -1,0 +1,7 @@
+
+-- NULL
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-null ::= NULL 
+END

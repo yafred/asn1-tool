@@ -1,0 +1,14 @@
+-- FAIL duplicate id
+
+Module DEFINITIONS ::= BEGIN
+
+Enumeration1 ::= ENUMERATED {
+a, 
+b, 
+c,  
+...,
+a 
+}
+
+
+END

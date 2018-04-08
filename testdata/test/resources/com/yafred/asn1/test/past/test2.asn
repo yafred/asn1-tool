@@ -1,0 +1,47 @@
+Test-2 DEFINITIONS ::= BEGIN
+
+MySequence ::= [APPLICATION 0] IMPLICIT SEQUENCE {
+	aBitString BIT STRING { msb(0), lsb(7) },
+	myInteger1 INTEGER { zero(0), un(1), deux(2), minusone(-1) },
+	myInteger2 MyInteger,
+	myInteger3 MySubInteger,
+	myEnum ENUMERATED { zero(0), un(1), deux(2), minusone(-1) },
+	myOctets OCTET STRING,
+	myString VisibleString,
+	myBoolean BOOLEAN,
+	aSequence SEQUENCE { un INTEGER,  deux INTEGER },
+	myIntegerList SEQUENCE OF INTEGER,
+	myListOfIntegerList SEQUENCE OF SEQUENCE OF INTEGER
+}
+
+MyBitString ::= BIT STRING { 
+	msb(0),
+	lsb(7)
+}
+
+MySubInteger ::= MyInteger
+
+MyInteger ::= INTEGER {
+	zero(0),
+	un(1),
+	deux(2),
+	minusone(-1)
+}
+
+MyEnum ::= ENUMERATED {
+	zero(0),
+	un(1),
+	deux(2),
+	minusone(-1)
+}
+
+MyOctets ::= OCTET STRING
+
+MyString ::= VisibleString
+
+MyBoolean ::= BOOLEAN
+
+MyIntegerList ::= [1] SEQUENCE OF INTEGER 
+
+
+END

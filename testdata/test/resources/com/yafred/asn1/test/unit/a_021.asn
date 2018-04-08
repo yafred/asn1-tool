@@ -1,0 +1,14 @@
+
+-- Tagged type
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-type-1 ::= [0] EMBEDDED PDV
+My-type-2 ::= [1] EXPLICIT EXTERNAL
+My-type-3 ::= [APPLICATION 3] EXPLICIT OID-IRI
+My-type-4 ::= [APPLICATION 4] IMPLICIT OID-IRI
+My-type-5 ::= [PRIVATE 3] OBJECT IDENTIFIER
+My-type-6 ::= [ PER: 2] RELATIVE-OID-IRI
+My-type-7 ::= [ XER: APPLICATION 2]RELATIVE-OID
+
+END

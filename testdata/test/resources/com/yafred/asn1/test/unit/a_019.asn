@@ -1,0 +1,32 @@
+
+-- CHOICE, SET, SEQUENCE, SET OF, SEQUENCE OF
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-choice ::= CHOICE {
+    a INTEGER,
+    b IA5String,
+    c BOOLEAN
+} 
+
+My-set ::= SET {
+    a INTEGER OPTIONAL,
+    b IA5String,
+    c BOOLEAN
+} 
+
+My-sequence::= SEQUENCE {
+    a INTEGER,
+    b IA5String,
+    c BOOLEAN OPTIONAL
+} 
+
+My-set-of-1 ::= SET OF INTEGER
+
+My-sequence-of-1 ::= SEQUENCE OF IA5String
+
+My-set-of-2 ::= SET OF age INTEGER
+
+My-sequence-of-2 ::= SEQUENCE OF name IA5String
+
+END

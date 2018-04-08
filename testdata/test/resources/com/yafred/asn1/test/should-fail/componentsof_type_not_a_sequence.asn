@@ -1,0 +1,20 @@
+-- FAIL COMPONENTS OF: type not a sequence
+
+Components-of1 DEFINITIONS  ::=
+BEGIN
+
+Seq1 ::= SEQUENCE {
+   zero INTEGER,
+   COMPONENTS OF INTEGER,
+   COMPONENTS OF A-Set
+}
+
+A-Set ::= SET {
+   a IA5String
+}
+
+END
+
+
+
+

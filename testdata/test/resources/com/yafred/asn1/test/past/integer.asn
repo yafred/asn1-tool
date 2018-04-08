@@ -1,0 +1,40 @@
+Integer DEFINITIONS ::= BEGIN
+
+
+ChoicePDU ::= CHOICE {
+	aInteger My-integer
+	,bInteger INTEGER {
+	  zero(0),
+	  un(1),
+	  deux(2),
+	  dix(10)
+	}
+}
+
+My-integer ::= [APPLICATION 3] INTEGER {
+	zero(0),
+	un(1),
+	deux(2),
+	dix(10)
+}
+
+SequencePDU ::= [APPLICATION 9] SEQUENCE {
+	aInteger My-integer
+	,bInteger INTEGER {
+	  zero(0),
+	  un(1),
+	  deux(2),
+	  dix(10)
+	}
+}
+
+
+a INTEGER ::= 1
+b INTEGER ::= -10
+T1 ::= INTEGER { a(2) }
+T2 ::= INTEGER { a(3), b(a) }
+c T2 ::= b
+d T2 ::= a
+
+
+END

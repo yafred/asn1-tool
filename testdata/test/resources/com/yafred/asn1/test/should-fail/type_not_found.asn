@@ -1,0 +1,10 @@
+-- FAILS: type not found
+
+My-Module DEFINITIONS ::=
+
+
+BEGIN
+
+My-Type ::= My-Integer
+
+END

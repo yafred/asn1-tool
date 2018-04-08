@@ -1,0 +1,9 @@
+
+-- Exports symbols
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+EXPORTS My-integer, aValue;
+My-integer ::= INTEGER 
+aValue INTEGER ::= 1
+END

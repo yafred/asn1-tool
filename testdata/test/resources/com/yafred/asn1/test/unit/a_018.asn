@@ -1,0 +1,13 @@
+
+-- More builtin types
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-type-1 ::= EMBEDDED PDV
+My-type-2 ::= EXTERNAL
+My-type-3 ::= OID-IRI
+My-type-4 ::= OBJECT IDENTIFIER
+My-type-5 ::= RELATIVE-OID-IRI
+My-type-6 ::= RELATIVE-OID
+
+END

@@ -1,0 +1,17 @@
+-- FAILS: duplicate tag (optional or default component must have distinct tags)
+
+Sequence DEFINITIONS ::= BEGIN
+
+A ::= SEQUENCE {
+	a INTEGER
+}
+
+T ::= SEQUENCE { 
+	x INTEGER,
+	y INTEGER OPTIONAL,
+	z INTEGER DEFAULT 0,
+	COMPONENTS OF A
+}
+
+
+END

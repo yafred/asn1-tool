@@ -1,0 +1,15 @@
+-- FAILS: extension tagging must be canonicaly ordered
+
+Set DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+Root ::= SET {
+un [0] BOOLEAN,
+deux [1] BOOLEAN,
+
+...,
+trois [4] BOOLEAN,
+quatre [3] BOOLEAN
+}
+
+
+END

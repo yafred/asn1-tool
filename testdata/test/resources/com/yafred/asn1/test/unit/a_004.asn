@@ -1,0 +1,7 @@
+
+-- definitiveOID
+
+My-first-module { a b(1) 123 }
+DEFINITIONS  ::= 
+BEGIN  
+END

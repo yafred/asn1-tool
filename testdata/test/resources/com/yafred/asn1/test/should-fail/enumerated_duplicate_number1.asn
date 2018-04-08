@@ -1,0 +1,6 @@
+Enum1 DEFINITIONS ::=
+BEGIN
+
+A ::= ENUMERATED {a, b, ..., c(0)} -- invalid, since both 'a' and 'c' equal 0
+
+END

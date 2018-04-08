@@ -1,0 +1,8 @@
+-- FAIL duplicate id
+
+Module DEFINITIONS ::= BEGIN
+
+My-integer ::= INTEGER { un (1), deux (2), un (3) }
+
+
+END

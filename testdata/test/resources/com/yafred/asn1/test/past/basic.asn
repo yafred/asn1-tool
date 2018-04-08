@@ -1,0 +1,112 @@
+Basic DEFINITIONS ::= BEGIN
+
+
+BasicMsg ::= CHOICE {
+        aBool My-boolean
+	,aOctets My-octets
+	,aString My-string
+	,aInteger My-integer
+	,aBitstring My-bitstring
+	,aEnum My-enum
+	,aSequenceOfBasic1 My-sequenceOfBasic1
+	,aSequenceOfBasic2 My-sequenceOfBasic2
+	,aSequence1 My-sequence1
+        ,aSequence2 My-sequence2
+        ,aSeqOfSeq My-sequenceOfMySequence1
+        ,aNull My-null
+}
+
+BasicMsg2 ::= CHOICE {
+        aBool BOOLEAN
+	,aOctets OCTET STRING
+	,aString IA5String
+        ,aInteger INTEGER 
+        {
+          zero(0),
+	  un(1),
+	  deux(2),
+	  dix(10)
+	}
+        ,aBitstring BIT STRING {
+	  zero(0),
+	  un(1),
+	  deux(2),
+	  dix(10)
+	}
+	,aEnum  ENUMERATED {
+	  moins-un(-1),
+	  zero(0),
+	  un(1),
+	  deux(2),
+	  dix(10)
+	}
+}
+
+My-boolean ::= [APPLICATION 0] BOOLEAN
+My-octets ::= [APPLICATION 1] OCTET STRING
+My-string ::= [APPLICATION 2] IA5String
+My-integer ::= [APPLICATION 3] INTEGER {
+	zero(0),
+	un(1),
+	deux(2),
+	dix(10)
+}
+My-bitstring ::= [APPLICATION 4] BIT STRING {
+	zero(0),
+	un(1),
+	deux(2),
+	dix(10)
+}
+My-enum ::= [APPLICATION 5] ENUMERATED {
+	zero(0),
+	un(1),
+	deux(2),
+	dix(10)
+}
+My-sequenceOfBasic1 ::= [APPLICATION 6] SEQUENCE OF INTEGER
+My-sequenceOfBasic2 ::= [APPLICATION 7] SEQUENCE OF My-integer
+My-sequenceOfMySequence1 ::= [APPLICATION 8] SEQUENCE OF My-sequence1
+My-sequence1 ::= [APPLICATION 9] SEQUENCE {
+	aBool [0] My-boolean
+	,aOctets [1] My-octets
+	,aString [2] My-string
+	,aInteger [3] My-integer
+	,aBitstring [4] My-bitstring
+	,aEnum [5] My-enum
+	,aSequenceOfBasic1 [6] My-sequenceOfBasic1
+	,aSequenceOfBasic2 [7] My-sequenceOfBasic2 OPTIONAL
+	,aSequenceOfContainer [8] My-sequenceOfMySequence1 OPTIONAL
+    ,aNull [9] My-null OPTIONAL  
+}
+My-sequence2 ::= [APPLICATION 10] SEQUENCE {
+	aBool [0] BOOLEAN
+	,aOctets [1] OCTET STRING
+	,aString [2] IA5String
+        ,aInteger [3] INTEGER
+	 --{
+	 --  zero(0),
+	 --  un(1),
+	 --  deux(2),
+	 --  dix(10)
+	 --} 
+	,aBitstring [4] BIT STRING {
+		zero(0),
+		un(1),
+		deux(2),
+		dix(10)
+	}
+	,aEnum [5] ENUMERATED {
+		zero(0),
+		un(1),
+		deux(2),
+		dix(10)
+	}
+	,aSequenceOfBasic1 [6] SEQUENCE OF INTEGER
+        ,aSequenceOfBasic2 [7] SEQUENCE OF My-integer OPTIONAL
+        --,aNull [8] NULL OPTIONAL
+}
+My-null ::= [APPLICATION 11] NULL
+
+
+
+END

@@ -1,0 +1,31 @@
+-- PASS
+Components-of1 DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+Seq1 ::= SEQUENCE {
+   zero INTEGER,
+   COMPONENTS OF Seq3
+}
+
+Seq2 ::= SEQUENCE {
+   COMPONENTS OF Seq3
+   , quatre INTEGER
+}
+
+Seq3 ::= SEQUENCE {
+   un [0] INTEGER
+   ,deux INTEGER
+   , COMPONENTS OF Seq4
+   ,trois INTEGER
+}
+
+Seq4 ::= SEQUENCE {
+   tata INTEGER,
+   titi INTEGER
+}
+
+END
+
+
+
+

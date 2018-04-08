@@ -1,0 +1,10 @@
+
+-- ENUMERATED
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+value INTEGER ::= 3
+My-enumeration-1 ::= ENUMERATED { a, b, c }
+My-enumeration-2 ::= ENUMERATED { a(1), b(2), c(value) }
+My-enumeration-3 ::= ENUMERATED { root1(1), root2(2), ..., add1(3), add2(4) }
+END

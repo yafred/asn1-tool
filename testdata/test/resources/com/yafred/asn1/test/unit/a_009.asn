@@ -1,0 +1,8 @@
+
+-- Imports nothing
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+IMPORTS;
+My-integer ::= INTEGER 
+END

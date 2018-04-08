@@ -1,0 +1,21 @@
+-- COMPONENTS OF and automatic tagging
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Seq1 ::= SEQUENCE {
+  un INTEGER,
+  deux INTEGER,
+  COMPONENTS OF Seq2
+}
+
+Seq2 ::= SEQUENCE {
+  trois [0] INTEGER, -- tag will be stripped as TAGS are IMPLICIT (trois will have tag [2] in Seq1)
+  quatre [1] INTEGER,
+  ...,
+  addition1 INTEGER,
+  addition2 INTEGER,
+  ...,
+  cinq IA5String
+}
+  
+END

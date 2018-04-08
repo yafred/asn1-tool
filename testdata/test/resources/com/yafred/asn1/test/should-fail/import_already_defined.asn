@@ -1,0 +1,27 @@
+-- FAIL: imported symbols already defined in module
+
+
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+IMPORTS My-Integer FROM My-ModuleA;
+        	
+My-Integer ::= INTEGER
+My-Type1 ::= My-Integer
+
+END
+
+
+
+-------------------------------------------
+-- explicit export 
+-------------------------------------------
+My-ModuleA DEFINITIONS ::=
+
+BEGIN
+EXPORTS My-Integer;
+
+My-Integer ::= INTEGER
+
+END

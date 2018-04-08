@@ -1,0 +1,12 @@
+-- referenced value
+
+My-Module DEFINITIONS ::=
+
+
+BEGIN
+
+a INTEGER ::= b
+
+
+
+END

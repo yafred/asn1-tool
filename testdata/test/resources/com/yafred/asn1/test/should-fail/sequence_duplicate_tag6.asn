@@ -1,0 +1,16 @@
+-- FAILS: duplicate tag in extension
+
+Sequence DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+Root ::= SEQUENCE {
+	un INTEGER,
+	deux INTEGER OPTIONAL,
+	...,
+	trois BOOLEAN,
+	...,
+	quatre BOOLEAN
+}
+
+
+
+END

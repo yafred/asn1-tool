@@ -1,0 +1,7 @@
+
+-- BOOLEAN
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-boolean ::= BOOLEAN 
+END

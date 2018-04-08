@@ -1,0 +1,29 @@
+Test-constraints DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+
+SubTypes ::= CHOICE {
+  int1 INTEGER (1..10)  -- Range
+  , int2 INTEGER (1..10 EXCEPT 3) -- Operator + Range + SingleValue
+  , int3 INTEGER (ALL EXCEPT (-1|0|1)) -- Operator + SingleValue
+  , string1 IA5String ("toto" | "titi" | "tata") -- Operator + SingleValue
+  , string2 IA5String (SIZE(1..10)) -- Size
+  , string3 IA5String (FROM("0123456789ABCDEF")) -- Alphabet
+  , string4 IA5String (SIZE(1..5)^FROM("ab")|FROM("ABC")) 
+  , string5 IA5String (SIZE(1..5)^(FROM("ab")|FROM("ABC")))
+  , seqof1 SEQUENCE SIZE(1..MAX) OF INTEGER  
+}
+
+
+-- non
+-- str1 string1 < SubTypes ::= "aaaaaaaa" 
+
+-- oui
+-- str2  string3 < SubTypes ::= "AAAAAAAAA" 
+
+-- non
+-- str3 string4 < SubTypes ::= "aaaaaaaaaaaaaa" 
+
+-- oui
+-- str4 string4 < SubTypes ::= "AAAAAAAAAAAAAAA" 
+
+END

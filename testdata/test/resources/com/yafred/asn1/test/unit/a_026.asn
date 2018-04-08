@@ -1,0 +1,23 @@
+
+-- Extensions
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+Ext-enum-1 ::= ENUMERATED {
+   a (1),
+   b (2),
+   ...
+}
+
+Ext-enum-2 ::= ENUMERATED {
+   a (1),
+   b (2),
+   ...,
+   c (3)
+}
+
+
+
+
+END

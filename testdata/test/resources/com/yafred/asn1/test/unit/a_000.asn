@@ -1,0 +1,7 @@
+
+-- Simple module
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-integer ::= INTEGER 
+END

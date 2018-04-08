@@ -1,0 +1,13 @@
+
+-- TIME
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-time-1 ::= TIME
+My-time-2 ::= TIME-OF-DAY
+My-time-3 ::= DATE
+My-time-4 ::= DATE-TIME
+My-time-5 ::= DURATION
+My-time-6 ::= UTCTime
+My-time-7 ::= GeneralizedTime
+END

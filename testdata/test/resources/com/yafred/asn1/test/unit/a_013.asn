@@ -1,0 +1,11 @@
+
+-- INTEGER
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-integer-1 ::= INTEGER 
+My-integer-2 ::= INTEGER { a(2), b(-1) }
+My-integer-3 ::= INTEGER { c(value) }
+
+value INTEGER ::= 3
+END

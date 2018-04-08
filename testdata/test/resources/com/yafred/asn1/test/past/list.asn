@@ -1,0 +1,21 @@
+List DEFINITIONS ::= BEGIN
+
+My-list0 ::= [0] SEQUENCE OF INTEGER
+My-list1 ::= [1] SEQUENCE OF SEQUENCE OF BOOLEAN
+My-list2 ::= [2] SEQUENCE OF My-list0
+
+My-sequence ::= [3] SEQUENCE {
+	my-list0 SEQUENCE OF SEQUENCE OF BOOLEAN,
+	my-list1 SEQUENCE OF SEQUENCE { int INTEGER },
+	bool Boolean2
+}
+
+Boolean ::= [1] Boolean1
+Boolean1 ::= [2]  Boolean2
+Boolean2 ::= [3] IMPLICIT Boolean3
+Boolean3 ::= [4] BOOLEAN
+
+My-list3 ::= SEQUENCE OF Boolean
+
+
+END

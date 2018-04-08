@@ -1,0 +1,15 @@
+-- FAILS: duplicate component names
+Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+
+
+My-Choise ::= CHOICE {
+un BOOLEAN,
+deux BOOLEAN,
+un BOOLEAN,
+...,
+[[ un BOOLEAN ]]
+}
+
+
+END

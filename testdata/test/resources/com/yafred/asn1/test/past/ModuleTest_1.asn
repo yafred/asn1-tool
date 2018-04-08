@@ -1,0 +1,13 @@
+-- PASS
+My-Module-1 DEFINITIONS ::= 
+BEGIN 
+My-Integer ::= INTEGER 
+END
+
+
+My-Module-2 DEFINITIONS ::= 
+BEGIN 
+My-Integer ::= INTEGER 
+END
+
+

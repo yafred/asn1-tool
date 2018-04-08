@@ -1,0 +1,69 @@
+ExtChoice DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Root ::= CHOICE {
+  choice1 Choice1
+  , choice2 Choice2
+  , choice3 Choice3
+  , choice4 Choice4
+  , choice1e Choice1e
+  , choice2e Choice2e
+  , choice3e Choice3e
+  }
+
+-- not extensible (unless EXTENSION IMPLIED)
+Choice1 ::= CHOICE {
+  comp1 NULL
+  }
+
+-- extensible at the end
+Choice2 ::= CHOICE {
+  comp1 NULL
+  , ...
+  }
+
+-- extensible at the end
+Choice3 ::= CHOICE {
+  comp1 NULL
+  , ...
+  , ...
+}
+
+-- extensible at the end
+Choice4 ::= CHOICE {
+  comp1 NULL
+  , ... -- ! INTEGER : 2  pas accepte par OSS Novalka
+  }
+
+
+-- extended at the end
+Choice1e ::= CHOICE {
+  comp1 NULL
+  , ... -- ! INTEGER : 3 pas accepte par OSS Novalka
+  , [[ comp2 NULL ]]
+  }
+
+-- extended at the end
+Choice2e ::= CHOICE {
+  comp1 NULL
+  , ...
+  , [[ comp2 NULL ]]
+  , ...
+  }
+
+
+-- extended in the middle
+Choice3e ::= CHOICE {
+  comp1 NULL
+  , ...
+  , comp3 NULL 
+  , comp4 NULL 
+}
+
+
+
+
+END
+
+
+
+

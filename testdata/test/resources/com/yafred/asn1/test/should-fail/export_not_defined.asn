@@ -1,0 +1,11 @@
+-- FAILS: exported symbol not defined
+
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+EXPORTS A-Type;
+
+My-Type ::= My-Integer
+
+END

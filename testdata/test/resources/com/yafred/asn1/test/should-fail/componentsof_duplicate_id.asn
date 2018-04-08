@@ -1,0 +1,24 @@
+-- FAIL duplicate identifiers
+Components-of1 DEFINITIONS  ::=
+BEGIN
+
+Seq1 ::= SEQUENCE {
+   zero INTEGER,
+   COMPONENTS OF Seq3,
+   ...,
+   [[ deux INTEGER ]]
+}
+
+
+
+Seq3 ::= SEQUENCE {
+   zero INTEGER
+   ,deux INTEGER
+   ,trois INTEGER
+}
+
+END
+
+
+
+

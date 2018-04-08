@@ -1,0 +1,52 @@
+Sequence DEFINITIONS ::= BEGIN
+
+Seq1 ::= SEQUENCE {
+  -- SEQUENCE OF
+  un [0] SEQUENCE OF BOOLEAN
+  , deux [1] SEQUENCE OF My-Boolean
+  , trois [2] My-SequenceOf-1
+  , quatre [3] My-SequenceOf-2
+  
+  , cinq [4] SEQUENCE OF SEQUENCE {
+    un [0] INTEGER
+  }
+  , six [5] SEQUENCE OF My-Sequence1
+  , sept [6] My-SequenceOf-3
+  , huit [7] My-SequenceOf-4
+  
+  -- COMPONENTS OF
+  , COMPONENTS OF My-Other-Sequence
+  
+  -- Subtypes
+  , neuf [9] BOOLEAN
+  , dix [10] My-Boolean
+  , onze [11] My-Sub-Boolean
+}
+
+My-Boolean ::= BOOLEAN
+My-Sub-Boolean ::= My-Boolean
+My-SequenceOf-1 ::= SEQUENCE OF BOOLEAN
+My-SequenceOf-2 ::= SEQUENCE OF My-Boolean
+
+My-Sequence1 ::= SEQUENCE {
+  un [0] INTEGER
+}
+My-SequenceOf-3 ::= SEQUENCE OF SEQUENCE {
+  un [0] INTEGER
+}
+My-SequenceOf-4 ::= SEQUENCE OF My-Sequence1
+
+
+My-Other-Sequence ::= SEQUENCE {
+  cent [100] INTEGER
+  , cent1 [101] ENUMERATED {
+    un(0)
+  }
+  , cent2 [102] SEQUENCE{
+--    comp NULL OPTIONAL  @todo 
+  }
+ 
+}
+
+
+END

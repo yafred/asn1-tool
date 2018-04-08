@@ -1,0 +1,7 @@
+
+-- REAL
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+My-real ::= REAL 
+END

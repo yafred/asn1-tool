@@ -1,0 +1,10 @@
+-- defined value not found for tag (even not supported yet)
+
+Sequence DEFINITIONS ::= BEGIN
+
+Seq1  ::= [APPLICATION 0] SEQUENCE {
+  a [un] INTEGER, 
+  b [2] INTEGER
+}
+
+END

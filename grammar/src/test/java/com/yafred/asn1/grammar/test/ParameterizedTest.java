@@ -1,0 +1,88 @@
+// https://github.com/junit-team/junit4/wiki/parameterized-tests
+
+// Reflections: needs reflection and guava (see pom.xml)
+
+package com.yafred.asn1.grammar.test;
+
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.TokenStream;
+import com.yafred.asn1.grammar.ASNLexer;
+import com.yafred.asn1.grammar.ASNParser;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+
+@RunWith(Parameterized.class)
+public class ParameterizedTest {
+	@Parameters(name = "{0}")
+	public static Iterable<? extends Object> data() {
+
+		Reflections reflections = new Reflections("com.yafred.asn1.test", new ResourcesScanner());
+		Set<String> properties = reflections.getResources(Pattern.compile(".*\\.asn"));
+		return properties;
+	}
+
+	String resourceName;
+	
+	public ParameterizedTest(String resourceName) {
+		this.resourceName = resourceName;
+	}
+	
+	@Test
+    public void parseResource() throws Exception {
+    	
+    	// load test data
+        InputStream inStream = getClass().getClassLoader().getResourceAsStream(resourceName);
+
+        System.out.println(resourceName);
+        
+        if (inStream == null) {
+            throw new RuntimeException("Resource not found: " + resourceName);
+        }
+
+        // create a CharStream that reads from standard input
+        CharStream input = CharStreams.fromStream(inStream);
+        
+        // create a lexer that feeds off of input CharStream
+        ASNLexer lexer = new ASNLexer(input);
+        // create a buffer of tokens pulled from the lexer
+        TokenStream tokens = new CommonTokenStream(lexer);
+        // create a parser that feeds off the tokens buffer
+        ASNParser parser = new ASNParser(tokens);
+        parser.removeErrorListeners(); // remove ConsoleErrorListener
+        parser.addErrorListener(new VerboseListener()); // add ours
+        parser.specification(); // begin parsing at specification rule
+        
+        assertEquals(0, parser.getNumberOfSyntaxErrors());
+    }
+	
+	
+	public static class VerboseListener extends BaseErrorListener {
+		@Override
+		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
+				String msg, RecognitionException e) {
+			List<String> stack = ((ASNParser) recognizer).getRuleInvocationStack();
+			Collections.reverse(stack);
+			System.err.println("rule stack: " + stack);
+			System.err.println("line " + line + ":" + charPositionInLine + " at " + offendingSymbol + ": " + msg);
+		}
+	}
+}

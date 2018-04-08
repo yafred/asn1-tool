@@ -1,0 +1,6 @@
+
+-- allow empty moduleBody
+
+My-first-module DEFINITIONS ::= 
+BEGIN  
+END

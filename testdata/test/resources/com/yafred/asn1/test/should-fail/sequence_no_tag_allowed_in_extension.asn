@@ -1,0 +1,15 @@
+-- FAILS: no tag allowed in extension
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Root ::= SEQUENCE {
+un BOOLEAN,
+deux BOOLEAN,
+
+...,
+trois [4] BOOLEAN,
+quatre [3] BOOLEAN
+}
+
+
+END

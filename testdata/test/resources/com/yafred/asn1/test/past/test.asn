@@ -1,0 +1,38 @@
+-- types and values
+Test DEFINITIONS AUTOMATIC TAGS  ::= BEGIN
+
+My-BitString ::= BIT STRING { msb(0), lsb(7) }
+
+two INTEGER ::= 2
+My-Integer ::= INTEGER { zero(0), un(1), deux(two), minus-one(-1) }
+
+My-enum ::= ENUMERATED { id, zero(0), un(1), deux(two), minus-one(-1) }
+
+My-octets ::= OCTET STRING
+
+My-choice ::= CHOICE {
+	altInt INTEGER,
+	altString IA5String
+}
+
+My-seq ::= SEQUENCE {
+	compInt INTEGER,
+	compString IA5String
+}
+
+val0 BOOLEAN ::= TRUE
+val1 INTEGER ::= -10
+val1b INTEGER ::= val1
+val2 VisibleString ::= "coucou"
+val3 OCTET STRING ::= 'A0B0'H
+val4 NULL ::= NULL
+-- val5 My-enum ::= un -- enum values not supported yet
+val6 BIT STRING ::= '0100001'B
+val7 My-choice ::= altString : "coucou"
+val8 My-seq ::= { compInt -3 , compString "toto" }
+val9 SEQUENCE OF INTEGER ::= { 2, 3, 4, 5 }
+val10 SEQUENCE OF My-seq ::= {{ compInt 1, compString "un" },
+					{ compInt 2, compString "deux" },
+					{ compInt 3, compString "trois" }}
+
+END

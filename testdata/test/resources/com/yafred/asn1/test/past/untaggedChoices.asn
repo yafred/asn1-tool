@@ -1,0 +1,71 @@
+
+
+-- PASS
+Untagged-Choice4 DEFINITIONS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] IMPLICIT Referenced
+}
+
+Referenced ::= Choice
+
+Choice ::= [APPLICATION 1] CHOICE { alternative NULL }
+
+END
+
+
+
+-- PASS
+Untagged-Choice5 DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] Choice -- EXPLICIT
+}
+
+Choice ::= CHOICE { alternative NULL }
+
+END
+
+
+
+-- PASS
+Untagged-Choice6 DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] Referenced -- IMPLICIT
+}
+
+Referenced ::= Choice
+
+Choice ::= [APPLICATION 1] CHOICE { alternative NULL }
+
+END
+
+
+
+-- PASS
+Untagged-Choice7 DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] [1] Choice -- IMPLICIT 0 EXPLICIT 1
+}
+
+Choice ::= CHOICE { alternative NULL }
+
+END
+
+
+
+-- PASS
+Untagged-Choice8 DEFINITIONS  ::=
+BEGIN
+
+
+
+Choice ::= [0] IMPLICIT [1] EXPLICIT CHOICE { alternative NULL }
+
+END

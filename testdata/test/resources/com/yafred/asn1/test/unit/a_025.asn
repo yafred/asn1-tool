@@ -1,0 +1,19 @@
+
+-- Constraints
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+One-to-ten ::= INTEGER (1..10)
+
+One-or-ten ::= INTEGER (1|10)
+
+Less-than-ten ::= INTEGER (MIN .. 10)
+
+Less-then-five-or-more-than-ten ::= INTEGER ((MIN..5)|(10..MAX))
+
+Array-of-5 ::= SEQUENCE SIZE (5) OF INTEGER
+
+Tom-or-jerry ::= IA5String ("Tom"|"Jerry")
+
+END

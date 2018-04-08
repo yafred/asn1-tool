@@ -1,0 +1,17 @@
+-- PASS
+
+Set DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Root ::= SET {
+un BOOLEAN,
+deux BOOLEAN,
+trois CHOICE {
+    toto BOOLEAN,
+    titi BOOLEAN
+    },
+...,
+[[quatre BOOLEAN ]]
+}
+
+
+END

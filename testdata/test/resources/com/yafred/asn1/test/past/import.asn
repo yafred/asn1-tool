@@ -1,0 +1,64 @@
+-- PASS: symbols are exported
+
+
+
+-------------------------------------------
+-- Module using types from other modules
+-------------------------------------------
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+IMPORTS My-Integer, my-Value FROM My-ModuleA
+        My-Boolean FROM My-ModuleB
+        My-Sub-Null  FROM My-ModuleC;
+        	
+
+My-Type1 ::= My-Integer
+My-Type2 ::= My-Boolean
+
+END
+
+
+
+-------------------------------------------
+-- explicit export 
+-------------------------------------------
+My-ModuleA DEFINITIONS ::=
+
+BEGIN
+EXPORTS My-Integer, my-Value;
+
+My-Integer ::= INTEGER
+my-Value INTEGER ::= 10
+
+END
+
+
+-------------------------------------------
+-- implicit export (ALL) 
+-------------------------------------------
+My-ModuleB DEFINITIONS ::=
+
+BEGIN
+-- EXPORTS ALL
+
+My-Boolean ::= BOOLEAN
+My-Null ::= NULL
+
+END
+
+
+-------------------------------------------
+-- implicit export (import list)
+-------------------------------------------
+My-ModuleC DEFINITIONS ::=
+
+BEGIN
+
+
+IMPORTS My-Null FROM My-ModuleB;
+
+My-Sub-Null ::= My-Null
+
+END

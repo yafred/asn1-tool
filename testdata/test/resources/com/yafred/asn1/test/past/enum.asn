@@ -1,0 +1,50 @@
+-- PASS
+
+Module DEFINITIONS ::= BEGIN
+
+Enumeration1 ::= ENUMERATED {
+a,  -- 0
+b,  -- 1
+c,  -- 2
+...,
+ext-a  -- 3
+}
+
+
+Enumeration2 ::= ENUMERATED {
+a,  -- 0
+b,  -- 1
+c(3), 
+...,
+ext-a  -- 2 (smallest value not yet used)
+ }
+
+
+
+Enumeration3 ::= ENUMERATED {
+a (4),
+b, -- 0
+c, -- 1
+...,
+ext-a, -- 2
+ext-b (3),
+ext-c, -- 5
+ext-d (6)
+}
+
+
+Enumeration4 ::= ENUMERATED {
+a (4),
+b, -- 0
+c, -- 1
+...,
+ext-a (6),
+ext-b ,
+ext-c (9),
+ext-d 
+}
+
+
+
+
+END

@@ -1,0 +1,29 @@
+
+-- Extensions CHOICE
+
+My-first-module DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Animal ::= IA5String
+
+My-choice-1 ::= CHOICE {
+   dog Animal,
+   cat Animal,
+   ...
+}
+
+My-choice-2 ::= CHOICE {
+   dog Animal,
+   cat Animal,
+   ...,
+   [[ 2:
+     rabbit Animal
+   ]],
+   bird Animal,
+   [[ 3:
+     horse Animal
+   ]],   ...
+}
+
+
+END

@@ -1,0 +1,10 @@
+Octet-string DEFINITIONS ::= BEGIN
+
+Pdu ::= SEQUENCE {
+  octets-1 OCTET STRING (SIZE(10))
+  , octets-2 [1] OCTET STRING
+  , octets-3 My-Octets
+}
+
+My-Octets ::= OCTET STRING
+END

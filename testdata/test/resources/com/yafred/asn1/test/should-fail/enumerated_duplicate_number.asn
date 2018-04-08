@@ -1,0 +1,14 @@
+-- FAIL duplicate number
+
+Module DEFINITIONS ::= BEGIN
+
+Enumeration1 ::= ENUMERATED {
+a (0), 
+b , 
+c (0),  
+...,
+d 
+}
+
+
+END

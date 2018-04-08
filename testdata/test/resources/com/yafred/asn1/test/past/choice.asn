@@ -1,0 +1,17 @@
+Choice DEFINITIONS ::= BEGIN
+
+
+Pdu ::= SEQUENCE {
+  choice CHOICE {
+    bool BOOLEAN
+    , int INTEGER
+    , sub-choice My-choice  
+  }
+}
+
+My-choice ::= CHOICE {
+  octets OCTET STRING
+  , string IA5String
+}
+
+END

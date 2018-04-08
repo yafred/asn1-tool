@@ -1,0 +1,17 @@
+
+-- Value assignment BIT STRING, OCTET STRING
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+a BIT STRING ::= { }
+
+b BIT STRING ::= { bit1, bit4 }
+
+c BIT STRING ::= '001101'B
+
+d BIT STRING ::= 'A0F1C101'H
+
+e OCTET STRING ::= 'A0F1C101'H
+
+END

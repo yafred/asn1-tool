@@ -1,0 +1,6 @@
+
+-- extensibility default
+
+My-first-module DEFINITIONS EXTENSIBILITY IMPLIED  ::= 
+BEGIN  
+END

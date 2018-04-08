@@ -1,0 +1,17 @@
+-- FAILS: when automatic tags is selected, no tag is allowed in extension
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+
+
+Seq1 ::= SEQUENCE {
+  un INTEGER,
+  deux INTEGER,
+  ...,
+  trois [2] INTEGER,
+  ...,
+  quatre INTEGER,
+  cinq INTEGER
+}
+  
+END

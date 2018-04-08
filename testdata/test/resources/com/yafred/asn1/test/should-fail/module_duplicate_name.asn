@@ -1,0 +1,29 @@
+-- FAILS: modules have same reference name
+
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+My-Integer ::= SEQUENCE 
+{
+    a INTEGER
+}
+
+My-Boolean ::= BOOLEAN
+
+END
+
+
+
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+My-Integer ::= SEQUENCE 
+{
+    a INTEGER
+}
+
+My-Boolean ::= BOOLEAN
+
+END

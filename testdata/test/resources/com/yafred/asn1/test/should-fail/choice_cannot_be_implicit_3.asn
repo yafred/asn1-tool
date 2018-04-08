@@ -1,0 +1,14 @@
+-- FAIL
+Untagged-Choice3 DEFINITIONS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] IMPLICIT Referenced
+}
+
+Referenced ::= Choice
+
+Choice ::= CHOICE { alternative NULL }
+
+END
+

@@ -1,0 +1,22 @@
+
+-- Character Strings
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+My-BMPString ::= BMPString 
+My-GeneralString ::=  GeneralString
+My-GraphicString ::=  GraphicString
+My-IA5String ::=  IA5String
+My-ISO646String ::= ISO646String 
+My-NumericString ::=  NumericString
+My-PrintableString ::=  PrintableString
+My-TeletexString ::= TeletexString 
+My-T61String ::= T61String 
+My-UniversalString ::=  UniversalString
+My-UTF8String ::=  UTF8String
+My-VideotexString ::=  VideotexString
+My-VisibleString ::= VisibleString 
+My-CHARACTER-STRING ::= CHARACTER STRING
+
+END

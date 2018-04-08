@@ -1,0 +1,28 @@
+
+-- Value assignment CHOICE, SEQUENCE, SEQUENCE OF
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+My-choice ::= CHOICE {
+    a INTEGER,
+    b IA5String,
+    c BOOLEAN
+} 
+
+aChoice My-choice ::= a : 200
+
+My-sequence ::= SEQUENCE {
+    age INTEGER,
+    name IA5String
+}  
+
+sequenceValue My-sequence ::= {
+   age 20,
+   name "toto"
+}
+
+notes SEQUENCE OF INTEGER ::= { 12, 15, 11 }
+
+
+END

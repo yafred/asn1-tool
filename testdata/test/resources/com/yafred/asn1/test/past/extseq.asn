@@ -1,0 +1,116 @@
+ExtSeq DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Root ::= CHOICE {
+  seq1 Seq1
+  , seq2 Seq2
+  , seq3 Seq3
+  , seq4 Seq4
+  , seq5 Seq5
+  , seq6 Seq6
+  , seq7 Seq7
+  , seq1e Seq1e
+  , seq2e Seq2e
+  , seq3e Seq3e
+  , seq4e Seq4e
+  }
+
+-- not extensible (unless EXTENSION IMPLIED)
+Seq1 ::= SEQUENCE {
+  comp1 NULL
+  }
+
+-- extensible at the end
+Seq2 ::= SEQUENCE {
+  comp1 NULL
+  , ...
+  }
+
+-- extensible at the end
+Seq3 ::= SEQUENCE {
+  comp1 NULL
+  , ...
+  , ...
+}
+
+-- extensible at the end
+Seq4 ::= SEQUENCE {
+  comp1 NULL
+  , ... ! INTEGER : 2
+  }
+
+-- extensible at the end
+Seq5 ::= SEQUENCE {
+  ... ! INTEGER : 2
+  }
+
+
+-- extensible at the beginning
+Seq6 ::= SEQUENCE {
+  ...
+  , ...
+  , comp1 NULL
+}
+
+-- extensible in the middle
+Seq7 ::= SEQUENCE {
+  comp1 NULL
+  , ...
+  , ...
+  , comp2 NULL
+}
+
+
+
+
+-- extended at the end
+Seq1e ::= SEQUENCE {
+  comp1 NULL
+  , ... ! INTEGER : 3
+  , [[ comp2 NULL ]]
+  }
+
+-- extended at the end
+Seq2e ::= SEQUENCE {
+  comp1 NULL
+  , ...
+  , [[ comp2 NULL ]]
+  , ...
+  }
+
+-- extended at the beginning
+Seq3e ::= SEQUENCE {
+  ...
+  , [[ comp2 NULL ]]
+  , ... 
+  , comp1 NULL 
+}
+
+-- extended in the middle
+Seq4e ::= SEQUENCE {
+  comp1 NULL
+  , ...
+  , comp3 NULL 
+  , comp4 NULL 
+  , ...
+  , comp2 NULL
+}
+
+
+-- AMBIGUOUS: should not compile
+-- extension of an empty sequence
+Seq5e ::= SEQUENCE {
+  ...
+  , comp1 NULL
+  }
+
+Seq6e ::= SEQUENCE {
+  ...
+  , comp1 NULL
+  , ...
+  }
+
+END
+
+
+
+

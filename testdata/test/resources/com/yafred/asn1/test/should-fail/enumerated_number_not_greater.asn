@@ -1,0 +1,17 @@
+-- FAILS: number in additional enumeration
+
+Module DEFINITIONS ::= BEGIN
+
+Enumeration1 ::= ENUMERATED {
+a,  -- 0
+b,  -- 1
+c,  -- 2
+...,
+ext-a  (6),
+ext-b  (3) -- WRONG: should be greater than 6
+}
+
+
+
+
+END

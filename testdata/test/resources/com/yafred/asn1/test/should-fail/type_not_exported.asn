@@ -1,0 +1,29 @@
+-- FAILS: type not exported
+
+My-Module DEFINITIONS ::=
+
+
+BEGIN
+
+IMPORTS My-Integer
+FROM My-Other-Module;
+
+My-Type ::= My-Integer
+
+My-Type-2 ::= My-Other-Module.My-Boolean
+
+My-Type-3 ::= My-Other-Module.My-Null
+
+END
+
+
+
+My-Other-Module DEFINITIONS ::=
+
+BEGIN
+EXPORTS;  --nothing
+My-Integer ::= INTEGER
+
+My-Boolean ::= BOOLEAN
+
+END

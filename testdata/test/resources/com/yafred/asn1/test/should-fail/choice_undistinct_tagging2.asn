@@ -1,0 +1,16 @@
+-- FAIL
+Choices-3 DEFINITIONS ::=
+BEGIN
+
+A ::= CHOICE {
+b B,
+c C}
+B ::= CHOICE {
+d [0] NULL,
+e [1] NULL}
+C ::= CHOICE {
+f [0] NULL,
+g [1] NULL}
+
+END
+

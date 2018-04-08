@@ -1,0 +1,92 @@
+-- added component ids in Inquiry and Reply to comply with asn1 1997
+
+E115 DEFINITIONS ::= BEGIN
+ 
+
+DirectoryMessage ::= CHOICE {
+  telephone [0] Telephone
+}
+
+Telephone ::= CHOICE { 
+  inquiry [0] Inquiry, 
+  reply [1] Reply 
+}
+
+Inquiry	::= SEQUENCE { 
+  inquiryPart1 InquiryPart1,
+  inquiryPart2 InquiryPart2
+}
+
+InquiryPart1	::= [ APPLICATION 0 ] IMPLICIT SET {
+  messageIndicators [0]	IMPLICIT IA5String,
+  internationalIndicator [1] IMPLICIT IA5String,
+  originatingTerminalCode [2] IMPLICIT IA5String,
+  dateAndTime [3] IMPLICIT IA5String OPTIONAL,
+  messageNumber	[4] IMPLICIT IA5String OPTIONAL 
+}
+
+InquiryPart2	::= [ APPLICATION 1 ] IMPLICIT SET {
+  locality	[0]	IMPLICIT IA5String OPTIONAL,
+  subscriberName	[1]	IMPLICIT IA5String OPTIONAL,
+  streetName	[2]	IMPLICIT IA5String OPTIONAL,
+  houseNumber	[3]	IMPLICIT IA5String OPTIONAL,
+  forename	[4]	IMPLICIT IA5String OPTIONAL,
+  headingInTheGuide	[5]	IMPLICIT IA5String OPTIONAL,
+  professionCode	[6]	IMPLICIT IA5String OPTIONAL,
+  additionalInformationForASelectiveSearch	[7]
+  IMPLICIT IA5String OPTIONAL,
+  countyStateOrProvince	[8]	IMPLICIT IA5String OPTIONAL,
+  category	[9]	IMPLICIT IA5String OPTIONAL,
+  sequenceNumber	[10]	IMPLICIT IA5String OPTIONAL 
+}
+
+Reply	::= SEQUENCE {
+  replyPart1 ReplyPart1,
+  replyPart2 ReplyPart2,
+  replyPart3 ReplyPart3 OPTIONAL 
+}
+
+ReplyPart1	::= [ APPLICATION 3 ] IMPLICIT SET {
+  messageIndicators	[0]	IMPLICIT IA5String,
+  internationalIndicators	[1]	IMPLICIT IA5String,
+  originatingTerminalCode	[2]	IMPLICIT IA5String,
+  dateAndTime	[3]	IMPLICIT IA5String OPTIONAL,
+  messageNumber	[4]	IMPLICIT IA5String OPTIONAL 
+}
+
+ReplyPart2	::= [ APPLICATION 4 ] IMPLICIT SET {
+  messageCode	[0]	IMPLICIT IA5String,
+  countryCode	[1]	IMPLICIT IA5String,
+  message	[2]	IMPLICIT IA5String OPTIONAL 
+}
+
+ReplyPart3	::= [ APPLICATION 5 ] IMPLICIT SET OF Selection
+
+Selection	::= SET {
+  nationalDestinationCode	[0]	IMPLICIT IA5String OPTIONAL,
+  subscriberNumber	[1]	IMPLICIT IA5String OPTIONAL,
+  locality	[2]	IMPLICIT IA5String,
+  subscriberName	[3]	IMPLICIT IA5String OPTIONAL,
+  forename	[4]	IMPLICIT IA5String OPTIONAL,
+  streetName	[5]	IMPLICIT IA5String OPTIONAL,
+  houseNumber	[6]	IMPLICIT IA5String OPTIONAL,
+  supplementaryData	[7]	IMPLICIT IA5String OPTIONAL,
+  subscriberMessage	[8]	IMPLICIT IA5String OPTIONAL,
+  headingInTheGuide	[9]	IMPLICIT IA5String OPTIONAL,
+  professionCode	[10]	IMPLICIT IA5String OPTIONAL,
+  additionalInformationForASelectiveSearch	[11] IMPLICIT IA5String OPTIONAL,
+  countyStateOrProvince	[12]	IMPLICIT IA5String OPTIONAL,
+  category	[13]	IMPLICIT IA5String OPTIONAL 
+}
+
+
+END
+
+
+
+
+
+
+
+
+

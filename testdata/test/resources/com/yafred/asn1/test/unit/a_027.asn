@@ -1,0 +1,116 @@
+
+-- Extensions SET and SEQUENCE
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+
+My-ext-1 ::= SEQUENCE {
+   -- empty rootComponentTypeList
+}
+
+
+My-ext-2 ::= SEQUENCE {
+    -- empty rootComponentTypeList
+  ...
+     -- empty extensionComponentTypeList
+}
+
+
+My-ext-3 ::= SEQUENCE {
+     -- empty rootComponentTypeList
+  ... -- ExtensionAndException
+     -- empty extensionComponentTypeList
+  , ...  -- OptionalExtensionMarker
+     -- empty additionalComponentTypeList
+}
+
+
+My-ext-4 ::= SEQUENCE {
+     -- empty rootComponentTypeList
+
+  ... -- ExtensionAndException
+  ,
+  [[ 1:   -- ExtensionAdditionGroup with VersionNumber
+    add1 REAL, add2 NULL 
+  ]]
+  , ...  -- OptionalExtensionMarker
+     -- empty additionalComponentTypeList
+ 
+}
+
+
+My-ext-5 ::= SEQUENCE {
+  aa INTEGER  -- rootComponentTypeList
+}
+
+
+My-ext-6 ::= SEQUENCE {
+  aa INTEGER, -- rootComponentTypeList
+  ...
+     -- empty extensionComponentTypeList
+}
+
+
+My-ext-7 ::= SEQUENCE {
+  aa INTEGER, -- rootComponentTypeList
+  ...,
+  bb BOOLEAN -- extensionComponentTypeList
+}
+
+
+My-ext-8 ::= SEQUENCE {
+  aa INTEGER, -- rootComponentTypeList
+  ...,
+       -- empty extensionComponentTypeList
+  ...,
+  bb BOOLEAN -- additionalComponentTypeList
+}
+
+My-ext-9 ::= SEQUENCE {
+  aa INTEGER, -- rootComponentTypeList
+  ...,
+  add1 REAL,   -- extensionComponentTypeList
+  ...,
+  bb BOOLEAN -- additionalComponentTypeList
+}
+
+My-ext-10 ::= SEQUENCE {
+  orig1 INTEGER, orig2 BOOLEAN -- rootComponentTypeList
+  ,
+  ... -- ExtensionAndException
+  ,    -- extensionComponentTypeList
+  [[ 2:   -- ExtensionAdditionGroup with VersionNumber
+    add1 REAL, add2 NULL 
+  ]]
+  ,
+  [[ 3:   -- ExtensionAdditionGroup with VersionNumber
+    add3 REAL, add4 NULL 
+  ]]
+  ,...  --  ExtensionMarker
+  ,
+  orig3 INTEGER, orig4 BOOLEAN -- additionalComponentTypeList
+}
+
+My-ext-11 ::= SEQUENCE {
+  orig1 INTEGER, orig2 BOOLEAN -- rootComponentTypeList
+  ,
+  ... -- ExtensionAndException
+  ,    -- extensionComponentTypeList
+  [[ 2:   -- ExtensionAdditionGroup with VersionNumber
+    add1 REAL, add2 NULL 
+  ]]
+  ,
+  [[ 3:
+  add2bis IA5String
+  ]]
+  ,
+  [[ 4:   -- ExtensionAdditionGroup with VersionNumber
+    add3 VisibleString, add4 NULL 
+  ]]
+  ,...  --  ExtensionMarker
+  ,
+  orig3 INTEGER, orig4 BOOLEAN -- additionalComponentTypeList
+}
+
+END

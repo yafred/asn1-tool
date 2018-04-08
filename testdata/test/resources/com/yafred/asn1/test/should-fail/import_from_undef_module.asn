@@ -1,0 +1,13 @@
+-- FAILS: module imports from unknown module
+
+My-Module DEFINITIONS ::=
+
+
+BEGIN
+
+IMPORTS My-Integer 
+FROM My-Other-Module;
+
+My-Type ::= My-Integer
+
+END

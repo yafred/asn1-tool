@@ -1,0 +1,84 @@
+Module-order DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+Order ::= SEQUENCE {
+  header  Order-header,
+  items   SEQUENCE OF Order-line}
+
+Order-header ::= SEQUENCE {
+  number   Order-number,
+  date     Date,
+  client   Client,
+  payment  Payment-method }
+
+Order-number ::= NumericString (SIZE (12))
+
+Date ::= NumericString (SIZE (8)) -- MMDDYYYY
+
+Client ::= SEQUENCE {
+  name     PrintableString (SIZE (1..20)),
+  street   PrintableString (SIZE (1..50)) OPTIONAL,
+  postcode NumericString (SIZE (5)),
+  town     PrintableString (SIZE (1..30)),
+  country  PrintableString (SIZE (1..20))
+               DEFAULT default-country }
+default-country PrintableString ::= "France"
+
+Payment-method ::= CHOICE {
+  check        NumericString (SIZE (15)),
+  credit-card  Credit-card,
+  cash         NULL }
+
+Credit-card ::= SEQUENCE {
+  type         Card-type,
+  number       NumericString (SIZE (20)),
+  expiry-date  NumericString (SIZE (6)) } -- MMYYYY --
+
+Card-type ::= ENUMERATED { cb(0), visa(1), eurocard(2),
+                 diners(3), american-express(4) }
+
+Order-line ::= SEQUENCE {
+  item-code    Item-code,
+  label        Label,
+  quantity     Quantity,
+  price        Cents }
+
+Item-code ::= NumericString (SIZE (7))
+
+Label ::= PrintableString (SIZE (1..30))
+
+Quantity ::= CHOICE { unites       INTEGER,
+                      millimetres  INTEGER,
+                      milligrammes INTEGER }
+
+Cents ::= INTEGER
+
+Delivery-report ::= SEQUENCE {
+  order-number   Order-number,
+  delivery       SEQUENCE OF Delivery-line }
+
+Delivery-line ::= SEQUENCE { item  Item-code,
+                             quantity Quantity }
+
+END
+
+
+Protocol DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+IMPORTS Order, Delivery-report, Item-code, Quantity, 
+        Order-number FROM Module-order ;
+
+PDU ::= CHOICE { question CHOICE { 
+                   question1 Order,
+                   question2 Item-code,
+                   question3 Order-number,
+                   ... },
+                 answer  CHOICE {
+                   answer1   Delivery-report,
+                   answer2   Quantity,
+                   answer3   Delivery-report,
+                   ... }}
+END
+
+
+

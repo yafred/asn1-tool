@@ -1,0 +1,22 @@
+Seq-Of DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+Top ::= CHOICE {
+  alt0 [0] SEQUENCE OF BOOLEAN
+  , alt1 [1] SEQUENCE OF INTEGER
+  , alt2 [2] SEQUENCE OF OCTET STRING
+  , alt10 [10] SEQUENCE OF INTEGER { zero (0), un (1) }
+  , alt11 [11] SEQUENCE OF ENUMERATED { zero (0), un (1) }
+  , alt12 [12] SEQUENCE OF BIT STRING { zero (0), un (1) }
+  , alt13 [13] SEQUENCE OF SEQUENCE { int INTEGER, str IA5String }  
+  , alt14 [14] SEQUENCE OF CHOICE { int INTEGER, str IA5String }  
+  , alt15 [15] SEQUENCE OF My-choice  
+  , alt16 [16] SEQUENCE OF SEQUENCE OF INTEGER
+  , alt17 [17] SEQUENCE OF SEQUENCE OF SEQUENCE { int INTEGER, str IA5String }
+}
+
+My-choice ::= CHOICE { 
+  int INTEGER
+  , str IA5String 
+}  
+
+END

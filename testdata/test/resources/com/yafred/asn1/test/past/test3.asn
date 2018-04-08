@@ -1,0 +1,18 @@
+Test-2 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+MySet ::= SET {
+	un IA5String,
+	deux INTEGER,
+	trois MyInt1,
+	quatre MyInt2,
+	cinq ENUMERATED { a, b, c(1) }
+}
+
+
+MyInt1 ::= INTEGER (1..10)
+MyInt2 ::= INTEGER (1..100)
+
+
+
+
+END

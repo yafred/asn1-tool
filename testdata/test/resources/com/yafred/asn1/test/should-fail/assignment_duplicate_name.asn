@@ -1,0 +1,14 @@
+-- FAILS: assignments have same reference name
+
+My-Module DEFINITIONS ::=
+
+BEGIN
+
+My-Integer ::= SEQUENCE 
+{
+    a INTEGER
+}
+
+My-Integer ::= INTEGER
+
+END

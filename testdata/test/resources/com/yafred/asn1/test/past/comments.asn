@@ -1,0 +1,13 @@
+-- simple 
+
+Test-1 DEFINITIONS ::= BEGIN --comment-- 
+
+My-int1 ::= INTEGER  --< typeName:"Validity" >-- 
+END
+
+Test-1bis DEFINITIONS ::= BEGIN
+
+My-int1bis ::= NULL
+
+
+END

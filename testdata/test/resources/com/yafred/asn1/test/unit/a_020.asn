@@ -1,0 +1,23 @@
+
+-- Defined Types
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+
+My-type ::= INTEGER
+
+My-integer ::= My-type
+
+My-string ::= Other-module.My-type
+
+My-selection-type ::= alt1 < CHOICE { alt1 INTEGER, alt2 REAL }
+END
+
+
+Other-module DEFINITIONS ::= 
+BEGIN
+EXPORTS ALL;
+My-type ::= IA5String
+
+
+END

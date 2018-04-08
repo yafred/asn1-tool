@@ -1,0 +1,10 @@
+-- UNIVERSAL tags are reserved 
+
+Sequence DEFINITIONS ::= BEGIN
+
+Seq1  ::= [APPLICATION 0] SEQUENCE {
+  un [APPLICATION 1] INTEGER, -- APPLICATION here is strange but allowed
+  deux [UNIVERSAL 2] INTEGER
+}
+
+END

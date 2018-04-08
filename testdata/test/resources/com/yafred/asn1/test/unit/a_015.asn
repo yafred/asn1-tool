@@ -1,0 +1,12 @@
+
+-- BIT STRING OCTET STRING
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+value INTEGER ::= 1
+My-bitString-1 ::= BIT STRING 
+My-bitString-2 ::= BIT STRING { a(1), b(2) }
+My-bitString-3 ::= BIT STRING { c(value) }
+
+My-octet-string ::= OCTET STRING
+END

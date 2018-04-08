@@ -1,0 +1,18 @@
+-- FAIL COMPONENTS OF: type undefined
+
+Components-of1 DEFINITIONS  ::=
+BEGIN
+
+Seq1 ::= SEQUENCE {
+   zero INTEGER,
+   COMPONENTS OF Seq3,
+   ...,
+   [[ deux INTEGER ]]
+}
+
+
+END
+
+
+
+

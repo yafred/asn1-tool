@@ -1,0 +1,8 @@
+
+-- Exports all
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+EXPORTS ALL;
+My-integer ::= INTEGER 
+END

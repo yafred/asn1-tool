@@ -1,0 +1,29 @@
+ExtEnum DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Root ::= CHOICE {
+  enum1 Enum1
+  , enum2 Enum2
+  , enum3 Enum3
+  }
+
+-- not extensible (unless EXTENSION IMPLIED)
+Enum1 ::= ENUMERATED {
+  un
+  }
+
+-- extensible
+Enum2 ::= ENUMERATED {
+  un
+  , ...
+  }
+
+-- extended
+Enum3 ::= ENUMERATED {
+  un
+  , ...
+  , deux
+  }
+
+
+
+END

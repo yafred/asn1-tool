@@ -1,0 +1,10 @@
+-- FAIL
+Untagged-Choice1 DEFINITIONS ::=
+BEGIN
+
+Type ::= SEQUENCE {
+  component [0] IMPLICIT CHOICE { alternative NULL }
+}
+
+END
+

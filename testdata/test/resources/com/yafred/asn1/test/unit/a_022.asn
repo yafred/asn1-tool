@@ -1,0 +1,49 @@
+
+-- Value assignment referenced, INTEGER, BOOLEAN, NULL
+
+My-first-module DEFINITIONS ::= 
+BEGIN 
+IMPORTS un FROM My-second-module;
+
+
+a INTEGER ::= un
+
+b INTEGER ::= My-second-module.deux
+
+c INTEGER ::= 100
+
+d INTEGER ::= -1
+
+e-boolean BOOLEAN ::= TRUE
+
+f-boolean BOOLEAN ::= FALSE
+
+g-null NULL ::= NULL
+
+h-string IA5String ::= "Hello World"
+
+i-bitstring BIT STRING ::= '01101100'B
+
+j-octetstring OCTET STRING ::= 'AB0196'H
+
+k-emptylist SEQUENCE OF INTEGER ::= {}
+
+l-listofinteger SEQUENCE OF INTEGER ::= { 1, 2, 3 }
+
+m-choice CHOICE { a INTEGER, b IA5String } ::= a : 2
+
+o-sequence SEQUENCE { a INTEGER, b IA5String } ::= { a 100, b "Hello" }
+
+END
+
+
+
+
+My-second-module DEFINITIONS ::= 
+BEGIN 
+
+un INTEGER ::= 1
+deux INTEGER ::= 2
+
+
+END

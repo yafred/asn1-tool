@@ -1,0 +1,16 @@
+-- FAILS: duplicate component names
+Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+
+
+My-Set ::= SET {
+un BOOLEAN,
+deux BOOLEAN,
+un BOOLEAN,
+...,
+[[ un BOOLEAN ]]
+}
+
+
+
+END

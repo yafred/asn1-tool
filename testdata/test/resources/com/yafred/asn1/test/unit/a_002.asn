@@ -1,0 +1,6 @@
+
+-- tagging default
+
+My-first-module DEFINITIONS IMPLICIT TAGS  ::= 
+BEGIN  
+END

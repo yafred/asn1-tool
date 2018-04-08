@@ -1,0 +1,16 @@
+Referenced DEFINITIONS ::= BEGIN
+
+
+
+T ::= [1] IMPLICIT T1
+T1 ::= [5] IMPLICIT T2
+T2 ::= [APPLICATION 0] IMPLICIT INTEGER
+
+
+A ::= B
+B ::= C
+C ::= [APPLICATION 1] D
+D ::= INTEGER
+
+
+END

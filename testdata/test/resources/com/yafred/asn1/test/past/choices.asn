@@ -1,0 +1,31 @@
+-- PASS
+Choices-1 DEFINITIONS ::=
+BEGIN
+
+A ::= CHOICE {
+b B,
+c NULL}
+B ::= CHOICE {
+d [0] NULL,
+e [1] NULL}
+
+END
+
+
+-- PASS
+Choices-2 DEFINITIONS ::=
+BEGIN
+
+A ::= CHOICE {
+b B,
+c C}
+B ::= CHOICE {
+d [0] NULL,
+e [1] NULL}
+C ::= CHOICE {
+f [2] NULL,
+g [3] NULL}
+
+END
+
+
