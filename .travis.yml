@@ -1,1 +1,12 @@
 language: java
+
+before_deploy:
+  mv asn1-tool/tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1Tool-$TRAVIS_TAG.jar
+
+deploy:
+  provider: releases
+  api_key: $GH_TOKEN
+  file: asn1Tool-$TRAVIS_TAG.jar
+  skip_cleanup: true
+  on:
+    tags: true
