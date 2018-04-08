@@ -344,6 +344,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.referencedType() != null) {
 				type = ctx.referencedType().accept(new ReferencedTypeVisitor());
 			}
+			type.setToken(new Token(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()+1));
 			return type;
 		}
 	}
