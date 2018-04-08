@@ -4,7 +4,7 @@
 
 ## Test the tool (as a user)
   
-  * Download latest release
+  * Download latest release (Not yet)
   * java -classpath asn1Tool.jar com.yafred.asn1.Tool input.asn
   
 ## Test the tool (as a developer)
@@ -34,8 +34,7 @@ Check that the Java model complies with the rules described in ITU-T X.680 (08/2
 
 Generate source code to encode and decode values from types described in a ASN.1 specification
 
-  * Java code generator for encoding/decoding values from the specification: Not started yet
-  * Java Runtime libraries to help running the generated code: Not started yet
-
+  * Java code generator for encoding/decoding values from the specification (Not yet)
+  * Java Runtime libraries to help running the generated code (Not yet)
 
 
