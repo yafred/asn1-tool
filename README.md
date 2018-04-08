@@ -4,8 +4,8 @@
 
 ## Test the tool (as a user)
   
-  * Download latest release (Not yet)
-  * java -classpath asn1Tool.jar com.yafred.asn1.Tool input.asn
+  * Download [latest release](https://github.com/yafred/asn1-tool/releases) 
+  * java -classpath asn1Tool-vX.Y.Z.jar com.yafred.asn1.Tool input.asn
   
 ## Test the tool (as a developer)
 
