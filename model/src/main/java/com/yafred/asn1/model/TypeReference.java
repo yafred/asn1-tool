@@ -76,20 +76,21 @@ public class TypeReference extends Type {
 	 * In this case, we group all the tagLists
 	 */
     public ArrayList<Tag> getFullTagList() {
-		if(tagList == null) {
-			tagList = new ArrayList<Tag>();
-		}
+    	ArrayList<Tag> fullTagList = new ArrayList<Tag>();
+    	if(tagList != null) {
+    		fullTagList.addAll(tagList);
+    	}
 		if(referencedType != null) {
 			if(referencedType.isTypeReference()) {
-				tagList.addAll(((TypeReference)referencedType).getFullTagList());
+				fullTagList.addAll(((TypeReference)referencedType).getFullTagList());
 			}
 			else {
 				if(referencedType.getTagList() != null) {
-					tagList.addAll(referencedType.getTagList());
+					fullTagList.addAll(referencedType.getTagList());
 				}
 			}
 		}		
-		return tagList;
+		return fullTagList;
 	}
 
 	@Override

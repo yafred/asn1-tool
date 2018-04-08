@@ -24,6 +24,7 @@ import com.yafred.asn1.model.SymbolsFromModule;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
+import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
@@ -292,6 +293,8 @@ public class Asn1SpecificationWriter {
 	}
 	
 	private void visit(TypeWithComponents typeWithComponents) {
+		int automaticTagCounter = 0;
+		Integer automaticTagNumber = null;
 		out.increaseIndent();
     	boolean isFirst = true;
     	out.println(" {");
@@ -301,7 +304,11 @@ public class Asn1SpecificationWriter {
 	    			out.println(",");
 	    		}
 	    		isFirst = false;
-	    		visit(component);
+	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
+	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagCounter++;
+	    		}
+	    		visit(component, automaticTagNumber);
 	    	}
     	}
     	if(typeWithComponents.getExtensionComponentList() != null) {
@@ -312,7 +319,11 @@ public class Asn1SpecificationWriter {
     		out.print("...");
 	    	for(Component component : typeWithComponents.getExtensionComponentList()) {
 	    		out.println(",");
-	    		visit(component);
+	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
+	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagCounter++;
+	    		}
+	    		visit(component, automaticTagNumber);
 	    	}
     	}
     	if(typeWithComponents.getAdditionalComponentList() != null) {
@@ -320,7 +331,11 @@ public class Asn1SpecificationWriter {
     		out.print("...");
 	    	for(Component component : typeWithComponents.getAdditionalComponentList()) {
 	    		out.println(",");
-	    		visit(component);
+	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
+	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagCounter++;
+	    		}
+	    		visit(component, automaticTagNumber);
 	    	}
     	}
     	out.decreaseIndent();
@@ -335,7 +350,7 @@ public class Asn1SpecificationWriter {
 		visitType(listOfType.getType());
 	}
 	
-	private void visit(Component component) {
+	private void visit(Component component, Integer automaticTagNumber) {
 		if(component.isComponentsOf()) {
 			out.print("COMPONENTS OF ");
 			visitType(((ComponentsOf)component).getForeignContainer());
@@ -343,6 +358,16 @@ public class Asn1SpecificationWriter {
 		if(component.isNamedType()) {
 			NamedType namedType = (NamedType)component;
 			out.print(namedType.getName() + " ");
+			if(automaticTagNumber != null) {
+				out.print("[" + automaticTagNumber + "] ");
+				if(namedType.getType() != null && namedType.getType().isChoiceType() // component is not tagged (no need to test that)
+						|| namedType.getType() != null && namedType.getType().isTypeReference() && ((TypeReference)namedType.getType()).getBuiltinType().isChoiceType() && namedType.getType().getFirstTag() == null ) {
+					out.print("EXPLICIT ");					
+				}
+				else {
+					out.print("IMPLICIT ");
+				}
+			}
 			visitType(namedType.getType());
 			if(namedType.isOptional()) {
 				out.print(" OPTIONAL");

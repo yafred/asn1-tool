@@ -1,0 +1,18 @@
+-- automatic tagging and CHOICE
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Seq1 ::= SEQUENCE {
+   choice-1 CHOICE { one NULL, two Tagged-Null },
+   choice-2 Untagged-Choice,
+   choice-3 Tagged-Choice
+}
+
+Untagged-Choice ::= CHOICE { one NULL, two NULL }
+
+Tagged-Choice ::= [APPLICATION 0] CHOICE { one NULL, two NULL }
+
+Tagged-Null ::= [APPLICATION 1]  NULL
+
+  
+END
