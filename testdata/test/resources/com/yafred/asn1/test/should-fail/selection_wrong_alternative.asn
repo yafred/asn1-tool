@@ -1,0 +1,13 @@
+-- Subtype with Selection Type
+-- FAILS selection not an alternative in choice
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+My-Integer ::= three < My-Choice
+
+My-Choice ::= CHOICE {
+   one INTEGER,
+   two IA5String
+}
+  
+END

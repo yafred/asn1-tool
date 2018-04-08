@@ -21,6 +21,7 @@ import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
+import com.yafred.asn1.model.SelectionType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Specification;
@@ -250,6 +251,10 @@ public class Asn1ModelValidator {
 		if(type.isChoiceType()) {
 			ChoiceType choiceType = (ChoiceType)type;
 			visitChoiceType(choiceType, moduleDefinition);
+		}
+		if(type.isSelectionType()) {
+			SelectionType selectionType = (SelectionType)type;
+			visitSelectionType(selectionType, moduleDefinition);
 		}
 	}
 	
@@ -875,9 +880,9 @@ public class Asn1ModelValidator {
 		
 		if(!choiceType.isAutomaticTaggingSelected()) {
 			ArrayList<Tag>uniqueTags = new ArrayList<Tag>();
-			visitChoiceAlternative(choiceType.getRootAlternativeList(), uniqueTags);
+			visitChoiceAlternative(choiceType.getRootAlternativeList(), uniqueTags, moduleDefinition);
 			if(choiceType.getAdditionalAlternativeList() != null) {
-				visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), uniqueTags);
+				visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), uniqueTags, moduleDefinition);
 			}
 		}
 	}
@@ -886,10 +891,17 @@ public class Asn1ModelValidator {
 	 * Search for duplicate tags in a ChoiceType
 	 * Follow untagged choices, selection types and untagged type references.
 	 */
-	void visitChoiceAlternative(ArrayList<Component>alternativeList, ArrayList<Tag>uniqueTags) {
+	void visitChoiceAlternative(ArrayList<Component>alternativeList, ArrayList<Tag>uniqueTags, ModuleDefinition moduleDefinition) {
 		for(Component component : alternativeList) {
 			NamedType namedType = (NamedType)component; // always the case for choice alternative
 			Tag tag = namedType.getType().getFirstTag();
+			if(tag == null && namedType.getType().isSelectionType()) {
+				SelectionType selectionType = (SelectionType)namedType.getType();
+				visitSelectionType(selectionType, moduleDefinition);
+				if(selectionType.getSelectedType() != null) {
+					tag = selectionType.getSelectedType().getFirstTag();
+				}
+			}
 			if(tag != null) {
 				int errorsBefore = errorList.size();
 				for(Tag  previousTag : uniqueTags) {
@@ -905,13 +917,50 @@ public class Asn1ModelValidator {
 				TypeReference typeReference = (TypeReference)namedType.getType();
 				if(typeReference.getBuiltinType() != null && typeReference.getBuiltinType().isChoiceType()) {
 					ChoiceType choiceType = (ChoiceType)typeReference.getBuiltinType();
-					visitChoiceAlternative(choiceType.getRootAlternativeList(), uniqueTags);
+					visitChoiceAlternative(choiceType.getRootAlternativeList(), uniqueTags, moduleDefinition);
 					if(choiceType.getAdditionalAlternativeList() != null) {
-						visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), uniqueTags);
+						visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), uniqueTags, moduleDefinition);
 					}
 				}
-			}	
+			}
 		}
 	}
 
+	/*
+	 * Validate a selection type
+	 */
+	void visitSelectionType(SelectionType selectionType, ModuleDefinition moduleDefinition) {
+		if(selectionType.getSelectedType() != null) {
+			// already visited 
+			return;
+		}
+		
+		Type type = selectionType.getType();
+		if(type.isTypeReference()) {
+			visitTypeReference((TypeReference)type, moduleDefinition);
+			if(((TypeReference)type).getReferencedType() == null) {
+				errorList.add(selectionType.getToken() + ": type for selection '" + selectionType.getSelection() + "' is not defined");				
+			}
+		}
+		if(!type.isChoiceType() && !(type.isTypeReference() && ((TypeReference)type).getReferencedType() != null && ((TypeReference)type).getBuiltinType().isChoiceType())) {
+			errorList.add(selectionType.getToken() + ": selection '" + selectionType.getSelection() + "' can only be made from a Choice type");
+		}
+		else {
+			ChoiceType choiceType = type.isChoiceType() ? (ChoiceType)type : (ChoiceType)((TypeReference)type).getBuiltinType();
+			ArrayList<Component> alternativeList = choiceType.getRootAlternativeList();
+			NamedType selectionAlternative = null;
+			for(Component alternative : alternativeList) {
+				if(((NamedType)alternative).getName().equals(selectionType.getSelection())) {
+					selectionAlternative = (NamedType)alternative;
+					break;
+				}
+			}
+			if(selectionAlternative == null) {
+				errorList.add(selectionType.getToken() + ": selection '" + selectionType.getSelection() + "' not found in choice type");				
+			}
+			else {
+				selectionType.setSelectedType(selectionAlternative.getType());
+			}
+		}
+	}
 }

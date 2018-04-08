@@ -1,0 +1,18 @@
+-- Component with Selection Type
+-- FAILS duplicate tag
+
+Sequence DEFINITIONS ::= BEGIN
+
+
+My-Choice ::= CHOICE {
+   one INTEGER,
+   two IA5String,
+   three one < My-Other-Choice
+}
+
+My-Other-Choice ::= CHOICE {
+   one INTEGER,
+   two IA5String
+}
+  
+END

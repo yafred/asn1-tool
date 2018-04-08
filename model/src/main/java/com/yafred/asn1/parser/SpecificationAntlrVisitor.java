@@ -401,7 +401,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	static class SelectionTypeVisitor extends ASNBaseVisitor<SelectionType> {
 		@Override
 		public SelectionType visitSelectionType(SelectionTypeContext ctx) {
-			return new SelectionType(ctx.LCASE_ID().getText(), ctx.type().accept(new TypeVisitor()));
+			SelectionType selectionType = new SelectionType(ctx.LCASE_ID().getText(), ctx.type().accept(new TypeVisitor()));
+			selectionType.setToken(new Token(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));
+			return selectionType;
 		}
 	}
 	

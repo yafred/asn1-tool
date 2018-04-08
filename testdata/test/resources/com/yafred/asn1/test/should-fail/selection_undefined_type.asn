@@ -1,0 +1,12 @@
+-- Component with Selection Type
+-- FAILS undefined choice
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+My-Sequence ::= SEQUENCE {
+   component-1 two < My-Choice
+}
+
+
+  
+END

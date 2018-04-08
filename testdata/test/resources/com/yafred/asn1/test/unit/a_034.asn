@@ -1,0 +1,12 @@
+-- Subtype with Selection Type
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+My-Integer ::= one < My-Choice
+
+My-Choice ::= CHOICE {
+   one INTEGER,
+   two IA5String
+}
+  
+END

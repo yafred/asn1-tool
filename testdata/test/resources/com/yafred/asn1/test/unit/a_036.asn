@@ -1,0 +1,20 @@
+-- Component with Selection Type
+
+Sequence DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+My-Sequence ::= SEQUENCE {
+   component-1 two < My-Choice-1,
+   component-2 two < My-Choice-2
+}
+
+My-Choice-1 ::= CHOICE {
+   one INTEGER,
+   two IA5String
+}
+
+My-Choice-2 ::= CHOICE {
+   one INTEGER,
+   two IA5String
+}
+  
+END

@@ -3,6 +3,8 @@ package com.yafred.asn1.model;
 public class SelectionType extends Type {
 	private String selection = null;
 	private Type type = null;
+	private Type selectedType = null;
+	private Token token = null;
 	
 	public SelectionType(String selection, Type type) {
 		this.selection = selection;
@@ -27,6 +29,25 @@ public class SelectionType extends Type {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+
+	public Type getSelectedType() {
+		return selectedType;
+	}
+
+
+	public void setSelectedType(Type selectedType) {
+		this.selectedType = selectedType;
+	}
+
+
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
 	}
 
 
