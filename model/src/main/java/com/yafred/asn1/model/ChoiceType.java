@@ -14,11 +14,18 @@ public class ChoiceType extends TypeWithComponents {
     public ArrayList<Component> getRootAlternativeList() {
 		return getRootComponentList();
 	}
+    
+    public void setRootAlternativeList(ArrayList<Component> rootAlternativeList) {
+    	setRootComponentList(rootAlternativeList);
+    }
 
 	public ArrayList<Component> getAdditionalAlternativeList() {
 		return getExtensionComponentList();
 	}
-
+	
+	public void setAdditionalAlternativeList(ArrayList<Component> additionalAlternativeList) {
+		setExtensionComponentList(additionalAlternativeList);
+	}
 
 	@Override
 	public boolean isChoiceType() {

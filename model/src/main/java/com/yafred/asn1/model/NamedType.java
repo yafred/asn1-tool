@@ -5,7 +5,7 @@ public class NamedType extends Component {
     private Type type = null;
     private boolean isOptional = false;
     private Value defaultValue = null;
-    private Token token = null;
+    private TokenLocation tokenLocation = null;
     
     public NamedType(String name, Type type) {
         this.name = name;
@@ -61,12 +61,12 @@ public class NamedType extends Component {
 		this.defaultValue = defaultValue;
 	}
 
-	public Token getToken() {
-		return token;
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
 	}
 
-	public void setToken(Token token) {
-		this.token = token;
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
 	}
 
 	@Override

@@ -130,7 +130,7 @@ import com.yafred.asn1.model.TagMode;
 import com.yafred.asn1.model.TeletexStringType;
 import com.yafred.asn1.model.TimeOfDayType;
 import com.yafred.asn1.model.TimeType;
-import com.yafred.asn1.model.Token;
+import com.yafred.asn1.model.TokenLocation;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
 import com.yafred.asn1.model.UTCTimeType;
@@ -203,7 +203,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			ModuleIdentifier moduleIdentifier = new ModuleIdentifier();
 			String moduleReference = ctx.UCASE_ID().getText();
 			moduleIdentifier.setModuleReference(moduleReference);
-			moduleIdentifier.setModuleReferenceToken(new Token(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
+			moduleIdentifier.setModuleReferenceTokenLocation(new TokenLocation(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
 			
 			ArrayList<DefinitiveObjectIdComponent> definitiveObjIdComponentList = new ArrayList<DefinitiveObjectIdComponent>();
 			if(ctx.definitiveOID() != null) {
@@ -328,7 +328,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			Type type = ctx.type().accept(new TypeVisitor());
 			TypeAssignment typeAssignment = new TypeAssignment();
 			typeAssignment.setReference(reference);
-			typeAssignment.setReferenceToken(new Token(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
+			typeAssignment.setReferenceTokenLocation(new TokenLocation(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
 			typeAssignment.setType(type);
 			return typeAssignment;
 		}
@@ -344,7 +344,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.referencedType() != null) {
 				type = ctx.referencedType().accept(new ReferencedTypeVisitor());
 			}
-			type.setToken(new Token(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()+1));
+			type.setTokenLocation(new TokenLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()+1));
 			return type;
 		}
 	}
@@ -377,7 +377,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			else {
 				type.setReferencedTypeName(ctx.UCASE_ID(0).getText());
 			}
-			type.setToken(new Token(ctx.UCASE_ID(0).getSymbol().getLine(), ctx.UCASE_ID(0).getSymbol().getCharPositionInLine()+1));
+			type.setTokenLocation(new TokenLocation(ctx.UCASE_ID(0).getSymbol().getLine(), ctx.UCASE_ID(0).getSymbol().getCharPositionInLine()+1));
 			return type;
 		}
 	}
@@ -403,7 +403,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		@Override
 		public SelectionType visitSelectionType(SelectionTypeContext ctx) {
 			SelectionType selectionType = new SelectionType(ctx.LCASE_ID().getText(), ctx.type().accept(new TypeVisitor()));
-			selectionType.setToken(new Token(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));
+			selectionType.setTokenLocation(new TokenLocation(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));
 			return selectionType;
 		}
 	}
@@ -557,20 +557,20 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		public ArrayList<NamedNumber> visitNamedBitList(NamedBitListContext ctx) {
 			ArrayList<NamedNumber> namedBitList = new ArrayList<NamedNumber>();
 			for(NamedBitContext namedBitContext : ctx.namedBit()) {
-			    Token numberOrReferenceToken = null;
+			    TokenLocation numberOrReferenceToken = null;
 			    NamedNumber namedBit = null;
 			    if(namedBitContext.LCASE_ID().size() == 2) {
-			    	numberOrReferenceToken = new Token(namedBitContext.LCASE_ID(1).getSymbol().getLine(), namedBitContext.LCASE_ID(1).getSymbol().getCharPositionInLine()+1);
+			    	numberOrReferenceToken = new TokenLocation(namedBitContext.LCASE_ID(1).getSymbol().getLine(), namedBitContext.LCASE_ID(1).getSymbol().getCharPositionInLine()+1);
 					namedBit = new NamedNumber(namedBitContext.LCASE_ID(0).getText(), namedBitContext.LCASE_ID(1).getText());
-					namedBit.setNumberOrReferenceToken(numberOrReferenceToken);
+					namedBit.setNumberOrReferenceTokenLocation(numberOrReferenceToken);
 				}
 				else {
-			    	numberOrReferenceToken = new Token(namedBitContext.NUMBER().getSymbol().getLine(), namedBitContext.NUMBER().getSymbol().getCharPositionInLine()+1);
+			    	numberOrReferenceToken = new TokenLocation(namedBitContext.NUMBER().getSymbol().getLine(), namedBitContext.NUMBER().getSymbol().getCharPositionInLine()+1);
 					namedBit = new NamedNumber(namedBitContext.LCASE_ID(0).getText(), Integer.parseInt(namedBitContext.NUMBER().getText()));					
-					namedBit.setNumberOrReferenceToken(numberOrReferenceToken);
+					namedBit.setNumberOrReferenceTokenLocation(numberOrReferenceToken);
 				}
-			    Token nameToken = new Token(namedBitContext.LCASE_ID(0).getSymbol().getLine(), namedBitContext.LCASE_ID(0).getSymbol().getCharPositionInLine()+1);
-			    namedBit.setNameToken(nameToken);
+			    TokenLocation nameToken = new TokenLocation(namedBitContext.LCASE_ID(0).getSymbol().getLine(), namedBitContext.LCASE_ID(0).getSymbol().getCharPositionInLine()+1);
+			    namedBit.setNameTokenLocation(nameToken);
 			    namedBitList.add(namedBit);
 			}
 			return namedBitList;
@@ -599,9 +599,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			for (EnumerationItemContext enumerationItemContext : ctx.enumerationItem() ) {
 				if(enumerationItemContext.LCASE_ID() != null) {
 					NamedNumber namedNumber = new NamedNumber(enumerationItemContext.LCASE_ID().getText());
-				    Token nameToken = new Token(enumerationItemContext.LCASE_ID().getSymbol().getLine(), enumerationItemContext.LCASE_ID().getSymbol().getCharPositionInLine()+1);
-					namedNumber.setNameToken(nameToken);
-					namedNumber.setNumberOrReferenceToken(nameToken);
+				    TokenLocation nameToken = new TokenLocation(enumerationItemContext.LCASE_ID().getSymbol().getLine(), enumerationItemContext.LCASE_ID().getSymbol().getCharPositionInLine()+1);
+					namedNumber.setNameTokenLocation(nameToken);
+					namedNumber.setNumberOrReferenceTokenLocation(nameToken);
 					namedNumberList.add(namedNumber);
 				}
 				else {
@@ -639,7 +639,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		public NamedNumber visitNamedNumber(NamedNumberContext ctx) {
 			NamedNumber namedNumber;
 			TerminalNode numberOrReferenceNode = null;
-		    Token nameToken = new Token(ctx.LCASE_ID(0).getSymbol().getLine(), ctx.LCASE_ID(0).getSymbol().getCharPositionInLine()+1);
+		    TokenLocation nameToken = new TokenLocation(ctx.LCASE_ID(0).getSymbol().getLine(), ctx.LCASE_ID(0).getSymbol().getCharPositionInLine()+1);
 			if(ctx.LCASE_ID().size() == 2) {
 				namedNumber = new NamedNumber(ctx.LCASE_ID(0).getText(), ctx.LCASE_ID(1).getText());
 				numberOrReferenceNode = ctx.LCASE_ID(1);
@@ -656,9 +656,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 					numberOrReferenceNode = ctx.signedNumber().NUMBER();
 				}
 			}
-			namedNumber.setNameToken(nameToken);
-		    Token numberOrReferenceToken = new Token(numberOrReferenceNode.getSymbol().getLine(), numberOrReferenceNode.getSymbol().getCharPositionInLine()+1);
-			namedNumber.setNumberOrReferenceToken(numberOrReferenceToken);
+			namedNumber.setNameTokenLocation(nameToken);
+		    TokenLocation numberOrReferenceToken = new TokenLocation(numberOrReferenceNode.getSymbol().getLine(), numberOrReferenceNode.getSymbol().getCharPositionInLine()+1);
+			namedNumber.setNumberOrReferenceTokenLocation(numberOrReferenceToken);
 			return namedNumber;
 		}
 	}
@@ -686,7 +686,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			ArrayList<Component> alternativeTypeList = new ArrayList<Component>();
 			for (NamedTypeContext namedTypeContext : ctx.namedType()) {
 				NamedType namedType = new NamedType(namedTypeContext.LCASE_ID().getText(), namedTypeContext.type().accept(new TypeVisitor()));
-				namedType.setToken(new Token(namedTypeContext.LCASE_ID().getSymbol().getLine(), namedTypeContext.LCASE_ID().getSymbol().getCharPositionInLine()+1));				
+				namedType.setTokenLocation(new TokenLocation(namedTypeContext.LCASE_ID().getSymbol().getLine(), namedTypeContext.LCASE_ID().getSymbol().getCharPositionInLine()+1));				
 				alternativeTypeList.add(namedType);
 			}
 			return alternativeTypeList;
@@ -840,11 +840,11 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 				String name = ctx.namedType().LCASE_ID().getText();
 				Type type = ctx.namedType().type().accept(new TypeVisitor());
 				component = new NamedType(name, type, isOptional);
-				component.setToken(new Token(ctx.namedType().LCASE_ID().getSymbol().getLine(), ctx.namedType().LCASE_ID().getSymbol().getCharPositionInLine()+1));
+				component.setTokenLocation(new TokenLocation(ctx.namedType().LCASE_ID().getSymbol().getLine(), ctx.namedType().LCASE_ID().getSymbol().getCharPositionInLine()+1));
 			}
 			if(ctx.COMPONENTS_LITERAL() != null) {
 				component = new ComponentsOf(ctx.type().accept(new TypeVisitor()));
-				component.setToken(new Token(ctx.COMPONENTS_LITERAL().getSymbol().getLine(), ctx.COMPONENTS_LITERAL().getSymbol().getCharPositionInLine()+1));
+				component.setTokenLocation(new TokenLocation(ctx.COMPONENTS_LITERAL().getSymbol().getLine(), ctx.COMPONENTS_LITERAL().getSymbol().getCharPositionInLine()+1));
 			}
 			return component;
 		}
@@ -917,8 +917,8 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 				tag = new Tag(ctx.LCASE_ID().getText(), tagClass, tagMode);
 			}
 			
-			Token tagToken = new Token(ctx.LBRACKET().getSymbol().getLine(), ctx.LBRACKET().getSymbol().getCharPositionInLine()+1);
-			tag.setTagToken(tagToken);
+			TokenLocation tagToken = new TokenLocation(ctx.LBRACKET().getSymbol().getLine(), ctx.LBRACKET().getSymbol().getCharPositionInLine()+1);
+			tag.setTagTokenLocation(tagToken);
 			type.insertTag(tag);
 			
 			return type;
@@ -933,7 +933,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			value.setType(ctx.type().accept(new TypeVisitor()));
 			ValueAssignment valueAssignment = new ValueAssignment();
 			valueAssignment.setReference(reference);
-			valueAssignment.setReferenceToken(new Token(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));
+			valueAssignment.setReferenceTokenLocation(new TokenLocation(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));
 			valueAssignment.setValue(value);
 			return valueAssignment;
 		}
@@ -967,10 +967,10 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			ValueReference value = new ValueReference();
 			if(ctx.UCASE_ID() != null) {
 				value.setReferencedModuleName(ctx.UCASE_ID().getText());
-				value.setToken(new Token(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
+				value.setTokenLocation(new TokenLocation(ctx.UCASE_ID().getSymbol().getLine(), ctx.UCASE_ID().getSymbol().getCharPositionInLine()+1));
 			}
 			else {
-				value.setToken(new Token(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));				
+				value.setTokenLocation(new TokenLocation(ctx.LCASE_ID().getSymbol().getLine(), ctx.LCASE_ID().getSymbol().getCharPositionInLine()+1));				
 			}
 			value.setReferencedValueName(ctx.LCASE_ID().getText());
 			return value;

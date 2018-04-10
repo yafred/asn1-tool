@@ -18,7 +18,7 @@ public class ValueReference extends Value {
 	/**
 	 * Location of the token in input stream
 	 */
-	private Token token;
+	private TokenLocation tokenLocation;
 
 	private Value referencedValue = null;
 
@@ -46,12 +46,12 @@ public class ValueReference extends Value {
 		this.referencedValue = referencedValue;
 	}
 	
-	public Token getToken() {
-		return token;
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
 	}
 
-	public void setToken(Token token) {
-		this.token = token;
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
 	}
 
 	@Override

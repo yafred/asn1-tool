@@ -12,7 +12,7 @@ public class ModuleIdentifier {
 	/**
 	 * Location of the token in input stream
 	 */
-	private Token moduleReferenceToken;
+	private TokenLocation moduleReferenceTokenLocation;
 
 	/**
 	 * List of DefinitiveObjIdComponents
@@ -29,12 +29,12 @@ public class ModuleIdentifier {
 		this.moduleReference = moduleReference;
 	}
 
-	public Token getModuleReferenceToken() {
-		return moduleReferenceToken;
+	public TokenLocation getModuleReferenceTokenLocation() {
+		return moduleReferenceTokenLocation;
 	}
 
-	public void setModuleReferenceToken(Token moduleReferenceToken) {
-		this.moduleReferenceToken = moduleReferenceToken;
+	public void setModuleReferenceTokenLocation(TokenLocation moduleReferenceTokenLocation) {
+		this.moduleReferenceTokenLocation = moduleReferenceTokenLocation;
 	}
 
 	public ArrayList<DefinitiveObjectIdComponent> getDefinitiveObjIdComponents() {

@@ -104,7 +104,7 @@ public class Asn1ModelValidator {
 			String reference = moduleDefinition.getModuleIdentifier().getModuleReference();
 			ModuleDefinition alreadyDefined = moduleDefinitionMap.get(reference);
 			if(alreadyDefined != null) {
-				errorList.add(moduleDefinition.getModuleIdentifier().getModuleReferenceToken() + ": Trying to redefine '" + reference + "' already defined in " + alreadyDefined.getModuleIdentifier().getModuleReferenceToken());
+				errorList.add(moduleDefinition.getModuleIdentifier().getModuleReferenceTokenLocation() + ": Trying to redefine '" + reference + "' already defined in " + alreadyDefined.getModuleIdentifier().getModuleReferenceTokenLocation());
 			}
 			else {
 				moduleDefinitionMap.put(reference, moduleDefinition);
@@ -121,7 +121,7 @@ public class Asn1ModelValidator {
 			for(Assignment assignment : moduleDefinition.getAssignmentList()) {
 				Assignment alreadyDefined = assignmentMap.get(moduleReference + "." + assignment.getReference());
 				if(alreadyDefined != null) {
-					errorList.add(assignment.getReferenceToken() + ": Trying to redefine '" + assignment.getReference() + "' already defined in " + alreadyDefined.getReferenceToken());					
+					errorList.add(assignment.getReferenceTokenLocation() + ": Trying to redefine '" + assignment.getReference() + "' already defined in " + alreadyDefined.getReferenceTokenLocation());					
 				}
 				else {
 					assignmentMap.put(moduleReference + "." + assignment.getReference(), assignment);
@@ -182,7 +182,7 @@ public class Asn1ModelValidator {
 						else {
 							Assignment assignment = assignmentMap.get(moduleReference + "." + symbol);
 							if(assignment != null) {
-								errorList.add("Symbol '" + symbol + "' is imported in module '" + moduleReference + "' but already defined at position " + assignment.getReferenceToken());
+								errorList.add("Symbol '" + symbol + "' is imported in module '" + moduleReference + "' but already defined at position " + assignment.getReferenceTokenLocation());
 							}
 						}
 					}
@@ -217,10 +217,10 @@ public class Asn1ModelValidator {
 		if(tagList != null) {
 			for(Tag tag : tagList) {
 				if(tag.getClass() != null && TagClass.UNIVERSAL_TAG == tag.getTagClass()) {
-					errorList.add(tag.getTagToken() + ": Use of UNIVERSAL is reserved for ASN.1 builtin types");
+					errorList.add(tag.getTagTokenLocation() + ": Use of UNIVERSAL is reserved for ASN.1 builtin types");
 				}
 				if(tag.getDefinedValue() != null) {
-					errorList.add(tag.getTagToken() + ": defined values in tags are not supported yet");					
+					errorList.add(tag.getTagTokenLocation() + ": defined values in tags are not supported yet");					
 				}
 			}
 		}
@@ -276,10 +276,10 @@ public class Asn1ModelValidator {
 			referencedTypeAssignment = (TypeAssignment)symbolsExportedMap.get(referencedModuleName + "." + referencedTypeName);
 			if(referencedTypeAssignment == null) {
 				if(!assignmentMap.containsKey(referencedModuleName + "." + referencedTypeName)) {
-					errorList.add(typeReference.getToken() + " Type '" + referencedModuleName + "." + referencedTypeName + "' not defined");
+					errorList.add(typeReference.getTokenLocation() + " Type '" + referencedModuleName + "." + referencedTypeName + "' not defined");
 				}
 				else {
-					errorList.add(typeReference.getToken() + " Type '" + referencedModuleName + "." + referencedTypeName + "' not exported");
+					errorList.add(typeReference.getTokenLocation() + " Type '" + referencedModuleName + "." + referencedTypeName + "' not exported");
 				}
 			}
 		}
@@ -307,7 +307,7 @@ public class Asn1ModelValidator {
 			}
 		}
 		else {
-			errorList.add(typeReference.getToken() + " Type '" + referencedTypeName + "' neither defined nor imported");
+			errorList.add(typeReference.getTokenLocation() + " Type '" + referencedTypeName + "' neither defined nor imported");
 		}
 
 		// catch CHOICE with IMPLICIT tag here
@@ -316,7 +316,7 @@ public class Asn1ModelValidator {
 			if(fullTagList != null && fullTagList.size() != 0) {
 				Tag choiceTag = fullTagList.get(fullTagList.size()-1);
 				if(choiceTag.getTagMode() == TagMode.IMPLICIT_TAG) {
-					errorList.add(choiceTag.getTagToken() + " IMPLICIT TAG not allowed for CHOICE");
+					errorList.add(choiceTag.getTagTokenLocation() + " IMPLICIT TAG not allowed for CHOICE");
 				}
 			}
 		}
@@ -345,10 +345,10 @@ public class Asn1ModelValidator {
 			referencedValueAssignment = (ValueAssignment)symbolsExportedMap.get(referencedModuleName + "." + referencedValueName);
 			if(referencedValueAssignment == null) {
 				if(!assignmentMap.containsKey(referencedModuleName + "." + referencedValueName)) {
-					errorList.add(valueReference.getToken() + " value '" + referencedModuleName + "." + referencedValueName + "' not defined");
+					errorList.add(valueReference.getTokenLocation() + " value '" + referencedModuleName + "." + referencedValueName + "' not defined");
 				}
 				else {
-					errorList.add(valueReference.getToken() + " value '" + referencedModuleName + "." + referencedValueName + "' not exported");
+					errorList.add(valueReference.getTokenLocation() + " value '" + referencedModuleName + "." + referencedValueName + "' not exported");
 				}
 			}
 		}
@@ -373,7 +373,7 @@ public class Asn1ModelValidator {
 			valueReference.setReferencedValue(referencedValueAssignment.getValue());
 		}
 		else {
-			errorList.add(valueReference.getToken() + " value '" + referencedValueName + "' neither defined nor imported");
+			errorList.add(valueReference.getTokenLocation() + " value '" + referencedValueName + "' neither defined nor imported");
 		}
 	}
 	
@@ -393,7 +393,7 @@ public class Asn1ModelValidator {
 			{
 				NamedNumber duplicateName = namedNumbersByName.get(namedNumber.getName());
 				if(duplicateName != null) {
-					errorList.add(namedNumber.getNameToken() + " name '" + namedNumber.getName() + "' already used at " + duplicateName.getNameToken());
+					errorList.add(namedNumber.getNameTokenLocation() + " name '" + namedNumber.getName() + "' already used at " + duplicateName.getNameTokenLocation());
 				}
 				else {
 					namedNumbersByName.put(namedNumber.getName(), namedNumber);
@@ -403,7 +403,7 @@ public class Asn1ModelValidator {
 			if(namedNumber.getNumber() != null) {
 				NamedNumber duplicateNumber = namedNumbersByNumber.get(namedNumber.getNumber());				
 				if(duplicateNumber != null) {
-					errorList.add(namedNumber.getNumberOrReferenceToken() + " number '" + namedNumber.getNumber() + "' already used at " + duplicateNumber.getNumberOrReferenceToken());
+					errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + " number '" + namedNumber.getNumber() + "' already used at " + duplicateNumber.getNumberOrReferenceTokenLocation());
 				}
 				else {
 					namedNumbersByNumber.put(namedNumber.getNumber(), namedNumber);
@@ -428,7 +428,7 @@ public class Asn1ModelValidator {
 					}
 				}
 				if(referencedValueAssignment == null) {
-					errorList.add(namedNumber.getNumberOrReferenceToken() + "  '" + namedNumber.getReference() + "' neither defined nor imported");
+					errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + "  '" + namedNumber.getReference() + "' neither defined nor imported");
 				}
 				else {
 					Type type = referencedValueAssignment.getValue().getType();
@@ -452,13 +452,13 @@ public class Asn1ModelValidator {
 							}
 						}
 						if(number == null) {
-							errorList.add(namedNumber.getNumberOrReferenceToken() + " cannot find an INTEGER value for  '" + namedNumber.getReference() + "'");
+							errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + " cannot find an INTEGER value for  '" + namedNumber.getReference() + "'");
 						}
 						else {
 							namedNumber.setNumber(number);
 							NamedNumber duplicateNumber = namedNumbersByNumber.get(namedNumber.getNumber());				
 							if(duplicateNumber != null) {
-								errorList.add(namedNumber.getNumberOrReferenceToken() + " number '" + namedNumber.getNumber() + "' already used at " + duplicateNumber.getNumberOrReferenceToken());
+								errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + " number '" + namedNumber.getNumber() + "' already used at " + duplicateNumber.getNumberOrReferenceTokenLocation());
 							}
 							else {
 								namedNumbersByNumber.put(number, namedNumber);
@@ -466,7 +466,7 @@ public class Asn1ModelValidator {
 						}
 					}
 					else {
-						errorList.add(namedNumber.getNumberOrReferenceToken() + "  '" + namedNumber.getReference() + "' must have type INTEGER");
+						errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + "  '" + namedNumber.getReference() + "' must have type INTEGER");
 					}
 				}
 			}
@@ -519,7 +519,7 @@ public class Asn1ModelValidator {
 					availableNumber = namedNumber.getNumber().intValue() + 1;
 				}
 				if(previousNamedNumber != null && namedNumber.getNumber().intValue() <= previousNamedNumber.getNumber().intValue()) {
-					errorList.add(namedNumber.getNumberOrReferenceToken() + " number '" + namedNumber.getNumber() + "' should be greater than '" + previousNamedNumber.getNumber() + "' at " + previousNamedNumber.getNumberOrReferenceToken());
+					errorList.add(namedNumber.getNumberOrReferenceTokenLocation() + " number '" + namedNumber.getNumber() + "' should be greater than '" + previousNamedNumber.getNumber() + "' at " + previousNamedNumber.getNumberOrReferenceTokenLocation());
 				}
 				previousNamedNumber = namedNumber;
 			}
@@ -534,7 +534,7 @@ public class Asn1ModelValidator {
 	 * Visit SequenceType
 	 */
 	void visitSequenceType(SequenceType sequenceType, ModuleDefinition moduleDefinition) {
-		validateTypeWithComponents(sequenceType, moduleDefinition);
+		visitTypeWithComponents(sequenceType, moduleDefinition);
 		
 		ArrayList<Component> rootComponentList = sequenceType.getRootComponentList();
 		ArrayList<Component> additionalComponentList = sequenceType.getAdditionalComponentList();
@@ -554,12 +554,12 @@ public class Asn1ModelValidator {
 							NamedType namedType = (NamedType)component;
 							Tag tag = namedType.getType().getFirstTag();
 							if(tag == null) {
-								warningList.add(namedType.getToken() + ": Cannot find first tag of '" + namedType.getName() + "'. This may be a CHOICE (not supported yet)");
+								warningList.add(namedType.getTokenLocation() + ": Cannot find first tag of '" + namedType.getName() + "'. This may be a CHOICE (not supported yet)");
 							}
 							for(NamedType previousNamedType : optionalNamedTypeList) {
 								Tag previousTag = previousNamedType.getType().getFirstTag();
 								if(tag != null && tag.equals(previousTag)) {
-									errorList.add(namedType.getToken() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + previousNamedType.getName() + "' " + previousNamedType.getToken()); 					
+									errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + previousNamedType.getName() + "' " + previousNamedType.getTokenLocation()); 					
 								}
 							}
 							if(namedType.isOptional() || namedType.getDefaultValue() != null) {
@@ -575,7 +575,7 @@ public class Asn1ModelValidator {
 											NamedType extensionNamedType = (NamedType)extensionComponent;
 											Tag extensionTag = extensionNamedType.getType().getFirstTag();
 											if(tag != null && tag.equals(extensionTag)) {
-												errorList.add(namedType.getToken() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + extensionNamedType.getName() + "' " + extensionNamedType.getToken() + ". All tags in extension should be different from the first non optional and non default element in addition."); 					
+												errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + extensionNamedType.getName() + "' " + extensionNamedType.getTokenLocation() + ". All tags in extension should be different from the first non optional and non default element in addition."); 					
 											}
 										}
 									}
@@ -592,7 +592,7 @@ public class Asn1ModelValidator {
 	 * Visit SetType
 	 */
 	void visitSetType(SetType setType, ModuleDefinition moduleDefinition) {
-		validateTypeWithComponents(setType, moduleDefinition);
+		visitTypeWithComponents(setType, moduleDefinition);
 		
 		ArrayList<Component> rootComponentList = setType.getRootComponentList();
 		ArrayList<Component> additionalComponentList = setType.getAdditionalComponentList();
@@ -610,12 +610,12 @@ public class Asn1ModelValidator {
 							NamedType namedType = (NamedType)component;
 							Tag tag = namedType.getType().getFirstTag();
 							if(tag == null) {
-								warningList.add(namedType.getToken() + ": Cannot find first tag of '" + namedType.getName() + "'. This may be a CHOICE (not supported yet)");
+								warningList.add(namedType.getTokenLocation() + ": Cannot find first tag of '" + namedType.getName() + "'. This may be a CHOICE (not supported yet)");
 							}
 							for(NamedType previousNamedType : previousNamedTypeList) {
 								Tag previousTag = previousNamedType.getType().getFirstTag();
  								if(tag != null && tag.equals(previousTag)) {
-									errorList.add(namedType.getToken() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + previousNamedType.getName() + "' " + previousNamedType.getToken()); 					
+									errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + previousNamedType.getName() + "' " + previousNamedType.getTokenLocation()); 					
 								}
 							}
 							previousNamedTypeList.add(namedType);
@@ -633,7 +633,7 @@ public class Asn1ModelValidator {
 							Tag previousTag = previousNamedType.getType().getFirstTag();
 							Tag tag = namedType.getType().getFirstTag();
 							if(previousTag != null && tag != null && previousTag.greaterThan(tag)) {
-								errorList.add(namedType.getToken() + ": tag of '" + namedType.getName() + "' should be canonically greater than tag of '" + previousNamedType.getName() + "' " + previousNamedType.getToken()); 												
+								errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' should be canonically greater than tag of '" + previousNamedType.getName() + "' " + previousNamedType.getTokenLocation()); 												
 							}
 						}
 						previousNamedType = namedType;
@@ -644,15 +644,14 @@ public class Asn1ModelValidator {
 	}
 
 	/*
-	 * Validate TypeWithComponents
-	 * Common validation for SequenceType and SetType
+	 * Validation common to SequenceType, SetType and ChoiceType
 	 */
-	void validateTypeWithComponents(TypeWithComponents typeWithComponents, ModuleDefinition moduleDefinition) {
+	void visitTypeWithComponents(TypeWithComponents typeWithComponents, ModuleDefinition moduleDefinition) {
 		ArrayList<Component> rootComponentList = typeWithComponents.getRootComponentList();
 		ArrayList<Component> additionalComponentList = typeWithComponents.getAdditionalComponentList();
 		ArrayList<Component> extensionComponentList = typeWithComponents.getExtensionComponentList();
 
-		// Group lists (keep extensionComponentList last for the tag in extensions test (with AUTOMATIC TAGS selected)
+		// Group lists (keep extensionComponentList last -  when AUTOMATIC TAGS is selected, no tag is allowed in extension)
 		List<ArrayList<Component>> componentLists = new ArrayList<ArrayList<Component>>(asList(rootComponentList, additionalComponentList, extensionComponentList));
 		List<ArrayList<Component>> transformedComponentLists = new ArrayList<ArrayList<Component>>(asList(new ArrayList<Component>(), new ArrayList<Component>(), new ArrayList<Component>()));
 		
@@ -671,7 +670,7 @@ public class Asn1ModelValidator {
 						if(namedType.getType().getTagList() != null && namedType.getType().getTagList().size() != 0) {
 							if(automaticTaggingSelected) {
 								if(componentList == extensionComponentList) {
-									errorList.add(namedType.getToken() + ": component '" + namedType.getName() + "' cannot be tagged as AUTOMATIC TAGS is selected");
+									errorList.add(namedType.getTokenLocation() + ": component '" + namedType.getName() + "' cannot be tagged as AUTOMATIC TAGS is selected");
 								}
 								else {
 									automaticTaggingSelected = false;
@@ -682,15 +681,8 @@ public class Asn1ModelValidator {
 					}
 					if(component.isComponentsOf()) {
 						ComponentsOf componentsOf = (ComponentsOf)component;
-						if(componentsOf.getForeignContainer().isSequenceType()) {
+						if(componentsOf.getForeignContainer().isSequenceType() || componentsOf.getForeignContainer().isSetType()) {
 							visitType(componentsOf.getForeignContainer(), moduleDefinition);
-						}
-						if(componentsOf.getForeignContainer().isTypeReference()) {
-							TypeReference typeReference = (TypeReference)componentsOf.getForeignContainer();
-							if(typeReference.getBuiltinType() != null && typeReference.getBuiltinType().isSequenceType()) {
-								// TODO: should we visit ? It has been visited as a TypeAssignment
-								//visit(typeReference.getBuiltinType(), moduleDefinition);
-							}
 						}
 					}
 				}
@@ -752,7 +744,7 @@ public class Asn1ModelValidator {
 							namedTypesMap.put(namedType.getName(), namedType);
 						}
 						else {
-							errorList.add(namedType.getToken() + ": name '" + namedType.getName() + "' already used at " + duplicateNamedType.getToken()); 					
+							errorList.add(namedType.getTokenLocation() + ": name '" + namedType.getName() + "' already used at " + duplicateNamedType.getTokenLocation()); 					
 						}
 					}
 				}
@@ -770,7 +762,7 @@ public class Asn1ModelValidator {
 			visitTypeReference(typeReference, moduleDefinition);
 			if(typeReference.getBuiltinType() != null) {
 				if(!typeReference.getBuiltinType().isSequenceType()) {
-					errorList.add(componentsOf.getToken() + ": type in COMPONENTS OF must be a SEQUENCE ('" + typeReference.getName() + "' is a " + typeReference.getBuiltinType().getName() + ")");
+					errorList.add(componentsOf.getTokenLocation() + ": type in COMPONENTS OF must be a SEQUENCE ('" + typeReference.getName() + "' is a " + typeReference.getBuiltinType().getName() + ")");
 				}
 				else {
 					foreignSequenceType = (SequenceType)typeReference.getBuiltinType();
@@ -779,7 +771,7 @@ public class Asn1ModelValidator {
 		}
 		else {
 			if(!componentsOf.getForeignContainer().isSequenceType()) {
-				errorList.add(componentsOf.getToken() + ": type in COMPONENTS OF must be a SEQUENCE");
+				errorList.add(componentsOf.getTokenLocation() + ": type in COMPONENTS OF must be a SEQUENCE");
 			}
 			else {
 				foreignSequenceType = (SequenceType)componentsOf.getForeignContainer();
@@ -824,7 +816,7 @@ public class Asn1ModelValidator {
 			visitTypeReference(typeReference, moduleDefinition);
 			if(typeReference.getBuiltinType() != null) {
 				if(!typeReference.getBuiltinType().isSequenceType()) {
-					errorList.add(componentsOf.getToken() + ": type in COMPONENTS OF must be a SEQUENCE ('" + typeReference.getName() + "' is a " + typeReference.getBuiltinType().getName() + ")");
+					errorList.add(componentsOf.getTokenLocation() + ": type in COMPONENTS OF must be a SEQUENCE ('" + typeReference.getName() + "' is a " + typeReference.getBuiltinType().getName() + ")");
 				}
 				else {
 					foreignSequenceType = (SequenceType)typeReference.getBuiltinType();
@@ -833,7 +825,7 @@ public class Asn1ModelValidator {
 		}
 		else {
 			if(!componentsOf.getForeignContainer().isSequenceType()) {
-				errorList.add(componentsOf.getToken() + ": type in COMPONENTS OF must be a SEQUENCE");
+				errorList.add(componentsOf.getTokenLocation() + ": type in COMPONENTS OF must be a SEQUENCE");
 			}
 			else {
 				foreignSequenceType = (SequenceType)componentsOf.getForeignContainer();
@@ -873,10 +865,10 @@ public class Asn1ModelValidator {
 		if(choiceType.getTagList() != null && choiceType.getTagList().size() !=  0) {
 			Tag choiceTag = choiceType.getTagList().get(choiceType.getTagList().size()-1);
 			if(choiceTag.getTagMode() == TagMode.IMPLICIT_TAG) {
-				errorList.add(choiceTag.getTagToken() + " IMPLICIT TAG not allowed for CHOICE");
+				errorList.add(choiceTag.getTagTokenLocation() + " IMPLICIT TAG not allowed for CHOICE");
 			}
 		}
-		validateTypeWithComponents(choiceType, moduleDefinition);
+		visitTypeWithComponents(choiceType, moduleDefinition);
 		
 		if(!choiceType.isAutomaticTaggingSelected()) {
 			ArrayList<Tag>uniqueTags = new ArrayList<Tag>();
@@ -906,7 +898,7 @@ public class Asn1ModelValidator {
 				int errorsBefore = errorList.size();
 				for(Tag  previousTag : uniqueTags) {
 					if(tag.equals(previousTag)) {
-						errorList.add(namedType.getToken() + ": tag of '" + namedType.getName() + "' is already used at " + previousTag.getTagToken()); 					
+						errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' is already used at " + previousTag.getTagTokenLocation()); 					
 					}
 				}
 				if(errorsBefore == errorList.size()) {
@@ -939,11 +931,11 @@ public class Asn1ModelValidator {
 		if(type.isTypeReference()) {
 			visitTypeReference((TypeReference)type, moduleDefinition);
 			if(((TypeReference)type).getReferencedType() == null) {
-				errorList.add(selectionType.getToken() + ": type for selection '" + selectionType.getSelection() + "' is not defined");				
+				errorList.add(selectionType.getTokenLocation() + ": type for selection '" + selectionType.getSelection() + "' is not defined");				
 			}
 		}
 		if(!type.isChoiceType() && !(type.isTypeReference() && ((TypeReference)type).getReferencedType() != null && ((TypeReference)type).getBuiltinType().isChoiceType())) {
-			errorList.add(selectionType.getToken() + ": selection '" + selectionType.getSelection() + "' can only be made from a Choice type");
+			errorList.add(selectionType.getTokenLocation() + ": selection '" + selectionType.getSelection() + "' can only be made from a Choice type");
 		}
 		else {
 			ChoiceType choiceType = type.isChoiceType() ? (ChoiceType)type : (ChoiceType)((TypeReference)type).getBuiltinType();
@@ -956,7 +948,7 @@ public class Asn1ModelValidator {
 				}
 			}
 			if(selectionAlternative == null) {
-				errorList.add(selectionType.getToken() + ": selection '" + selectionType.getSelection() + "' not found in choice type");				
+				errorList.add(selectionType.getTokenLocation() + ": selection '" + selectionType.getSelection() + "' not found in choice type");				
 			}
 			else {
 				selectionType.setSelectedType(selectionAlternative.getType());

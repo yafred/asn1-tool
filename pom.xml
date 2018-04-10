@@ -14,7 +14,7 @@
          <module>grammar</module>
          <module>model</module>
          <module>tool</module>
-     </modules>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -28,11 +28,6 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>   
     </dependencies>
 
     <build>

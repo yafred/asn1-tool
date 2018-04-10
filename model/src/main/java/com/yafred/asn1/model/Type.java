@@ -9,7 +9,7 @@ abstract public class Type {
 	
 	ArrayList<Tag> tagList;
 	
-	Token token;
+	TokenLocation tokenLocation;
 	
     public ArrayList<Tag> getTagList() {
 		return tagList;
@@ -19,12 +19,12 @@ abstract public class Type {
 		this.tagList = tagList;
 	}	
 
-	public Token getToken() {
-		return token;
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
 	}
 
-	public void setToken(Token token) {
-		this.token = token;
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
 	}
 
 	public boolean isBitStringType() {
@@ -167,7 +167,7 @@ abstract public class Type {
     		else {
     			ret = getUniversalTag();
     			if(ret != null) {
-    				ret.setTagToken(getToken());
+    				ret.setTagTokenLocation(getTokenLocation());
     			}
     		}
     	}

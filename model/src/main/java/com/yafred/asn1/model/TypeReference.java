@@ -13,7 +13,7 @@ public class TypeReference extends Type {
 	/**
 	 * Location of the token in input stream
 	 */
-	private Token token;
+	private TokenLocation tokenLocation;
 
     /**
      * Name of the assignment which defines this type.
@@ -48,12 +48,12 @@ public class TypeReference extends Type {
 		this.referencedType = referencedType;
 	}
 	
-	public Token getToken() {
-		return token;
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
 	}
 
-	public void setToken(Token token) {
-		this.token = token;
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class TypeReference extends Type {
 	}
 	
 	/**
-	 * In this case, we group all the tagLists
+	 * Possibly recursive, grouping all the tagLists
 	 */
     public ArrayList<Tag> getFullTagList() {
     	ArrayList<Tag> fullTagList = new ArrayList<Tag>();

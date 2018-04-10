@@ -4,7 +4,7 @@ public class SelectionType extends Type {
 	private String selection = null;
 	private Type type = null;
 	private Type selectedType = null;
-	private Token token = null;
+	private TokenLocation tokenLocation = null;
 	
 	public SelectionType(String selection, Type type) {
 		this.selection = selection;
@@ -42,12 +42,12 @@ public class SelectionType extends Type {
 	}
 
 
-	public Token getToken() {
-		return token;
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
 	}
 
-	public void setToken(Token token) {
-		this.token = token;
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
 	}
 
 

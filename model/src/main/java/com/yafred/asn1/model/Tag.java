@@ -13,7 +13,7 @@ public class Tag {
     private String definedValue = null;
     private TagClass tagClass = null;
     private TagMode tagMode = null;
-    private Token tagToken = null;
+    private TokenLocation tagTokenLocation = null;
 
     public Tag(Integer number, TagClass tagClass, TagMode tagMode) {
         this.number = number;
@@ -60,12 +60,12 @@ public class Tag {
 		this.tagMode = tagMode;
 	}
 
-	public Token getTagToken() {
-		return tagToken;
+	public TokenLocation getTagTokenLocation() {
+		return tagTokenLocation;
 	}
 
-	public void setTagToken(Token tagToken) {
-		this.tagToken = tagToken;
+	public void setTagTokenLocation(TokenLocation tagTokenLocation) {
+		this.tagTokenLocation = tagTokenLocation;
 	}
 
 	/**

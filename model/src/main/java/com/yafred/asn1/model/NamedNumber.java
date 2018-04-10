@@ -5,8 +5,8 @@ public class NamedNumber {
     private Integer number = null;
     private String reference = null; // reference to an integer value
     
-    private Token nameToken;
-    private Token numberOrReferenceToken;
+    private TokenLocation nameTokenLocation;
+    private TokenLocation numberOrReferenceTokenLocation;
 
     public NamedNumber(String name) { // for enumeratedType only
         this.name = name;
@@ -25,31 +25,40 @@ public class NamedNumber {
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public Integer getNumber() {
 		return number;
 	}
+	
 	public void setNumber(Integer number) {
 		this.number = number;
 	}
+	
 	public String getReference() {
 		return reference;
 	}
+	
 	public void setReference(String reference) {
 		this.reference = reference;
 	}
-	public Token getNameToken() {
-		return nameToken;
+	
+	public TokenLocation getNameTokenLocation() {
+		return nameTokenLocation;
 	}
-	public void setNameToken(Token nameToken) {
-		this.nameToken = nameToken;
+	
+	public void setNameTokenLocation(TokenLocation nameTokenLocation) {
+		this.nameTokenLocation = nameTokenLocation;
 	}
-	public Token getNumberOrReferenceToken() {
-		return numberOrReferenceToken;
+	
+	public TokenLocation getNumberOrReferenceTokenLocation() {
+		return numberOrReferenceTokenLocation;
 	}
-	public void setNumberOrReferenceToken(Token numberOrReferenceToken) {
-		this.numberOrReferenceToken = numberOrReferenceToken;
+	
+	public void setNumberOrReferenceTokenLocation(TokenLocation numberOrReferenceTokenLocation) {
+		this.numberOrReferenceTokenLocation = numberOrReferenceTokenLocation;
 	}
 }
