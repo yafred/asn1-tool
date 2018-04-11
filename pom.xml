@@ -13,6 +13,7 @@
          <module>testdata</module>
          <module>grammar</module>
          <module>model</module>
+         <module>runtime</module>
          <module>tool</module>
     </modules>
 
