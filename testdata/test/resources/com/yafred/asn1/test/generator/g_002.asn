@@ -1,0 +1,7 @@
+-- test code generation for simple types 
+G-002 DEFINITIONS ::= 
+BEGIN 
+
+My-boolean ::= [APPLICATION 2] BOOLEAN
+
+END

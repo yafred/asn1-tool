@@ -2,6 +2,10 @@ package com.yafred.asn1.model;
 
 abstract public class RestrictedCharacterStringType extends Type {
 	
+	public boolean isRestrictedCharacterStringType() {
+		return true;
+	}
+	
 	public boolean isBMPStringType() {
 		return false;
 	}

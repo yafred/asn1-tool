@@ -240,7 +240,7 @@ public class BERReader {
         return new Integer(result | resultMask);
     }
 
-    public String readCharacterString(int nBytes) throws IOException {
+    public String readRestrictedCharacterString(int nBytes) throws IOException {
         byte[] buffer = new byte[nBytes];
 
         for (int i = 0; i < nBytes; i++) {

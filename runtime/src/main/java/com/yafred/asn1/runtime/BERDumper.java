@@ -1,8 +1,13 @@
+/*
+ * online: http://lapo.it/asn1js/
+ */
+
 package com.yafred.asn1.runtime;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -154,13 +159,30 @@ public class BERDumper {
             System.err.println("src file needed");
             System.exit(1);
         }
-
-        try {
-            InputStream input = new FileInputStream(args[0]);
-            new BERDumper(new OutputStreamWriter(System.out)).dump(input);
-        } catch (EOFException eof) {
-        } catch (Exception exc) {
-            System.err.println(exc.getMessage());
+        
+        if(!new File(args[0]).exists()) {
+        	// not a file, consider it is a hex string
+        	String hexaText = args[0].replace('A', 'a');
+        	hexaText = hexaText.replace('B', 'b');
+        	hexaText = hexaText.replace('C', 'c');
+        	hexaText = hexaText.replace('D', 'd');
+        	hexaText = hexaText.replace('E', 'e');
+        	hexaText = hexaText.replace('F', 'f');
+           	InputStream input = new ByteArrayInputStream(bytesFromString(hexaText));
+           	try {
+				new BERDumper(new OutputStreamWriter(System.out)).dump(input);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+        else {
+	        try {
+	            InputStream input = new FileInputStream(args[0]);
+	            new BERDumper(new OutputStreamWriter(System.out)).dump(input);
+	        } catch (EOFException eof) {
+	        } catch (Exception exc) {
+	            System.err.println(exc.getMessage());
+	        }
         }
     }
 }

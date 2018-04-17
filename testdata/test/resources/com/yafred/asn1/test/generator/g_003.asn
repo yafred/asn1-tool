@@ -1,0 +1,7 @@
+-- test code generation for simple types 
+G-003 DEFINITIONS IMPLICIT TAGS ::= 
+BEGIN 
+
+My-null ::= [APPLICATION 2] NULL
+
+END

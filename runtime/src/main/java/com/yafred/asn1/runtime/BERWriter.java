@@ -149,7 +149,7 @@ public class BERWriter {
         increaseDataSize(1);
 
         if (boolValue) {
-            buffer[buffer.length - dataSize] = 0x01;
+            buffer[buffer.length - dataSize] = (byte)0xFF;
         } else {
             buffer[buffer.length - dataSize] = 0x00;
         }
@@ -157,7 +157,7 @@ public class BERWriter {
         return 1;
     }
 
-    public int writeCharacterString(String value) {
+    public int writeRestrictedCharacterString(String value) {
         byte[] bytes = value.getBytes();
 
         return writeOctetString(bytes);

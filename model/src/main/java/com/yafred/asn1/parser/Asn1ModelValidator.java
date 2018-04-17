@@ -1,5 +1,7 @@
 package com.yafred.asn1.parser;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +15,6 @@ import com.yafred.asn1.model.ComponentsOf;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
 import com.yafred.asn1.model.IntegerValue;
-import com.yafred.asn1.model.TypeReference;
-import com.yafred.asn1.model.TypeWithComponents;
-import com.yafred.asn1.model.Value;
-import com.yafred.asn1.model.ValueAssignment;
-import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
@@ -32,8 +29,11 @@ import com.yafred.asn1.model.TagDefault;
 import com.yafred.asn1.model.TagMode;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
-
-import static java.util.Arrays.asList;
+import com.yafred.asn1.model.TypeReference;
+import com.yafred.asn1.model.TypeWithComponents;
+import com.yafred.asn1.model.Value;
+import com.yafred.asn1.model.ValueAssignment;
+import com.yafred.asn1.model.ValueReference;
 
 public class Asn1ModelValidator {
 	private ArrayList<String> errorList = new ArrayList<String>();
@@ -212,18 +212,6 @@ public class Asn1ModelValidator {
 	 * Visit type
 	 */
 	void visitType(Type type, ModuleDefinition moduleDefinition) {
-		// Check that no UNIVERSAL tag is found
-		ArrayList<Tag> tagList = type.getTagList();
-		if(tagList != null) {
-			for(Tag tag : tagList) {
-				if(tag.getClass() != null && TagClass.UNIVERSAL_TAG == tag.getTagClass()) {
-					errorList.add(tag.getTagTokenLocation() + ": Use of UNIVERSAL is reserved for ASN.1 builtin types");
-				}
-				if(tag.getDefinedValue() != null) {
-					errorList.add(tag.getTagTokenLocation() + ": defined values in tags are not supported yet");					
-				}
-			}
-		}
 		
 		if(type.isTypeReference()) {
 			visitTypeReference((TypeReference)type, moduleDefinition);
@@ -256,6 +244,29 @@ public class Asn1ModelValidator {
 			SelectionType selectionType = (SelectionType)type;
 			visitSelectionType(selectionType, moduleDefinition);
 		}
+		
+		// Check that no UNIVERSAL tag is found
+		// Replace TagMode with tagging default when TagMode is absent (we do it now, after visiting ChoiceType and TypeReference)
+		ArrayList<Tag> tagList = type.getTagList();
+		if(tagList != null) {
+			for(Tag tag : tagList) {
+				if(tag.getClass() != null && TagClass.UNIVERSAL_TAG == tag.getTagClass()) {
+					errorList.add(tag.getTagTokenLocation() + ": Use of UNIVERSAL is reserved for ASN.1 builtin types");
+				}
+				if(tag.getDefinedValue() != null) {
+					errorList.add(tag.getTagTokenLocation() + ": defined values in tags are not supported yet");					
+				}
+				if(tag.getTagMode() == null) {
+					if(moduleDefinition.getTagDefault() == null || moduleDefinition.getTagDefault() == TagDefault.EXPLICIT_TAGS) {
+						tag.setTagMode(TagMode.EXPLICIT_TAG);
+					}
+					else {
+						tag.setTagMode(TagMode.IMPLICIT_TAG);
+					}
+				}
+			}
+		}
+
 	}
 	
 	/*
@@ -317,6 +328,9 @@ public class Asn1ModelValidator {
 				Tag choiceTag = fullTagList.get(fullTagList.size()-1);
 				if(choiceTag.getTagMode() == TagMode.IMPLICIT_TAG) {
 					errorList.add(choiceTag.getTagTokenLocation() + " IMPLICIT TAG not allowed for CHOICE");
+				}
+				else {
+					choiceTag.setTagMode(TagMode.EXPLICIT_TAG);
 				}
 			}
 		}
@@ -432,7 +446,7 @@ public class Asn1ModelValidator {
 				}
 				else {
 					Type type = referencedValueAssignment.getValue().getType();
-					if(type.isIntegerType() || (type.isReferencedType() && ((TypeReference)type).getBuiltinType().isIntegerType()) ) {
+					if(type.isIntegerType() || (type.isTypeReference() && ((TypeReference)type).getBuiltinType().isIntegerType()) ) {
 						Value value = referencedValueAssignment.getValue();
 						Integer number = null;
 						if(value.isIntegerValue()) {
@@ -866,6 +880,9 @@ public class Asn1ModelValidator {
 			Tag choiceTag = choiceType.getTagList().get(choiceType.getTagList().size()-1);
 			if(choiceTag.getTagMode() == TagMode.IMPLICIT_TAG) {
 				errorList.add(choiceTag.getTagTokenLocation() + " IMPLICIT TAG not allowed for CHOICE");
+			}
+			else {
+				choiceTag.setTagMode(TagMode.EXPLICIT_TAG);
 			}
 		}
 		visitTypeWithComponents(choiceType, moduleDefinition);

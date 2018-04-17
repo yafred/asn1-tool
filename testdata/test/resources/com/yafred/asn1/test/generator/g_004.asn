@@ -1,0 +1,7 @@
+-- test code generation for simple types 
+G-004 DEFINITIONS ::= 
+BEGIN 
+
+My-octet-string ::= [APPLICATION 2] IMPLICIT OCTET STRING
+
+END

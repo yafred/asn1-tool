@@ -34,6 +34,10 @@ abstract public class Type {
     public boolean isCharacterStringType() {
         return false;
     }
+    
+	public boolean isRestrictedCharacterStringType() {
+		return false;
+	}
 
     public boolean isOctetStringType() {
         return false;
@@ -84,10 +88,6 @@ abstract public class Type {
     }
 
     public boolean isSequenceOfType() {
-        return false;
-    }
-
-    public boolean isReferencedType() {
         return false;
     }
 

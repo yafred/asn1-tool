@@ -14,6 +14,7 @@
          <module>grammar</module>
          <module>model</module>
          <module>runtime</module>
+         <module>generator</module>
          <module>tool</module>
     </modules>
 
@@ -57,11 +58,14 @@
                 <version>2.21.0</version>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <systemPropertyVariables>
+                         <buildDirectory>${project.build.directory}</buildDirectory>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
 
-         <pluginManagement>
+        <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

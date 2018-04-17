@@ -34,7 +34,7 @@ Check that the Java model complies with the rules described in ITU-T X.680 (08/2
 
 Generate source code to encode and decode values from types described in a ASN.1 specification
 
-  * Java code generator for encoding/decoding values from the specification (Not yet)
-  * Java Runtime libraries to help running the generated code (Not yet)
+  * Java code generator for encoding/decoding values from the specification: _generator/src/main/java/com/yafred/asn1/generator/java_
+  * Java Runtime libraries to help running the generated code: _runtime/src/main/java/com/yafred/asn1/runtime_
 
 

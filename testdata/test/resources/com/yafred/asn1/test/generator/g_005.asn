@@ -1,0 +1,12 @@
+-- See X690-201508 8.14.4
+
+G-005 DEFINITIONS ::= 
+BEGIN 
+
+Type1 ::= VisibleString
+Type2 ::= [APPLICATION 3] IMPLICIT Type1
+Type3 ::= [2] Type2
+Type4 ::= [APPLICATION 7] IMPLICIT Type3
+Type5 ::= [2] IMPLICIT Type2
+
+END

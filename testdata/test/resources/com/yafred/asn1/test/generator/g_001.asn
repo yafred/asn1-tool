@@ -1,0 +1,7 @@
+-- test code generation for simple types 
+G-001 DEFINITIONS ::= 
+BEGIN 
+
+My-integer ::= INTEGER 
+
+END
