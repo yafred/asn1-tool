@@ -1,6 +1,7 @@
 language: java
 
-script: mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
+script: 
+  - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 
 before_deploy:
   mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1Tool-${TRAVIS_TAG}.jar
