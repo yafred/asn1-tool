@@ -1,5 +1,8 @@
 language: java
 
+script:
+  - echo "script skipped"
+
 install: 
   - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 
