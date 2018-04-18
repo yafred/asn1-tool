@@ -93,6 +93,7 @@ public class Generator {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());
 			output.println("public class " + className + " extends " + parentClassName);
 			output.println("{");
+			berHelper.processTypeAssignment(typeAssignment, className);
 			output.println("}");
 		} else {
 			output.println("public class " + className);

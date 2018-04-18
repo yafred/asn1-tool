@@ -1,6 +1,6 @@
 package com.yafred.asn1.model;
 
-public class GeneralizedTimeType extends Type {
+public class GeneralizedTimeType extends RestrictedCharacterStringType {
 
     @Override
 	public boolean isGeneralizedTimeType() {

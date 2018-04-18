@@ -1,0 +1,17 @@
+
+
+G-006 DEFINITIONS ::= 
+BEGIN 
+
+Type1 ::= TIME                    -- "12:00:00"
+Type2 ::= GeneralizedTime         -- "19851106210627.3"
+Type3 ::= UTCTime                 -- "8201021200Z"
+
+-- Following are transformed (see X690 201508 8.26)
+
+Type4 ::= DATE                    -- "2018-04-18"
+Type5 ::= DATE-TIME               -- "2018-04-18T10:45:47"
+Type6 ::= DURATION                -- "P0Y29M"
+Type7 ::= TIME-OF-DAY             -- "00:20:10" 
+
+END

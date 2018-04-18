@@ -1,6 +1,6 @@
 package com.yafred.asn1.model;
 
-public class DurationType extends Type {
+public class DurationType extends RestrictedCharacterStringType {
 
     @Override
 	public boolean isDurationType() {

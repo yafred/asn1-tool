@@ -1,6 +1,6 @@
 package com.yafred.asn1.model;
 
-public class DateType extends Type {
+public class DateType extends RestrictedCharacterStringType {
 
     @Override
 	public boolean isDateType() {

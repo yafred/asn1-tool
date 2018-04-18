@@ -1,6 +1,6 @@
 package com.yafred.asn1.model;
 
-public class TimeOfDayType extends Type {
+public class TimeOfDayType extends RestrictedCharacterStringType {
 
     public boolean isTimeOfDayType() {
         return true;

@@ -1,6 +1,6 @@
 package com.yafred.asn1.model;
 
-public class UTCTimeType extends Type {
+public class UTCTimeType extends RestrictedCharacterStringType {
 
     @Override
 	public boolean isUTCTimeType() {
