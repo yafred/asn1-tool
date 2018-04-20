@@ -1,0 +1,13 @@
+
+G-008 DEFINITIONS ::= 
+BEGIN 
+
+Occupation  ::=  BIT STRING
+          {
+              clerk      (0),
+              editor     (1),
+              artist     (2),
+              publisher  (3)
+          }
+
+END

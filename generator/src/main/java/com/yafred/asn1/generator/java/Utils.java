@@ -7,7 +7,7 @@ import com.yafred.asn1.model.TagMode;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeReference;
 
-class Utils {
+public class Utils {
 
 	/**
 	 * ASN.1 name to Java name
@@ -35,6 +35,8 @@ class Utils {
             javaType = "java.lang.String";
 		} else if (type.isIntegerType()) {
 			javaType = "java.lang.Integer";
+		} else if (type.isBitStringType()) {
+			javaType = "java.util.BitSet";
 		} else if (type.isBooleanType()) {
 			javaType = "java.lang.Boolean";
 		} else if (type.isNullType()) {

@@ -2,8 +2,11 @@ package com.yafred.asn1.generator.java;
 
 import java.util.ArrayList;
 
+import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.BooleanType;
+import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
+import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NullType;
 import com.yafred.asn1.model.OctetStringType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
@@ -21,13 +24,13 @@ public class BERHelper {
 		
 	}
 
-	void processTypeAssignment(TypeAssignment typeAssignment, String className) throws Exception {
-        ArrayList<Tag> tagList = Utils.getTagChain(typeAssignment.getType());
+	void processTypeAssignment(Type type, String className) throws Exception {
+        ArrayList<Tag> tagList = Utils.getTagChain(type);
 		
 		// readPdu method
 		generator.output.println("public static " + generator.packageName + "." + className + " readPdu(" + BER_READER
 				+ " reader) throws Exception {");
-		writeTagsDecode(typeAssignment.getType());
+		writeTagsDecode(type);
 		String lengthText = "reader.getLengthValue()";
 
 		if (tagList == null || tagList.size() == 0) { // it is an untagged CHOICE
@@ -49,12 +52,62 @@ public class BERHelper {
             lengthDeclaration = "int length = ";
         }
         generator.output.println(lengthDeclaration + "pdu.write(writer);");
-		writeTagsEncode(typeAssignment.getType());
+		writeTagsEncode(type);
 		generator.output.println("writer.flush();");
 		generator.output.println("}");
 	}
 	
-	void processIntegerType(IntegerType integerType, String className) throws Exception {
+	void processEnumeratedTypeAssignment(EnumeratedType enumeratedType, String className) throws Exception {
+	    // write encoding code
+		generator.output.println("int write(" + BER_WRITER +
+            " writer) throws Exception {");
+		generator.output.println("int intValue=-1;");
+		generator.output.println("switch(getValue()) {");
+		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+			generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+			generator.output.println("intValue=" + namedNumber.getNumber() + ";");
+			generator.output.println("break;");
+		}
+		if(enumeratedType.getAdditionalEnumeration() != null) {
+			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+				generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				generator.output.println("intValue=" + namedNumber.getNumber() + ";");
+				generator.output.println("break;");
+			}
+		}
+		generator.output.println("}");
+		generator.output.println("return writer.writeInteger(intValue);");
+		generator.output.println("}");
+
+        // write decoding code
+		generator.output.println("void read(" + BER_READER +
+            " reader, int length) throws Exception {");
+		generator.output.println("int intValue=reader.readInteger(length);");
+		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+			generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+			generator.output.println("setValue(" + className + "Enum." + Utils.normalize(namedNumber.getName()) + ");");
+			generator.output.println("}");
+		}
+		if(enumeratedType.getAdditionalEnumeration() == null) {
+			generator.output.println("if(null == getValue()){");
+			generator.output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+			generator.output.println("}");
+		}
+		else {
+			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				generator.output.println("setValue(" + className + "Enum." + Utils.normalize(namedNumber.getName()) + ");");
+				generator.output.println("}");
+			}
+			generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
+		}
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(enumeratedType, className);
+	}
+	
+	void processIntegerTypeAssignment(IntegerType integerType, String className) throws Exception {
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
             " writer) throws Exception {");
@@ -66,9 +119,29 @@ public class BERHelper {
             " reader, int length) throws Exception {");
 		generator.output.println("this.setValue(reader.readInteger(length));");
 		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(integerType, className);
 	}
-	
-	void processBooleanType(BooleanType booleanType, String className) throws Exception {
+
+	void processBitStringTypeAssignment(BitStringType bitStringType, String className) throws Exception {
+	    // write encoding code
+		generator.output.println("int write(" + BER_WRITER +
+            " writer) throws Exception {");
+		generator.output.println("return writer.writeBitString(this.getValue());");
+		generator.output.println("}");
+
+        // write decoding code
+		generator.output.println("void read(" + BER_READER +
+            " reader, int length) throws Exception {");
+		generator.output.println("this.setValue(reader.readBitString(length));");
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(bitStringType, className);
+	}
+
+	void processBooleanTypeAssignment(BooleanType booleanType, String className) throws Exception {
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
 	            " writer) throws Exception {");
@@ -80,9 +153,12 @@ public class BERHelper {
 	            " reader, int length) throws Exception {");
 		generator.output.println("this.setValue(reader.readBoolean(length));");
 		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(booleanType, className);
 	}
 	
-	void processOctetStringType(OctetStringType octetStringType, String className) throws Exception {
+	void processOctetStringTypeAssignment(OctetStringType octetStringType, String className) throws Exception {
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
 	            " writer) throws Exception {");
@@ -94,9 +170,12 @@ public class BERHelper {
 	            " reader, int length) throws Exception {");
 		generator.output.println("this.setValue(reader.readOctetString(length));");
 		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(octetStringType, className);
 	}
 
-	void processRestrictedCharacterStringType(RestrictedCharacterStringType restrictedCharacterStringType, String className) throws Exception {
+	void processRestrictedCharacterStringTypeAssignment(RestrictedCharacterStringType restrictedCharacterStringType, String className) throws Exception {
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
 	            " writer) throws Exception {");
@@ -107,9 +186,12 @@ public class BERHelper {
 		generator.output.println("void read(" + BER_READER + " reader, int length) throws Exception {");
 		generator.output.println("this.setValue(reader.readRestrictedCharacterString(length));");
 		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(restrictedCharacterStringType, className);
 	}
 
-	void processNullType(NullType nullType, String className) throws Exception {
+	void processNullTypeAssignment(NullType nullType, String className) throws Exception {
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
 	            " writer) throws Exception {");
@@ -120,6 +202,9 @@ public class BERHelper {
 		generator.output.println("void read(" + BER_READER + " reader, int length) throws Exception {");
 		generator.output.println("this.setValue(new java.lang.Object());"); // dummy value
 		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(nullType, className);
 	}
 		
 	private void writeTagsEncode(Type type) throws Exception {

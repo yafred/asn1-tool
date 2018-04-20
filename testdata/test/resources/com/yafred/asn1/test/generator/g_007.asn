@@ -1,0 +1,10 @@
+
+G-007 DEFINITIONS ::= 
+BEGIN 
+
+Fruit ::= ENUMERATED { banana, apple, pear, ..., lemon }
+
+Traffic-Light ::= ENUMERATED { red, green, yellow }
+
+
+END

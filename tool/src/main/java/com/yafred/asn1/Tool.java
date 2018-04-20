@@ -1,14 +1,11 @@
 package com.yafred.asn1;
 
-import java.io.File;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import com.yafred.asn1.generator.java.Generator;
-import com.yafred.asn1.generator.java.Options;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;

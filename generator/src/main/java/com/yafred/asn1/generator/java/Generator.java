@@ -6,9 +6,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.yafred.asn1.model.Assignment;
+import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.BooleanType;
+import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
 import com.yafred.asn1.model.ModuleDefinition;
+import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NullType;
 import com.yafred.asn1.model.OctetStringType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
@@ -93,44 +96,85 @@ public class Generator {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());
 			output.println("public class " + className + " extends " + parentClassName);
 			output.println("{");
-			berHelper.processTypeAssignment(typeAssignment, className);
+			berHelper.processTypeAssignment(typeAssignment.getType(), className);
 			output.println("}");
 		} else {
 			output.println("public class " + className);
 			output.println("{");
-			switchProcesstype(typeAssignment.getType(), className);
-			berHelper.processTypeAssignment(typeAssignment, className);
+			switchProcessTypeAssignment(typeAssignment.getType(), className);
 			output.println("}");
 		}
 
 		output.close();
 	}
 
-	private void switchProcesstype(Type type, String className) throws Exception {		
+	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
 		if (type.isIntegerType()) {
-			processSimpleType(type);
-			berHelper.processIntegerType((IntegerType)type, className);
+			processSimpleTypeAssignment(type);
+			berHelper.processIntegerTypeAssignment((IntegerType)type, className);
 		}
+		else if(type.isBitStringType()) {
+			processBitStringTypeAssignment((BitStringType)type, className);			
+			berHelper.processBitStringTypeAssignment((BitStringType)type, className);
+		}
+		else if (type.isEnumeratedType()) {
+			processEnumeratedTypeAssignment((EnumeratedType)type, className);			
+			berHelper.processEnumeratedTypeAssignment((EnumeratedType)type, className);
+		}		
 		else if (type.isNullType()) {
-			processSimpleType(type);			
-			berHelper.processNullType((NullType)type, className);
+			processSimpleTypeAssignment(type);			
+			berHelper.processNullTypeAssignment((NullType)type, className);
 		}
 		else  if (type.isBooleanType()) {
-			processSimpleType(type);
-			berHelper.processBooleanType((BooleanType)type, className);
+			processSimpleTypeAssignment(type);
+			berHelper.processBooleanTypeAssignment((BooleanType)type, className);
 		}
 		else  if (type.isOctetStringType()) {
-			processSimpleType(type);
-			berHelper.processOctetStringType((OctetStringType)type, className);
+			processSimpleTypeAssignment(type);
+			berHelper.processOctetStringTypeAssignment((OctetStringType)type, className);
 		}	
 		else  if (type.isRestrictedCharacterStringType()) {
-			processSimpleType(type);
-			berHelper.processRestrictedCharacterStringType((RestrictedCharacterStringType)type, className);
+			processSimpleTypeAssignment(type);
+			berHelper.processRestrictedCharacterStringTypeAssignment((RestrictedCharacterStringType)type, className);
 		}	
 	}
 	
-	private void processSimpleType(Type type) throws Exception {
+	private void processSimpleTypeAssignment(Type type) throws Exception {
 		String javaType = Utils.mapToJava(type, false);
+		output.println("private " + javaType + " value;");
+		output.println("public " + javaType + " getValue() { return value; }");
+		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
+	}
+	
+	private void processEnumeratedTypeAssignment(EnumeratedType enumeratedType, String className) throws Exception {
+		output.println("public enum " + className + "Enum {");
+	
+		boolean isFirst = true;
+		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+			if(!isFirst) {
+				output.print(",");
+			}
+			output.println(Utils.normalize(namedNumber.getName()));
+			isFirst = false;	
+		}
+		if(enumeratedType.getAdditionalEnumeration() != null) {
+			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+				output.println("," + Utils.normalize(namedNumber.getName()));
+			}
+		}
+		output.println("}");
+		
+		output.println("private " + className + "Enum value;");
+		output.println("public " + className + "Enum getValue() { return value; }");
+		output.println("public void setValue(" + className + "Enum value) { this.value = value; }");
+	}
+	
+	private void processBitStringTypeAssignment(BitStringType bitStringType, String className) throws Exception {	
+		for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
+			output.println("static final public int " + Utils.normalize(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
+		}
+		
+		String javaType = Utils.mapToJava(bitStringType, false);
 		output.println("private " + javaType + " value;");
 		output.println("public " + javaType + " getValue() { return value; }");
 		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
