@@ -110,7 +110,7 @@ public class Generator {
 
 	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
 		if (type.isIntegerType()) {
-			processSimpleTypeAssignment(type);
+			processIntegerTypeAssignment((IntegerType)type, className);
 			berHelper.processIntegerTypeAssignment((IntegerType)type, className);
 		}
 		else if(type.isBitStringType()) {
@@ -141,6 +141,21 @@ public class Generator {
 	
 	private void processSimpleTypeAssignment(Type type) throws Exception {
 		String javaType = Utils.mapToJava(type, false);
+		output.println("private " + javaType + " value;");
+		output.println("public " + javaType + " getValue() { return value; }");
+		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
+	}
+	
+	private void processIntegerTypeAssignment(IntegerType integerType, String className) throws Exception {
+		String javaType = Utils.mapToJava(integerType, false);
+
+		if (integerType.getNamedNumberList() != null) {
+			for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
+				output.println("static final public " + javaType + " " + Utils.normalize(namedNumber.getName()) + " = new "
+						+ javaType + "(" + namedNumber.getNumber() + ");");
+			}
+		}
+		
 		output.println("private " + javaType + " value;");
 		output.println("public " + javaType + " getValue() { return value; }");
 		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
