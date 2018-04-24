@@ -100,6 +100,33 @@ public class BERReader {
     public byte readByte() throws Exception {
         return (byte) readChar();
     }
+    
+
+    public void mustMatchTag(byte[]tag) throws Exception {
+    	if(tagNumBytes != tag.length) {
+    		throw new Exception("Expected size: " + tag.length +
+                    ", actual: " + tagNumBytes);
+    	}
+    	for(int i=0; i<tag.length; i++) {
+			if(tag[i] != tagBuffer[i]) {
+				throw new Exception("Unexpected byte (expected: " + tag[i] +
+		                ", actual: " + tagBuffer[i]);
+			}
+		}
+    }
+    
+    public boolean matchTag(byte[]tag)  {
+    	boolean ret = true;
+    	if(tagNumBytes == tag.length) {
+    		for(int i=0; i<tag.length; i++) {
+    			if(tag[i] != tagBuffer[i]) {
+    				ret = false;
+    				break;
+    			}
+    		}
+    	}
+    	return ret;
+    }
 
     /**
      *

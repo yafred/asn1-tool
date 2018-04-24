@@ -85,6 +85,6 @@ public class ParameterizedTest {
        	Options options = new Options();
        	options.setOutputDir(ouputPath + File.separator + "generated-test-sources");
        	options.setOverwriteAllowed(false);
-       	new Generator().process(specification, options);	
+       	new Generator().processSpecification(specification, options);	
 	}
 }

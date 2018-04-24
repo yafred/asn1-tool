@@ -1,0 +1,59 @@
+package com.yafred.asn1.test;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.BitSet;
+
+import org.junit.Test;
+
+import g_009.Flight;
+import g_009.Flight_modern;
+
+
+
+public class TestGeneratedCode_009 {
+	TestHelper testHelper = new TestHelper();
+
+	@Test
+	public void test_1() throws Exception {
+		Flight pdu = new Flight();
+		pdu.setOrigin("Rome");
+		pdu.setStop1("Berlin");
+		pdu.setDestination("London");
+		pdu.setSeats(Flight.Seats.ideal);
+		pdu.setCrew_format(Flight.Crew_format.eight);
+		BitSet flags = new BitSet();
+		flags.set(Flight.Flags.high_profile);
+		flags.set(Flight.Flags.profitable);
+		pdu.setFlags(flags);
+		
+		String expectedHexa = "30 21 16 04 52 6f 6d 65 80 06 42 65 72 6c 69 6e 16 06 4c 6f 6e 64 6f 6e 02 02 00 b4 0a 01 08 03 02 04 30";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Flight decodedPdu = (Flight) testHelper.readPdu(Flight.class, expectedHexa);
+		//assertEquals(decodedPdu.getValue(), pdu.getValue());
+	}
+	
+	
+	@Test
+	public void test_2() throws Exception {
+		Flight_modern pdu = new Flight_modern();
+		pdu.setOrigin("Rome");
+		pdu.setStop1("Berlin");
+		pdu.setDestination("London");
+		pdu.setSeats(Flight.Seats.ideal);
+		pdu.setCrew_format(Flight_modern.Crew_format.eight);
+		BitSet flags = new BitSet();
+		flags.set(Flight.Flags.high_profile);
+		flags.set(Flight.Flags.profitable);
+		pdu.setFlags(flags);
+		
+		String expectedHexa = "30 21 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
+		//assertEquals(decodedPdu.getValue(), pdu.getValue());
+	}
+}

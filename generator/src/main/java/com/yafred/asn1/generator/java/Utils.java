@@ -1,6 +1,8 @@
 package com.yafred.asn1.generator.java;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.TagMode;
@@ -95,4 +97,12 @@ public class Utils {
 
 		return ret;
 	}
+	
+	public static <E> void addAllIfNotNull(List<E> list, Collection<? extends E> c) {
+	    if (c != null) {
+	        list.addAll(c);
+	    }
+	}
+	
+
 }

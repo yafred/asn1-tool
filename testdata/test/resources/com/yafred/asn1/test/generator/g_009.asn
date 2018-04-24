@@ -1,0 +1,49 @@
+
+G-009 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Flight ::= SEQUENCE {
+   origin             IA5String,
+   stop1       [0]    IA5String  OPTIONAL,
+   stop2       [1]    IA5String  OPTIONAL,
+   destination        IA5String,
+   seats  INTEGER { min(50), ideal(180), max(200) },
+   cancelled BOOLEAN DEFAULT FALSE,
+   crew-format ENUMERATED
+                    {
+                      six    (6),
+                      eight  (8),
+                      ten    (10)
+                    },
+   flags BIT STRING {
+              experimental  (0),
+              green     (1),
+              profitable     (2),
+              high-profile  (3)
+   }                 
+}
+
+
+Flight-modern ::= SEQUENCE {
+   origin            IA5String,
+   stop1             IA5String  OPTIONAL,
+   stop2             IA5String  OPTIONAL,
+   destination        IA5String,
+   seats  INTEGER { min(50), ideal(180), max(200) },
+   cancelled BOOLEAN DEFAULT FALSE,
+   crew-format ENUMERATED
+                    {
+                      six,
+                      eight,
+                      ten
+                    },
+   flags BIT STRING {
+              experimental  (0),
+              green     (1),
+              profitable     (2),
+              high-profile  (3)
+   }                 
+}
+
+
+END

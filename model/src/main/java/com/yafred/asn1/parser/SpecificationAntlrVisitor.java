@@ -836,6 +836,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.OPTIONAL_LITERAL() != null) {
 				isOptional = true;
 			}
+			if(ctx.DEFAULT_LITERAL() != null) { // for the time beeing ...
+				isOptional = true;
+			}
 			if(ctx.namedType() != null) {
 				String name = ctx.namedType().LCASE_ID().getText();
 				Type type = ctx.namedType().type().accept(new TypeVisitor());
