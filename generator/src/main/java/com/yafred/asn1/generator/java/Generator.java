@@ -27,6 +27,7 @@ import com.yafred.asn1.model.TypeReference;
 public class Generator {
 	Options options;
 	File outputDir;
+	String packagePrefix = "";
 	String packageName;
 	File packageDirectory;
 	PrintWriter output;
@@ -34,6 +35,13 @@ public class Generator {
 	
 	public Generator() {
 		berHelper = new BERHelper(this);
+	}
+	
+	public void setPackagePrefix(String packagePrefix) {
+		if(packagePrefix.substring(packagePrefix.length()-1) != ".") {
+			packagePrefix += ".";
+		}
+		this.packagePrefix = packagePrefix;
 	}
 	
 	public void setOutputDir(String outputPath) throws Exception {
@@ -83,9 +91,7 @@ public class Generator {
 
 		output = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".java")));
 
-		output.println("/**\n* Generating code for " + typeAssignment.getReference() + "\n*/");
-
-		output.println("package " + packageName + ";");
+		output.println("package " + packagePrefix + packageName + ";");
 
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());

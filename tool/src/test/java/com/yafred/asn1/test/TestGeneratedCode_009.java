@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import g_009.Flight;
 import g_009.Flight_modern;
+import g_009.Flight_with_optional;
 
 
 
@@ -32,7 +33,8 @@ public class TestGeneratedCode_009 {
 
 		// decode
 		Flight decodedPdu = (Flight) testHelper.readPdu(Flight.class, expectedHexa);
-		//assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
+		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 	}
 	
 	
@@ -54,6 +56,33 @@ public class TestGeneratedCode_009 {
 
 		// decode
 		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
-		//assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
+		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
+	}
+	
+	@Test
+	public void test_3() throws Exception {
+		Flight_with_optional pdu = new Flight_with_optional();
+		
+		String expectedHexa = "30 00";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
+	}
+	
+	@Test
+	public void test_4() throws Exception {
+		Flight_with_optional pdu = new Flight_with_optional();
+		pdu.setOrigin("Rome");
+		pdu.setStop1("Berlin");
+		
+		String expectedHexa = "30 0e 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
+		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
+		assertEquals(decodedPdu.getStop1(), pdu.getStop1());
 	}
 }

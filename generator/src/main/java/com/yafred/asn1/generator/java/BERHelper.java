@@ -30,7 +30,7 @@ public class BERHelper {
         ArrayList<Tag> tagList = Utils.getTagChain(type);
 		
 		// readPdu method
-		generator.output.println("public static " + generator.packageName + "." + className + " readPdu(" + BER_READER
+		generator.output.println("public static " + className + " readPdu(" + BER_READER
 				+ " reader) throws Exception {");
 		writeTagsDecode(type);
 		String lengthText = "reader.getLengthValue()";
@@ -39,15 +39,14 @@ public class BERHelper {
 			lengthText = "0";
 		}
 
-		generator.output.println(generator.packageName + "." + className + " ret = new " +
-				generator.packageName + "." + className + "();");
+		generator.output.println(className + " ret = new " + className + "();");
 
 		generator.output.println("ret.read(reader, " + lengthText + ");");
 		generator.output.println("return ret;");
 		generator.output.println("}");
 
 		// writePdu method
-		generator.output.println("public static void writePdu(" + generator.packageName + "." + className + " pdu, "
+		generator.output.println("public static void writePdu(" + className + " pdu, "
 				+ BER_WRITER + " writer) throws Exception {");
         String lengthDeclaration = "";
         if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
@@ -352,6 +351,7 @@ public class BERHelper {
             " reader, int totalLength) throws Exception {");
 		generator.output.println("boolean matchedPrevious=true;");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
+			generator.output.println("if(totalLength==0) return;"); 			
 			if(componentIndex != 0) {
 				generator.output.println("if(matchedPrevious){");
 			}
@@ -373,8 +373,9 @@ public class BERHelper {
 			writeTagsDecode(namedType, automaticTag);
 			
 			switchDecodeComponent(namedType, componentName, componentClassName);
-		}		
+		}
 		
+		generator.output.println("if(totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
 		generator.output.println("}");
 		
 		// pdu methods

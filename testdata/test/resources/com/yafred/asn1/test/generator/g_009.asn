@@ -45,5 +45,12 @@ Flight-modern ::= SEQUENCE {
    }                 
 }
 
+Flight-with-optional ::= SEQUENCE {
+   origin            IA5String OPTIONAL,
+   stop1             IA5String OPTIONAL,
+   stop2             IA5String OPTIONAL,
+   destination       IA5String OPTIONAL
+}
+
 
 END

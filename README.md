@@ -5,7 +5,8 @@
 ## Test the tool (as a user)
   
   * Download [latest release](https://github.com/yafred/asn1-tool/releases) 
-  * java -jar asn1Tool-vX.Y.Z.jar
+  * java -jar asn1-tool-<VERSION>.jar
+  * You can create an alias with alias on Linux or doskey on Windows 
   
 ## Test the tool (as a developer)
 

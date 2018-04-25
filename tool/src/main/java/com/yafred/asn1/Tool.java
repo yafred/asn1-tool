@@ -1,6 +1,6 @@
 package com.yafred.asn1;
 
-import java.io.File;
+import java.util.Properties;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -30,29 +30,45 @@ public class Tool {
 	
 	
 	void process(String[] args) throws Exception {
+		Properties gitProperties = new Properties();
+		try {
+			gitProperties.load(Tool.class.getClassLoader().getResourceAsStream("com/yafred/asn1/git.properties"));
+		}
+		catch(Exception e) {
+		}
+		
 		// create the command line parser
 		CommandLineParser parser = new DefaultParser();
 
 		// create the Options
 		Options options = new Options();
-		options.addOption( "s", "source", true, "File containing ASN.1 modules.");
+		options.addOption( "f", "file", true, "File containing ASN.1 modules.");
 		options.addOption( "jo", "java-output-dir", true, "Folder where Java code is generated.");
-		//options.addOption( "jp", "java-output-package", true, "Java package for the Java code.");
+		options.addOption( "jp", "java-output-package", true, "Java package prefix for the Java code.");
 		options.addOption( "p", "print-asn1", false, "Print the validated model." );
-
 
 	    // parse the command line arguments
 	    CommandLine line = parser.parse( options, args );
 
-	    if(!line.hasOption("s")) {
-	    	String header = "";
-	    	String footer = "";
+      	if(!line.hasOption("f")) {
+      		String version = "";
+
+	       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
+	       			version = gitProperties.getProperty("git.tags");
+	       	}
+	       	else 
+		       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
+			    	version = gitProperties.getProperty("git.commit.id.describe");	       			
+	       	}
+	       	
+		    String header = "";
+	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
 	    	HelpFormatter formatter = new HelpFormatter();
-	    	formatter.printHelp( "asn1Tool", header, options, footer, true );
+	    	formatter.printHelp( "asn1-tool", header, options, footer, true );
 	    	System.exit(0);
 	    }
 	    
-    	validate(line.getOptionValue("s"));
+    	validate(line.getOptionValue("f"));
     	if(line.hasOption("p")) {
     		new Asn1SpecificationWriter(System.out).visit(model);
     	}
@@ -60,9 +76,11 @@ public class Tool {
     	if(line.hasOption("jo")) {
            	Generator generator = new Generator();
            	generator.setOutputDir(line.getOptionValue("jo"));
-           	generator.processSpecification(model);	
+        	if(line.hasOption("jp")) {
+        		generator.setPackagePrefix(line.getOptionValue("jp"));
+        	}
+          	generator.processSpecification(model);	
     	}
-   	
 	}
 	
 
