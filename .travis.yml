@@ -6,8 +6,11 @@ script:
 install: 
   - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 
+after_success:
+  - mvn clean test jacoco:report coveralls:report
+
 before_deploy:
-  mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1-tool-${TRAVIS_TAG}.jar
+  - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1-tool-${TRAVIS_TAG}.jar
 
 deploy:
   provider: releases

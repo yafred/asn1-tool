@@ -1,16 +1,17 @@
 # ASN.1 Tool
 
 [![Build Status](https://travis-ci.org/yafred/asn1-tool.svg?branch=master)](https://travis-ci.org/yafred/asn1-tool)
+[![Coverage Status](https://coveralls.io/repos/github/yafred/asn1-tool/badge.svg?branch=master)](https://coveralls.io/github/yafred/asn1-tool?branch=master)
 
 ## Test the tool (as a user)
   
   * Download [latest release](https://github.com/yafred/asn1-tool/releases) 
-  * java -jar asn1-tool-<VERSION>.jar
+  * java -jar asn1-tool.jar
   * You can create an alias with alias on Linux or doskey on Windows 
   
 ## Test the tool (as a developer)
 
-  * mvn package
+  * mvn clean package
 
 ## Parsing
 
