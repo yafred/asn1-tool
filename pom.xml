@@ -69,14 +69,16 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!-- https://mvnrepository.com/artifact/org.eluder.coveralls/coveralls-maven-plugin -->
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
             </plugin>
             <plugin>
+                <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
+                <version>0.8.1</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
