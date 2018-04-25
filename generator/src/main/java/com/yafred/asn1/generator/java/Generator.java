@@ -35,10 +35,20 @@ public class Generator {
 	public Generator() {
 		berHelper = new BERHelper(this);
 	}
+	
+	public void setOutputDir(String outputPath) throws Exception {
+		outputDir = new File(outputPath);
 
-	public void processSpecification(Specification specification, Options options) throws Exception {
-		processOptions(options);
+		if (!outputDir.exists()) {
+			throw new Exception("Output directory does not exist: " + outputPath);
+		}
 
+		if (!outputDir.canWrite()) {
+			throw new Exception("Cannot write output directory: " + outputPath);
+		}
+	}
+	
+	public void processSpecification(Specification specification) throws Exception {
 		ArrayList<ModuleDefinition> moduleDefinitionList = specification.getModuleDefinitionList();
 
 		for (ModuleDefinition moduleDefinition : moduleDefinitionList) {
@@ -46,25 +56,6 @@ public class Generator {
 		}
 	}
 
-	private void processOptions(Options options) throws Exception {
-		this.options = options;
-
-		if ((options.getOutputDir() == null) || options.getOutputDir().equals("")) {
-			throw new Exception("No output directory specified in options");
-		}
-
-		// check if output dir exis
-		outputDir = new File(options.getOutputDir());
-
-		if (!outputDir.exists()) {
-			throw new Exception("Output directory does not exist: " + options.getOutputDir());
-		}
-
-		if (!outputDir.canWrite()) {
-			throw new Exception("Cannot write output directory: " + options.getOutputDir());
-		}
-	}
-	
 	private void processModuleDefinition(ModuleDefinition moduleDefinition) throws Exception {
 		// create java package
 		packageName = Utils.normalize(moduleDefinition.getModuleIdentifier().getModuleReference()).toLowerCase();

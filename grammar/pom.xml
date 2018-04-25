@@ -16,6 +16,7 @@
     <build>
         <plugins>
             <plugin>
+                <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-maven-plugin -->
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.7.1</version>
@@ -42,6 +43,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+		    <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
 		    <groupId>org.reflections</groupId>
 		    <artifactId>reflections</artifactId>
 		    <version>0.9.11</version>

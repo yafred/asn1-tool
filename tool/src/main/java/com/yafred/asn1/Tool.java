@@ -1,11 +1,19 @@
 package com.yafred.asn1;
 
+import java.io.File;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 
+import com.yafred.asn1.generator.java.Generator;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
@@ -14,18 +22,51 @@ import com.yafred.asn1.parser.Asn1SpecificationWriter;
 import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 
 public class Tool {
+	private Specification model;
 	
 	public static void main(String[] args) throws Exception {
-		if(args.length == 0) {
-			System.err.println("Parse and validate ASN.1 specification ...");
-			System.err.println("Input file needed.");
-			System.exit(1);
-		}
-		
-		new Tool().build(args[0]);
+		new Tool().process(args);
 	}
+	
+	
+	void process(String[] args) throws Exception {
+		// create the command line parser
+		CommandLineParser parser = new DefaultParser();
 
-	public void build(String resourceName) throws Exception {
+		// create the Options
+		Options options = new Options();
+		options.addOption( "s", "source", true, "File containing ASN.1 modules.");
+		options.addOption( "jo", "java-output-dir", true, "Folder where Java code is generated.");
+		//options.addOption( "jp", "java-output-package", true, "Java package for the Java code.");
+		options.addOption( "p", "print-asn1", false, "Print the validated model." );
+
+
+	    // parse the command line arguments
+	    CommandLine line = parser.parse( options, args );
+
+	    if(!line.hasOption("s")) {
+	    	String header = "";
+	    	String footer = "";
+	    	HelpFormatter formatter = new HelpFormatter();
+	    	formatter.printHelp( "asn1Tool", header, options, footer, true );
+	    	System.exit(0);
+	    }
+	    
+    	validate(line.getOptionValue("s"));
+    	if(line.hasOption("p")) {
+    		new Asn1SpecificationWriter(System.out).visit(model);
+    	}
+    	
+    	if(line.hasOption("jo")) {
+           	Generator generator = new Generator();
+           	generator.setOutputDir(line.getOptionValue("jo"));
+           	generator.processSpecification(model);	
+    	}
+   	
+	}
+	
+
+	void validate(String resourceName) throws Exception {
 		
 		// Parse grammar
         CharStream charStream = CharStreams.fromFileName(resourceName);
@@ -41,11 +82,11 @@ public class Tool {
         
         // Build model
         SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
-        Specification specification = visitor.visit(tree);
+        model = visitor.visit(tree);
                   
         // Validate model
         Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
-        asn1ModelValidator.visit(specification);
+        asn1ModelValidator.visit(model);
         for(String error : asn1ModelValidator.getWarningList()) {
         	System.out.println(error);
         }
@@ -57,7 +98,7 @@ public class Tool {
         	System.exit(1);
         }
         
-		new Asn1SpecificationWriter(System.out).visit(specification);
+
 	}
 
 }

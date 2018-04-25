@@ -16,6 +16,7 @@
     <build>
         <plugins>
              <plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0</version>
@@ -43,6 +44,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+		    <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
 		    <groupId>org.reflections</groupId>
 		    <artifactId>reflections</artifactId>
 		    <version>0.9.11</version>
