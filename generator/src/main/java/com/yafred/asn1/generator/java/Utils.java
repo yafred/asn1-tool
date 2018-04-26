@@ -78,6 +78,7 @@ public class Utils {
 		}
 		else if(type.isTypeReference()) {
 			tagList.addAll(((TypeReference)type).getFullTagList());
+			tagList.add(((TypeReference)type).getBuiltinType().getUniversalTag());
 		}
 		
 		ArrayList<Tag> ret = new ArrayList<Tag>();

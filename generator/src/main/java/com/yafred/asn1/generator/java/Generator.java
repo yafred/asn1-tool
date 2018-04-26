@@ -142,6 +142,9 @@ public class Generator {
 			processSequenceTypeAssignment((SequenceType)type, className);
 			berHelper.processSequenceTypeAssignment((SequenceType)type, className);
 		}
+		else {
+			throw new Exception("Code generation not supported for Type " + type.getName());
+		}
 	}
 	
 	private void processSimpleTypeAssignment(Type type) throws Exception {
@@ -238,6 +241,12 @@ public class Generator {
 		else  if (type.isRestrictedCharacterStringType()) {
 			processSimpleNamedType(type, componentName, uComponentName);
 		}	
+		else  if (type.isTypeReference()) {
+			processTypeReference((TypeReference)type, componentName, uComponentName);
+		}	
+		else 
+			throw new Exception("Code generation not supported for component '" + componentName + "' of Type " + type.getName());
+
 
 	}
 	
@@ -299,6 +308,14 @@ public class Generator {
 		}
 		output.println("}");
 		
+		output.println("private " + javaType + " " + componentName + ";");
+		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
+		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+	}
+	
+	private void processTypeReference(TypeReference typeReference, String componentName, String uComponentName) throws Exception {
+		String javaType = Utils.uNormalize(typeReference.getName());
+
 		output.println("private " + javaType + " " + componentName + ";");
 		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");

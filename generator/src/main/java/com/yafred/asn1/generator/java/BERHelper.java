@@ -15,6 +15,7 @@ import com.yafred.asn1.model.RestrictedCharacterStringType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.Type;
+import com.yafred.asn1.model.TypeReference;
 
 public class BERHelper {
 	Generator generator;
@@ -270,22 +271,28 @@ public class BERHelper {
 			
 			if(iTag == 0) {
 				if(namedType.isOptional()) {
+					// we could test if this is a potential end
+					generator.output.println("if(totalLength==-1 && reader.matchTag(new byte[]{0})) {");
+					generator.output.println("reader.readTag();");
+					generator.output.println("reader.mustMatchTag(new byte[]{0});");
+					generator.output.println("return;");
+					generator.output.println("}");
 					generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + ");");
 					generator.output.println("if(matchedPrevious){");
 					generator.output.println("reader.readLength();");
-					generator.output.println("totalLength-=reader.getLengthLength();");
+					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 					generator.output.println("}");
 				}
 				else {
 					generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");					
 					generator.output.println("reader.readLength();");
-					generator.output.println("totalLength-=reader.getLengthLength();");
+					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 				}
 			}
 			else {
 				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");
 				generator.output.println("reader.readLength();");
-				generator.output.println("totalLength-=reader.getLengthLength();");
+				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 			}
 		}
 	}
@@ -304,10 +311,14 @@ public class BERHelper {
 				generator.output.println("/* " + tagHelper.toString() + " */");
 				byte[] tagBytes = tagHelper.getByteArray();
 				
-				for(int i=0; i<tagBytes.length; i++) {
-					generator.output.println(
-							"reader.expectByte((byte)" + tagBytes[i] + ");");
+				String tagBytesAsString = "" + tagBytes[0];
+				
+				for(int i=1; i<tagBytes.length; i++) {
+					tagBytesAsString += "," + tagBytes[i];
 				}
+				generator.output.println("reader.readTag();");
+				generator.output.println(
+						"reader.mustMatchTag(new byte[] {" + tagBytesAsString + "});");
 				
 				generator.output.println("reader.readLength();");
 			}
@@ -332,6 +343,10 @@ public class BERHelper {
 			NamedType namedType = (NamedType)component;
 			String componentName = Utils.normalize(namedType.getName());
 			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
 			generator.output.println("if(" + componentName + "!=null){");
 			generator.output.print("int length=0;");
 			switchEncodeComponent(namedType, componentName, componentClassName);
@@ -350,13 +365,14 @@ public class BERHelper {
 		generator.output.println("void read(" + BER_READER +
             " reader, int totalLength) throws Exception {");
 		generator.output.println("boolean matchedPrevious=true;");
+		generator.output.println("int componentLength=0;");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			generator.output.println("if(totalLength==0) return;"); 			
 			if(componentIndex != 0) {
 				generator.output.println("if(matchedPrevious){");
 			}
 			generator.output.println("reader.readTag();");
-			generator.output.println("totalLength-=reader.getTagLength();");
+			generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
 			if(componentIndex != 0) {
 				generator.output.println("}");
 			}
@@ -366,6 +382,10 @@ public class BERHelper {
 			NamedType namedType = (NamedType)component;
 			String componentName = Utils.normalize(namedType.getName());
 			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
@@ -375,7 +395,14 @@ public class BERHelper {
 			switchDecodeComponent(namedType, componentName, componentClassName);
 		}
 		
-		generator.output.println("if(totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
+		generator.output.println("if(totalLength==-1) {");
+		generator.output.println("reader.readTag();");
+		generator.output.println("reader.mustMatchTag(new byte[]{0});");
+		generator.output.println("reader.readTag();");
+		generator.output.println("reader.mustMatchTag(new byte[]{0});");
+		generator.output.println("}");
+
+		generator.output.println("else if(totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
 		generator.output.println("}");
 		
 		// pdu methods
@@ -417,31 +444,35 @@ public class BERHelper {
 			generator.output.println("}");
 			generator.output.println("length=writer.writeInteger(intValue);");			
 		}
+		else if(namedType.getType().isTypeReference()) {
+			generator.output.println("length=this." + componentName + ".write(writer);");		
+		}
 	}
 	
 	void switchDecodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
+		generator.output.println("componentLength=reader.getLengthValue();");
 		if(namedType.isOptional()) {
 			generator.output.println("if(matchedPrevious){");
 		}
 		
 		if(namedType.getType().isRestrictedCharacterStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readRestrictedCharacterString(reader.getLengthValue());");
+			generator.output.println("this." + componentName + "=" + "reader.readRestrictedCharacterString(componentLength);");
 		}
 		else if(namedType.getType().isIntegerType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readInteger(reader.getLengthValue());");
+			generator.output.println("this." + componentName + "=" + "reader.readInteger(componentLength);");
 		}
 		else if(namedType.getType().isBooleanType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readBoolean(reader.getLengthValue());");
+			generator.output.println("this." + componentName + "=" + "reader.readBoolean(componentLength);");
 		}	
 		else if(namedType.getType().isBitStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readBitString(reader.getLengthValue());");
+			generator.output.println("this." + componentName + "=" + "reader.readBitString(componentLength);");
 		}
 		else if(namedType.getType().isOctetStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readOctetString(reader.getLengthValue());");
+			generator.output.println("this." + componentName + "=" + "reader.readOctetString(componentLength);");
 		}
 		else if(namedType.getType().isEnumeratedType()) {
 			EnumeratedType enumeratedType = (EnumeratedType)namedType.getType();
-			generator.output.println("int intValue=reader.readInteger(reader.getLengthValue());");
+			generator.output.println("int intValue=reader.readInteger(componentLength);");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
 				generator.output.println("this." + componentName + "=" + componentClassName + "." + Utils.normalize(namedNumber.getName()) + ";");
@@ -461,8 +492,12 @@ public class BERHelper {
 				generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
+		else if(namedType.getType().isTypeReference()) {
+			generator.output.println("this." + componentName + "=new " + componentClassName + "();");
+			generator.output.println("this." + componentName + ".read(reader, componentLength);");		
+		}
 		
-		generator.output.println("totalLength-=reader.getLengthValue();");
+		generator.output.println("if(totalLength!=-1) totalLength-=componentLength;");
 		if(namedType.isOptional()) {
 			generator.output.println("}");
 		}

@@ -193,7 +193,7 @@ public class BERReader {
 
         if (aByte == 0x80) {
             lengthLength = 1;
-            lengthValue = 0;
+            lengthValue = -1;
             isInfiniteFormLength = true;
         } else {
             if (aByte > 0x7f) { // long form

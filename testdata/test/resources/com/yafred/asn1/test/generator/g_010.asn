@@ -1,0 +1,29 @@
+
+G-010 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+ACEI    ::= SEQUENCE {
+   message         MessageFields, 
+   neRegNumber     OCTET STRING OPTIONAL,
+   gpsInfo         GpsInfo OPTIONAL,
+   siteInfo        OCTET STRING OPTIONAL,
+   nlementID   INTEGER(0..16777216) OPTIONAL,
+   ...
+}
+
+GpsInfo         ::= SEQUENCE {
+   gpsLat      INTEGER(-900000000..900000000) OPTIONAL,
+   gpsLong     INTEGER(-1800000000..1800000000) OPTIONAL,
+   gpsAlt      INTEGER OPTIONAL,
+   ...
+}
+
+MessageFields       ::= SEQUENCE {
+   messageSequence     INTEGER (1..65535),
+   bsId    INTEGER (1..65535) OPTIONAL,
+   neID        INTEGER(0..16777216) OPTIONAL, -- unsigned int
+   nelementID  INTEGER(0..16777216) OPTIONAL, -- unsigned int
+   ...
+}
+
+END
