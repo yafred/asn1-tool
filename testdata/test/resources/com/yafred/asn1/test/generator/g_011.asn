@@ -1,0 +1,26 @@
+G-011 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Payment-method ::= CHOICE {
+  check        NumericString(SIZE (15)),
+  credit-card  Credit-card,
+  cash         NULL
+}
+
+Credit-card ::= SEQUENCE {
+  type         Card-type,
+  number       NumericString(SIZE (20)),
+  expiry-date  NumericString(SIZE (6))-- MMYYYY -- 
+}
+
+Card-type ::= ENUMERATED {
+  cb, visa, eurocard, diners, american-express
+}
+
+Crooked ::= [APPLICATION 1] CHOICE {
+   name IA5String,
+   year NumericString,
+   firt-name [0] IA5String
+}
+
+END

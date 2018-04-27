@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.BooleanType;
+import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
@@ -142,6 +143,10 @@ public class Generator {
 			processSequenceTypeAssignment((SequenceType)type, className);
 			berHelper.processSequenceTypeAssignment((SequenceType)type, className);
 		}
+		else if (type.isChoiceType()) {
+			processChoiceTypeAssignment((ChoiceType)type, className);
+			berHelper.processChoiceTypeAssignment((ChoiceType)type, className);
+		}
 		else {
 			throw new Exception("Code generation not supported for Type " + type.getName());
 		}
@@ -170,7 +175,7 @@ public class Generator {
 	}
 	
 	private void processEnumeratedTypeAssignment(EnumeratedType enumeratedType, String className) throws Exception {
-		output.println("public enum " + className + "Enum {");
+		output.println("public enum Enum {");
 	
 		boolean isFirst = true;
 		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
@@ -187,9 +192,9 @@ public class Generator {
 		}
 		output.println("}");
 		
-		output.println("private " + className + "Enum value;");
-		output.println("public " + className + "Enum getValue() { return value; }");
-		output.println("public void setValue(" + className + "Enum value) { this.value = value; }");
+		output.println("private Enum value;");
+		output.println("public Enum getValue() { return value; }");
+		output.println("public void setValue(Enum value) { this.value = value; }");
 	}
 	
 	private void processBitStringTypeAssignment(BitStringType bitStringType, String className) throws Exception {	
@@ -211,6 +216,33 @@ public class Generator {
 
 		for(Component component : componentList) {
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component;
+			switchProcessNamedType(namedType);
+		}
+	}
+	
+	private void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
+		ArrayList<Component> componentList = new ArrayList<Component>();
+		Utils.addAllIfNotNull(componentList, choiceType.getRootAlternativeList());
+		Utils.addAllIfNotNull(componentList, choiceType.getAdditionalAlternativeList());
+
+		/* May be later
+		output.println("public enum Choice {");
+		boolean isFirst = true;
+		for(Component component : componentList) {
+			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component;
+			if(!isFirst) {
+				output.print(",");
+			}
+			output.println(Utils.normalize(namedType.getName()));
+			isFirst = false;	
+		}		
+		
+		output.println("}");
+		*/
+		
+		for(Component component : componentList) {
 			NamedType namedType = (NamedType)component;
 			switchProcessNamedType(namedType);
 		}

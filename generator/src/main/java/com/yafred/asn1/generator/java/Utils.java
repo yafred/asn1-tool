@@ -70,15 +70,16 @@ public class Utils {
 	public static ArrayList<Tag> getTagChain(Type type) {
 		ArrayList<Tag> tagList = new ArrayList<Tag>();
 		
-		if(type.getUniversalTag() != null) {
-			if(type.getTagList() != null) {
+		if (type.isTypeReference()) {
+			tagList.addAll(((TypeReference) type).getFullTagList());
+			tagList.add(((TypeReference) type).getBuiltinType().getUniversalTag());
+		} else {
+			if (type.getTagList() != null) {
 				tagList.addAll(type.getTagList());
 			}
-			tagList.add(type.getUniversalTag());
-		}
-		else if(type.isTypeReference()) {
-			tagList.addAll(((TypeReference)type).getFullTagList());
-			tagList.add(((TypeReference)type).getBuiltinType().getUniversalTag());
+			if (type.getUniversalTag() != null) {
+				tagList.add(type.getUniversalTag());
+			}
 		}
 		
 		ArrayList<Tag> ret = new ArrayList<Tag>();

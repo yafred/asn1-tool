@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.BooleanType;
+import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
@@ -87,7 +88,7 @@ public class BERHelper {
 		generator.output.println("int intValue=reader.readInteger(length);");
 		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 			generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-			generator.output.println("setValue(" + className + "Enum." + Utils.normalize(namedNumber.getName()) + ");");
+			generator.output.println("setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
 			generator.output.println("}");
 		}
 		if(enumeratedType.getAdditionalEnumeration() == null) {
@@ -98,7 +99,7 @@ public class BERHelper {
 		else {
 			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				generator.output.println("setValue(" + className + "Enum." + Utils.normalize(namedNumber.getName()) + ");");
+				generator.output.println("setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
 				generator.output.println("}");
 			}
 			generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
@@ -407,6 +408,72 @@ public class BERHelper {
 		
 		// pdu methods
 		processTypeAssignment(sequenceType, className);
+	}
+	
+	void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
+		ArrayList<Component> componentList = new ArrayList<Component>();
+		Utils.addAllIfNotNull(componentList, choiceType.getRootAlternativeList());
+		Utils.addAllIfNotNull(componentList, choiceType.getAdditionalAlternativeList());
+		
+	    // write encoding code
+		generator.output.println("int write(" + BER_WRITER +
+            " writer) throws Exception {");
+		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
+			Component component = componentList.get(componentIndex);
+			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component;
+			String componentName = Utils.normalize(namedType.getName());
+			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
+			generator.output.println("if(" + componentName + "!=null){");
+			generator.output.print("int length=0;");
+			switchEncodeComponent(namedType, componentName, componentClassName);
+			Tag automaticTag = null;
+			if(choiceType.isAutomaticTaggingSelected()) {
+				automaticTag = new Tag(new Integer(componentIndex), null, null);
+			}
+			writeTagsEncode(namedType.getType(), automaticTag);
+			generator.output.println("return length;");
+			generator.output.println("}");
+		}
+		generator.output.println("return 0;");
+		generator.output.println("}");
+
+        // write decoding code
+		generator.output.println("void read(" + BER_READER +
+            " reader, int totalLength) throws Exception {");
+		generator.output.println("boolean matchedPrevious=false;");
+		generator.output.println("int componentLength=0;");
+		generator.output.println("reader.readTag();");
+		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
+			Component component = componentList.get(componentIndex);
+			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component;
+			String componentName = Utils.normalize(namedType.getName());
+			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
+			Tag automaticTag = null;
+			if(choiceType.isAutomaticTaggingSelected()) {
+				automaticTag = new Tag(new Integer(componentIndex), null, null);
+			}
+			namedType.setOptional(true); // force optional
+			writeTagsDecode(namedType, automaticTag);
+			
+			switchDecodeComponent(namedType, componentName, componentClassName);
+			
+			generator.output.println("if(matchedPrevious) return;");
+		}
+		
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(choiceType, className);
 	}
 	
 	void switchEncodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
