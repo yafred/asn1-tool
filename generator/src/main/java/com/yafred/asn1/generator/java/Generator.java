@@ -4,8 +4,10 @@ package com.yafred.asn1.generator.java;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
+import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.BooleanType;
@@ -90,7 +92,8 @@ public class Generator {
 		// systematically create a class
 		String className = Utils.uNormalize(typeAssignment.getReference());
 
-		output = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".java")));
+		StringWriter stringWriter = new StringWriter();
+		output = new PrintWriter(stringWriter);
 
 		output.println("package " + packagePrefix + packageName + ";");
 
@@ -108,6 +111,12 @@ public class Generator {
 		}
 
 		output.close();
+		
+		String formattedSource = new Formatter().formatSource(stringWriter.getBuffer().toString());
+		
+		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".java")));
+		fileWriter.print(formattedSource);
+		fileWriter.close();
 	}
 
 	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		

@@ -37,5 +37,11 @@
 		    <version>0.9.11</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
+		    <groupId>com.google.googlejavaformat</groupId>
+		    <artifactId>google-java-format</artifactId>
+		    <version>1.5</version>
+		</dependency>
     </dependencies>
 </project>
