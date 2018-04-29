@@ -64,7 +64,7 @@ public class Tool {
 		    String header = "";
 	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
 	    	HelpFormatter formatter = new HelpFormatter();
-	    	formatter.printHelp( "asn1-tool", header, options, footer, true );
+	    	formatter.printHelp( "java -jar asn1-tool.jar", header, options, footer, true );
 	    	System.exit(0);
 	    }
 	    
