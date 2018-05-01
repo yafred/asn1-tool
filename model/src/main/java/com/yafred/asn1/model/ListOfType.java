@@ -3,11 +3,11 @@ package com.yafred.asn1.model;
 
 abstract public class ListOfType extends Type { 
 	String elementName;
-	Type type;
+	Type elementType;
 	
-    public ListOfType(String elementName, Type type) {
+    public ListOfType(String elementName, Type elementType) {
     	this.elementName = elementName;
-    	this.type = type;
+    	this.elementType = elementType;
     }
 
     public String getElementName() {
@@ -18,12 +18,12 @@ abstract public class ListOfType extends Type {
 		this.elementName = elementName;
 	}
 
-	public Type getType() {
-		return type;
+	public Type getElementType() {
+		return elementType;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
+	public void setElementType(Type elementType) {
+		this.elementType = elementType;
 	}
 
 	@Override

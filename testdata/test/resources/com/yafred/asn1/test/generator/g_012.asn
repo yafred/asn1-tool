@@ -1,0 +1,13 @@
+
+G-012 DEFINITIONS ::= 
+BEGIN 
+
+My-integers ::= SEQUENCE OF INTEGER { ten(10), twenty(20) }
+
+My-strings ::= [APPLICATION 2] SEQUENCE OF [0] VisibleString 
+
+My-octet-strings ::= [APPLICATION 2] SEQUENCE OF [0] IMPLICIT OCTET STRING 
+
+My-booleans ::= SEQUENCE OF BOOLEAN
+
+END

@@ -48,9 +48,7 @@ public class TestGeneratedCode_011 {
 	public void test_3() throws Exception {
 		Payment_method pdu = new Payment_method();
 		Credit_card credit_card = new Credit_card();
-		Card_type card_type = new Card_type();
-		card_type.setValue(Card_type.Enum.cb);
-		credit_card.setType(card_type);
+		credit_card.setType(Card_type.Enum.cb);
 		credit_card.setNumber("01234567890123456789");
 		credit_card.setExpiry_date("042018");
 		pdu.setCredit_card(credit_card);
@@ -63,9 +61,22 @@ public class TestGeneratedCode_011 {
 		assertNotNull(decodedPdu.getCredit_card());
 		assertEquals(decodedPdu.getCredit_card().getNumber(), pdu.getCredit_card().getNumber());
 		assertEquals(decodedPdu.getCredit_card().getExpiry_date(), pdu.getCredit_card().getExpiry_date());
-		assertEquals(decodedPdu.getCredit_card().getType().getValue(), pdu.getCredit_card().getType().getValue());
+		assertEquals(decodedPdu.getCredit_card().getType(), pdu.getCredit_card().getType());
 	}
 		
-
+	@Test
+	public void test_4() throws Exception {
+		Payment_method pdu = new Payment_method();
+		pdu.setCash(new Object());
+		
+		String expectedHexa = "82 00";
+		testHelper.writePdu(pdu, expectedHexa);
+		
+		// decode
+		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, expectedHexa);
+		assertNotNull(decodedPdu.getCash());
+	}
+	
+	
 }
 

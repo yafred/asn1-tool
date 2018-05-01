@@ -347,7 +347,7 @@ public class Asn1SpecificationWriter {
     	if(listOfType.getElementName() != null) {
     		out.print(listOfType.getElementName() + " ");
     	}
-		visitType(listOfType.getType());
+		visitType(listOfType.getElementType());
 	}
 	
 	private void visit(Component component, Integer automaticTagNumber) {

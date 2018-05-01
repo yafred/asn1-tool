@@ -52,5 +52,37 @@ Flight-with-optional ::= SEQUENCE {
    destination       IA5String OPTIONAL
 }
 
+Flight-without-optional ::= SEQUENCE {
+   origin            IA5String,
+   destination       IA5String
+}
+
+Flight-with-refs ::= SEQUENCE {
+   origin            Origin,
+   stop1             IA5String  OPTIONAL,
+   stop2             IA5String  OPTIONAL,
+   destination        IA5String,
+   seats  Seats,
+   cancelled Cancelled DEFAULT FALSE,
+   crew-format Crew-format,
+   flags Flags             
+}
+
+Origin ::= IA5String
+Seats ::= INTEGER { min(50), ideal(180), max(200) }
+Cancelled ::= BOOLEAN
+Crew-format ::= ENUMERATED
+                    {
+                      six,
+                      eight,
+                      ten
+                    }
+Flags ::= BIT STRING {
+              experimental  (0),
+              green     (1),
+              profitable     (2),
+              high-profile  (3)
+ }                                     
+
 
 END

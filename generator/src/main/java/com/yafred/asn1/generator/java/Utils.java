@@ -30,7 +30,7 @@ public class Utils {
 		return retName.replace('-', '_');
 	}
 	
-	public static String mapToJava(Type type, boolean isFullNameRequired) throws Exception {
+	public static String mapToJava(Type type) throws Exception {
 		String javaType = "";
 
 		if (type.isRestrictedCharacterStringType()) {
