@@ -9,8 +9,8 @@
   * java -jar asn1-tool.jar
      * -f \<input file> ASN.1 specification.
      * -p just print the validate model.
-     * -jo \<path> generated Java code in the given folder.
-     * -jp \<package> use this package as a prefix for generate Java code (ASN.1 module names are added to this prefix to get the full package name).
+     * -jo \<path> generate Java code in the given folder.
+     * -jp \<package> use this package as a prefix for generated Java code (ASN.1 module names are added to this prefix to get the full package name).
   * You can create an alias with alias on Linux or doskey on Windows 
   
 ## Test the tool (as a developer)
