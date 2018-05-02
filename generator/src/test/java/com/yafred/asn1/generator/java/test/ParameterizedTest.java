@@ -82,8 +82,10 @@ public class ParameterizedTest {
        	assertEquals(0, asn1ModelValidator.getErrorList().size());
        	
        	Generator generator = new Generator();
-       	String outputPath = System.getProperty("buildDirectory");
-       	generator.setOutputDir(outputPath + File.separator + "generated-test-sources");
+       	Options options = new Options();
+       	options.setOutputPath(System.getProperty("buildDirectory") + File.separator + "generated-test-sources");
+       	options.setBeautify(true);
+       	generator.setOptions(options);
        	generator.processSpecification(specification);	
 	}
 }

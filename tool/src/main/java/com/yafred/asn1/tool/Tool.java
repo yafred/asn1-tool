@@ -1,4 +1,4 @@
-package com.yafred.asn1;
+package com.yafred.asn1.tool;
 
 import java.util.Properties;
 
@@ -32,9 +32,16 @@ public class Tool {
 	void process(String[] args) throws Exception {
 		Properties gitProperties = new Properties();
 		try {
-			gitProperties.load(Tool.class.getClassLoader().getResourceAsStream("com/yafred/asn1/git.properties"));
+			gitProperties.load(Tool.class.getClassLoader().getResourceAsStream("com/yafred/asn1/tool/git.properties"));
 		}
 		catch(Exception e) {
+		}
+		
+		boolean hasJavaFormatter = true;
+		try {
+			Class.forName("com.google.googlejavaformat.java.Formatter");
+		} catch (ClassNotFoundException e) {
+			hasJavaFormatter = false;
 		}
 		
 		// create the command line parser
@@ -45,6 +52,9 @@ public class Tool {
 		options.addOption( "f", "file", true, "File containing ASN.1 modules.");
 		options.addOption( "jo", "java-output-dir", true, "Folder where Java code is generated.");
 		options.addOption( "jp", "java-output-package", true, "Java package prefix for the Java code.");
+		if(hasJavaFormatter) {
+			options.addOption( "jb", "java-beautify", false, "Format generated code.");
+		}
 		options.addOption( "p", "print-asn1", false, "Print the validated model." );
 
 	    // parse the command line arguments
@@ -74,11 +84,21 @@ public class Tool {
     	}
     	
     	if(line.hasOption("jo")) {
+    		com.yafred.asn1.generator.java.Options generatorOptions = new com.yafred.asn1.generator.java.Options();
            	Generator generator = new Generator();
-           	generator.setOutputDir(line.getOptionValue("jo"));
+           	generatorOptions.setOutputPath(line.getOptionValue("jo"));
         	if(line.hasOption("jp")) {
-        		generator.setPackagePrefix(line.getOptionValue("jp"));
+        		generatorOptions.setPackagePrefix(line.getOptionValue("jp"));
         	}
+        	if(line.hasOption("jb")) {
+        		generatorOptions.setBeautify(true);
+        	}
+        	else {
+        		if(!hasJavaFormatter) {
+        			generatorOptions.setBeautify(false);
+        		}
+        	}
+        	generator.setOptions(generatorOptions);
           	generator.processSpecification(model);	
     	}
 	}

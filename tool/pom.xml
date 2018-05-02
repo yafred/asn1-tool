@@ -33,7 +33,7 @@
                     <prefix>git</prefix>
                     <verbose>false</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/com/yafred/asn1/git.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/com/yafred/asn1/tool/git.properties</generateGitPropertiesFilename>
                     <format>properties</format>
                     <gitDescribe>
                         <skip>false</skip>
@@ -66,16 +66,42 @@
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.yafred.asn1.Tool</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>full-assembly</id>
+				        <configuration>
+				            <archive>
+				                <manifest>
+				                    <mainClass>com.yafred.asn1.tool.Tool</mainClass>
+				                </manifest>
+				            </archive>
+				            <descriptorRefs>
+				                <descriptorRef>jar-with-dependencies</descriptorRef>
+				            </descriptorRefs>
+				        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>without-beautifier</id>
+				        <configuration>
+				            <archive>
+				                <manifest>
+				                    <mainClass>com.yafred.asn1.tool.Tool</mainClass>
+				                </manifest>
+				            </archive>
+				            <descriptors>
+				                <descriptor>resources/jar-with-dependencies-without-google-java-format.xml</descriptor>
+				            </descriptors>
+				        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                 </executions>
             </plugin>  
         </plugins>
     </build>

@@ -7,13 +7,18 @@ install:
   - mvn install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 
 after_success:
-  - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1-tool.jar
+  - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies.jar asn1-tool-with-google-java-format.jar
+  - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies-without-google-java-format.jar asn1-tool.jar
+  - mv runtime/target/runtime-1.0-SNAPSHOT.jar asn1-runtime.jar
   - mvn clean test jacoco:report coveralls:report
 
 deploy:
   provider: releases
   api_key: $GH_TOKEN
-  file: asn1-tool.jar
+  file: 
+  - asn1-tool-with-google-java-format.jar
+  - asn1-tool.jar
+  - asn1-runtime.jar
   skip_cleanup: true
   on:
     tags: true

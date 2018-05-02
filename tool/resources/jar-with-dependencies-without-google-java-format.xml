@@ -1,0 +1,26 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+   <!-- TODO: a jarjar format would be better -->
+   <id>jar-with-dependencies-without-google-java-format</id>
+   <formats>
+      <format>jar</format>
+   </formats>
+   <includeBaseDirectory>false</includeBaseDirectory>
+   <dependencySets>
+      <dependencySet>
+         <outputDirectory>/</outputDirectory>
+         <useProjectArtifact>true</useProjectArtifact>
+         <unpack>true</unpack>
+         <scope>runtime</scope>
+         <includes>
+            <include>commons-cli:commons-cli</include>
+            <include>org.antlr:antlr4-runtime</include>
+            <include>com.yafred.asn1:grammar</include>
+            <include>com.yafred.asn1:model</include>
+            <include>com.yafred.asn1:generator</include>
+            <include>com.yafred.asn1:tool</include>
+          </includes>
+      </dependencySet>
+   </dependencySets>
+</assembly>

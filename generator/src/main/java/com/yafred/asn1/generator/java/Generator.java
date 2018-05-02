@@ -30,9 +30,7 @@ import com.yafred.asn1.model.TypeReference;
 
 public class Generator {
 	Options options;
-	boolean beautify = true;
 	File outputDir;
-	String packagePrefix = "";
 	String packageName;
 	File packageDirectory;
 	PrintWriter output;
@@ -42,22 +40,21 @@ public class Generator {
 		berHelper = new BERHelper(this);
 	}
 	
-	public void setPackagePrefix(String packagePrefix) {
-		if(packagePrefix.substring(packagePrefix.length()-1) != ".") {
-			packagePrefix += ".";
+	public void setOptions(Options options) throws Exception {
+		this.options = options;
+		
+		if(options.getPackagePrefix().length() > 0 && options.getPackagePrefix().substring(options.getPackagePrefix().length()-1) != ".") {
+			options.setPackagePrefix(options.getPackagePrefix() + ".");
 		}
-		this.packagePrefix = packagePrefix;
-	}
-	
-	public void setOutputDir(String outputPath) throws Exception {
-		outputDir = new File(outputPath);
+		
+		outputDir = new File(options.getOutputPath());
 
 		if (!outputDir.exists()) {
-			throw new Exception("Output directory does not exist: " + outputPath);
+			throw new Exception("Output directory does not exist: " + options.getOutputPath());
 		}
 
 		if (!outputDir.canWrite()) {
-			throw new Exception("Cannot write output directory: " + outputPath);
+			throw new Exception("Cannot write output directory: " + options.getOutputPath());
 		}
 	}
 	
@@ -97,7 +94,7 @@ public class Generator {
 		StringWriter stringWriter = new StringWriter();
 		output = new PrintWriter(stringWriter);
 
-		output.println("package " + packagePrefix + packageName + ";");
+		output.println("package " + options.getPackagePrefix() + packageName + ";");
 
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());
@@ -115,7 +112,7 @@ public class Generator {
 		output.close();
 		
 		String formattedSource = "";
-		if(beautify) {
+		if(options.isBeautify()) {
 		formattedSource = new Formatter().formatSource(stringWriter.getBuffer().toString());
 		}
 		else {
