@@ -15,6 +15,7 @@ import com.yafred.asn1.model.ComponentsOf;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
 import com.yafred.asn1.model.IntegerValue;
+import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
@@ -231,6 +232,10 @@ public class Asn1ModelValidator {
 		if(type.isSequenceType()) {
 			SequenceType sequenceType = (SequenceType)type;
 			visitSequenceType(sequenceType, moduleDefinition);
+		}
+		if(type.isListOfType()) {
+			ListOfType listOfType = (ListOfType)type;
+			visitType(listOfType.getElementType(), moduleDefinition);
 		}
 		if(type.isSetType()) {
 			SetType setType = (SetType)type;

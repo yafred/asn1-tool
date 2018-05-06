@@ -278,6 +278,15 @@ public class Generator {
 		}	
 		else if (type.isRestrictedCharacterStringType()) {
 			processBasicListElement(type);
+		}
+		else if(type.isBitStringType()) {
+			processBitStringListElement((BitStringType)type);
+		}
+		else if(type.isEnumeratedType()) {
+			processEnumeratedListElement((EnumeratedType)type);
+		}
+		else  if (type.isTypeReference()) {
+			processTypeReferenceListElement((TypeReference)type);
 		}	
 		else {
 			throw new Exception("Generator.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
@@ -368,6 +377,30 @@ public class Generator {
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
 	
+	private void processEnumeratedListElement(EnumeratedType enumeratedType) throws Exception {
+		String javaType = "Enum";
+		output.println("static public enum " + javaType + " {");
+	
+		boolean isFirst = true;
+		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+			if(!isFirst) {
+				output.print(",");
+			}
+			output.println(Utils.normalize(namedNumber.getName()));
+			isFirst = false;	
+		}
+		if(enumeratedType.getAdditionalEnumeration() != null) {
+			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+				output.println("," + Utils.normalize(namedNumber.getName()));
+			}
+		}
+		output.println("}");
+		
+		output.println("private java.util.ArrayList<" + javaType + "> value;");
+		output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
+		output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
+	}
+	
 	private void processEnumeratedNamedType(EnumeratedType enumeratedType, String componentName, String uComponentName) throws Exception {
 		String javaType = uComponentName;
 		output.println("static public enum " + javaType + " {");
@@ -392,6 +425,18 @@ public class Generator {
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
 	
+	private void processBitStringListElement(BitStringType bitStringType) throws Exception {
+		String javaType = Utils.mapToJava(bitStringType);
+
+		for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
+			output.println("static final public int " + Utils.normalize(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
+		}
+		
+		output.println("private java.util.ArrayList<" + javaType + "> value;");
+		output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
+		output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
+	}
+	
 	private void processBitStringNamedType(BitStringType bitStringType, String componentName, String uComponentName) throws Exception {
 		String javaType = Utils.mapToJava(bitStringType);
 
@@ -404,6 +449,24 @@ public class Generator {
 		output.println("private " + javaType + " " + componentName + ";");
 		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+	}
+	
+	private void processTypeReferenceListElement(TypeReference typeReference) throws Exception {
+		String javaType = Utils.uNormalize(typeReference.getName());
+		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
+			javaType = Utils.mapToJava(typeReference.getBuiltinType());
+		}
+
+		if(typeReference.getBuiltinType().isEnumeratedType()) {
+			output.println("private java.util.ArrayList<" + javaType + ".Enum> value;");
+			output.println("public java.util.ArrayList<" + javaType + ".Enum> getValue() { return value; }");
+			output.println("public void setValue(java.util.ArrayList<" + javaType + ".Enum> value) { this.value = value; }");
+		}
+		else {
+			output.println("private java.util.ArrayList<" + javaType + "> value;");
+			output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
+			output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
+		}
 	}
 	
 	private void processTypeReferenceNamedType(TypeReference typeReference, String componentName, String uComponentName) throws Exception {

@@ -2,12 +2,24 @@
 G-012 DEFINITIONS ::= 
 BEGIN 
 
-My-integers ::= SEQUENCE OF INTEGER { ten(10), twenty(20) }
+My-integer-list ::= SEQUENCE OF INTEGER { ten(10), twenty(20) }
 
-My-strings ::= [APPLICATION 2] SEQUENCE OF [0] VisibleString 
+My-string-list ::= [APPLICATION 2] SEQUENCE OF [0] VisibleString 
 
-My-octet-strings ::= [APPLICATION 2] SEQUENCE OF [0] IMPLICIT OCTET STRING 
+My-octet-string-list ::= [APPLICATION 2] SEQUENCE OF [0] IMPLICIT OCTET STRING 
 
-My-booleans ::= SEQUENCE OF BOOLEAN
+My-boolean-list ::= SEQUENCE OF BOOLEAN
+
+My-bitstring-list ::= SEQUENCE OF BIT STRING
+          {
+              clerk      (0),
+              editor     (1),
+              artist     (2),
+              publisher  (3)
+          }
+
+My-enumerated-list::= SEQUENCE OF ENUMERATED { banana, apple, pear, ..., lemon }
+
+My-enumerated-list2 ::= SEQUENCE OF ENUMERATED { banana, apple, pear }
 
 END

@@ -43,4 +43,36 @@ public class TestGeneratedCode_008 {
 		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
+	
+	@Test
+	public void test_3() throws Exception {
+		Occupation pdu = new Occupation();
+		BitSet bitSet = new BitSet();
+		bitSet.set(Occupation.artist);
+		bitSet.set(Occupation.clerk);
+		pdu.setValue(bitSet);
+
+		String expectedHexa = "03 02 05 a0";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		assertEquals(decodedPdu.getValue(), pdu.getValue());
+	}
+	
+	@Test
+	public void test_4() throws Exception {
+		Occupation pdu = new Occupation();
+		BitSet bitSet = new BitSet();
+		bitSet.set(Occupation.editor);
+		bitSet.set(Occupation.publisher);
+		pdu.setValue(bitSet);
+
+		String expectedHexa = "03 02 04 50";
+		testHelper.writePdu(pdu, expectedHexa);
+
+		// decode
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		assertEquals(decodedPdu.getValue(), pdu.getValue());
+	}
 }

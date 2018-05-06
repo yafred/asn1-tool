@@ -458,9 +458,26 @@ public class BERHelper {
 		processTypeAssignment(sequenceType, className);
 	}
 	
-	void processSequenceOfTypeAssignment(SequenceOfType sequenceOfType, String className) throws Exception {	
-		String javaType = Utils.mapToJava(sequenceOfType.getElementType());
-
+	void processSequenceOfTypeAssignment(SequenceOfType sequenceOfType, String className) throws Exception {
+		Type elementType = sequenceOfType.getElementType();
+		String elementClassName = "";
+		if(sequenceOfType.getElementType().isTypeReference()) {
+			elementClassName = Utils.uNormalize(sequenceOfType.getElementType().getName());
+			elementType = ((TypeReference)sequenceOfType.getElementType()).getBuiltinType();
+		}
+		String javaType = "";
+		if(!elementType.isEnumeratedType()) {
+			javaType= Utils.mapToJava(elementType);
+		}
+		else {
+			if(elementClassName.equals("")) {
+				javaType = "Enum";
+			}
+			else {
+				javaType = elementClassName + ".Enum";
+			}
+		}
+		
 	    // write encoding code
 		generator.output.println("int write(" + BER_WRITER +
             " writer) throws Exception {");
@@ -468,17 +485,39 @@ public class BERHelper {
 		generator.output.println("if(this.value != null) {");
 		generator.output.println("for(int i=this.value.size()-1; i>=0; i--) {");
 		generator.output.println("int length=0;");
-		if(sequenceOfType.getElementType().isIntegerType()) {
+		if(elementType.isIntegerType()) {
 			generator.output.println("length+=writer.writeInteger(this.value.get(i));");			
 		}
-		else if(sequenceOfType.getElementType().isRestrictedCharacterStringType()) {
+		else if(elementType.isRestrictedCharacterStringType()) {
 			generator.output.println("length+=writer.writeRestrictedCharacterString(this.value.get(i));");			
 		}
-		else if(sequenceOfType.getElementType().isOctetStringType()) {
+		else if(elementType.isOctetStringType()) {
 			generator.output.println("length+=writer.writeOctetString(this.value.get(i));");			
 		}
-		else if(sequenceOfType.getElementType().isBooleanType()) {
+		else if(elementType.isBooleanType()) {
 			generator.output.println("length+=writer.writeBoolean(this.value.get(i));");			
+		}
+		else if(elementType.isBitStringType()) {
+			generator.output.println("length+=writer.writeBitString(this.value.get(i));");			
+		}
+		else if(elementType.isEnumeratedType()) {
+			generator.output.println("int intValue=-1;");
+			generator.output.println("switch(this.value.get(i)) {");
+			EnumeratedType enumeratedType = (EnumeratedType)elementType;
+			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+				generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				generator.output.println("intValue=" + namedNumber.getNumber() + ";");
+				generator.output.println("break;");
+			}
+			if(enumeratedType.getAdditionalEnumeration() != null) {
+				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+					generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					generator.output.println("intValue=" + namedNumber.getNumber() + ";");
+					generator.output.println("break;");
+				}
+			}
+			generator.output.println("}");
+			generator.output.println("length=writer.writeInteger(intValue);");			
 		}
 		else {
 			throw new Exception("BERHelper.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
@@ -491,6 +530,7 @@ public class BERHelper {
 		generator.output.println("return totalLength;");
 		generator.output.println("}");
 
+		
         // write decoding code
 		generator.output.println("void read(" + BER_READER +
             " reader, int totalLength) throws Exception {");
@@ -500,17 +540,47 @@ public class BERHelper {
 		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
 		writeElementTagsDecode(sequenceOfType.getElementType());
 		generator.output.println("int itemLength=reader.getLengthValue();");
-		if(sequenceOfType.getElementType().isIntegerType()) {
+		if(elementType.isIntegerType()) {
 			generator.output.println("this.value.add(reader.readInteger(itemLength));");	
 		}
-		else if(sequenceOfType.getElementType().isRestrictedCharacterStringType()) {
+		else if(elementType.isRestrictedCharacterStringType()) {
 			generator.output.println("this.value.add(reader.readRestrictedCharacterString(itemLength));");	
 		}
-		else if(sequenceOfType.getElementType().isOctetStringType()) {
+		else if(elementType.isOctetStringType()) {
 			generator.output.println("this.value.add(reader.readOctetString(itemLength));");	
 		}
-		else if(sequenceOfType.getElementType().isBooleanType()) {
+		else if(elementType.isBooleanType()) {
 			generator.output.println("this.value.add(reader.readBoolean(itemLength));");	
+		}
+		else if(elementType.isBitStringType()) {
+			generator.output.println("this.value.add(reader.readBitString(itemLength));");	
+		}
+		else if(elementType.isEnumeratedType()) {
+			EnumeratedType enumeratedType = (EnumeratedType)elementType;
+			generator.output.println("int intValue=reader.readInteger(itemLength);");
+			generator.output.println(javaType + " item=null;");
+			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				generator.output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+				generator.output.println("}");
+			}
+			generator.output.println("if(item!=null){");
+			generator.output.println("this.value.add(item);");
+			generator.output.println("}");
+			if(enumeratedType.getAdditionalEnumeration() == null) {
+				generator.output.println("else {");
+				generator.output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+				generator.output.println("}");
+			}
+			else {
+				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+					generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+					generator.output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+					generator.output.println("this.value.add(item);");
+					generator.output.println("}");
+				}
+				generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
+			}
 		}
 		generator.output.println("if(totalLength!=-1) totalLength-=itemLength;");
 		generator.output.println("}");
