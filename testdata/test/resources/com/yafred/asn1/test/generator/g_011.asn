@@ -20,7 +20,7 @@ Card-type ::= ENUMERATED {
 Crooked ::= [APPLICATION 1] CHOICE {
    name IA5String,
    year NumericString,
-   firt-name [0] IA5String
+   first-name [0] IA5String
 }
 
 END

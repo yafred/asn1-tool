@@ -465,16 +465,19 @@ public class BERHelper {
 			elementClassName = Utils.uNormalize(sequenceOfType.getElementType().getName());
 			elementType = ((TypeReference)sequenceOfType.getElementType()).getBuiltinType();
 		}
-		String javaType = "";
-		if(!elementType.isEnumeratedType()) {
-			javaType= Utils.mapToJava(elementType);
-		}
-		else {
-			if(elementClassName.equals("")) {
-				javaType = "Enum";
+		String javaType = elementClassName;
+		
+		if(!Utils.isConstructed(elementType)) {
+			if(!elementType.isEnumeratedType()) {
+				javaType= Utils.mapToJava(elementType);
 			}
 			else {
-				javaType = elementClassName + ".Enum";
+				if(elementClassName.equals("")) {
+					javaType = "Enum";
+				}
+				else {
+					javaType = elementClassName + ".Enum";
+				}
 			}
 		}
 		
@@ -517,7 +520,10 @@ public class BERHelper {
 				}
 			}
 			generator.output.println("}");
-			generator.output.println("length=writer.writeInteger(intValue);");			
+			generator.output.println("length+=writer.writeInteger(intValue);");			
+		}
+		else if(elementType.isSequenceType() || elementType.isSetType()) {
+			generator.output.println("length+=this.value.get(i).write(writer);");						
 		}
 		else {
 			throw new Exception("BERHelper.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
@@ -582,6 +588,12 @@ public class BERHelper {
 				generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
+		else if(elementType.isSequenceType() || elementType.isSetType()) {
+			generator.output.println(javaType + " item=new " + javaType + "();");
+			generator.output.println("item.read(reader, itemLength);");
+			generator.output.println("this.value.add(item);");			
+		}
+		
 		generator.output.println("if(totalLength!=-1) totalLength-=itemLength;");
 		generator.output.println("}");
 		generator.output.println("}");

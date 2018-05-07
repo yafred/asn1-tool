@@ -1,0 +1,12 @@
+G-014 DEFINITIONS ::= 
+BEGIN 
+
+Person ::= SEQUENCE {
+	last-name IA5String,
+	first-name IA5String,
+	age INTEGER
+}
+
+Audience ::= SEQUENCE OF Person
+
+END

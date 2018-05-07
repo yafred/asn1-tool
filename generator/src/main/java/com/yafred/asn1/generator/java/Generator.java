@@ -484,6 +484,11 @@ public class Generator {
 			output.println("private " + javaType + " " + componentName + ";");
 			output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 			output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+			if(Utils.isConstructed(typeReference.getBuiltinType())) {
+				output.println("// convenience method");
+				output.println("public " + javaType + " set" + uComponentName + "() { if(this." + componentName + "==null) this." + componentName + "=new " + javaType + "();");
+				output.println("return this." + componentName + "; }");
+			}
 		}
 	}
 }
