@@ -234,12 +234,17 @@ public class BERHelper {
 				generator.output.println("length += writer.writeLength(length);");
 
 				byte[] tagBytes = tagHelper.getByteArray();
-				
-				for(int i=tagBytes.length-1; i>=0; i--) {
-					generator.output.println(
-							"length += writer.writeByte((byte)" + tagBytes[i] + ");");
+				String tagBytesAsString = "new byte[] {";
+				for(int i=0; i<tagBytes.length; i++) {
+					if(i!=0) {
+						tagBytesAsString += ",";
+					}
+					tagBytesAsString += tagBytes[i];
 				}
-				generator.output.println("/* " + tagHelper.toString() + " */");
+				tagBytesAsString += "}";
+				
+				generator.output.println(
+							"length += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 			}
 		}
 	}
@@ -262,7 +267,6 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			generator.output.println("/* matching " + tagHelper.toString() + " */");
 			byte[] tagBytes = tagHelper.getByteArray();
 			String tagBytesAsString = "new byte[] {";
 			for(int i=0; i<tagBytes.length; i++) {
@@ -281,26 +285,81 @@ public class BERHelper {
 					generator.output.println("reader.mustMatchTag(new byte[]{0});");
 					generator.output.println("return;");
 					generator.output.println("}");
-					generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + ");");
+					generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 					generator.output.println("if(matchedPrevious){");
 					generator.output.println("reader.readLength();");
 					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 					generator.output.println("}");
 				}
 				else {
-					generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");					
+					generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");					
 					generator.output.println("reader.readLength();");
 					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 				}
 			}
 			else {
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");
+				if(namedType.isOptional()) {
+					generator.output.println("if(matchedPrevious){");
+				}
+				generator.output.println("reader.readTag();");
+				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 				generator.output.println("reader.readLength();");
 				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				if(namedType.isOptional()) {
+					generator.output.println("}");
+				}
 			}
 		}
 	}
 
+	private void writeSetTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
+		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
+		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
+			return;
+		}
+		if(automaticTag != null) {
+			tagList.set(0, automaticTag);
+		}
+
+		for (int iTag = 0; iTag < tagList.size(); iTag++) {
+			boolean isConstructedForm = true;
+
+			if ((iTag == (tagList.size() - 1)) && !Utils.isConstructed(namedType.getType())) {
+				isConstructedForm = false;
+			}
+
+			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
+			byte[] tagBytes = tagHelper.getByteArray();
+			String tagBytesAsString = "new byte[] {";
+			for(int i=0; i<tagBytes.length; i++) {
+				if(i!=0) {
+					tagBytesAsString += ",";
+				}
+				tagBytesAsString += tagBytes[i];
+			}
+			tagBytesAsString += "}";
+			
+			if(iTag == 0) {
+				generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				generator.output.println("if(matchedPrevious){");
+				generator.output.println("reader.readLength();");
+				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				generator.output.println("}");
+			}
+			else {
+				generator.output.println("if(matchedPrevious){");
+				generator.output.println("reader.readTag();");
+				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				generator.output.println("reader.readLength();");
+				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				generator.output.println("}");
+			}
+		}
+	}
+
+	
 	private void writeElementTagsDecode(Type type) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
 		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
@@ -315,7 +374,6 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			generator.output.println("/* matching " + tagHelper.toString() + " */");
 			byte[] tagBytes = tagHelper.getByteArray();
 			String tagBytesAsString = "new byte[] {";
 			for(int i=0; i<tagBytes.length; i++) {
@@ -333,14 +391,14 @@ public class BERHelper {
 				generator.output.println("reader.mustMatchTag(new byte[]{0});");
 				generator.output.println("break;");
 				generator.output.println("}");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");
+				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 				generator.output.println("reader.readLength();");
 				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 			}
 			else {
 				generator.output.println("reader.readTag();");
 				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + ");");
+				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 				generator.output.println("reader.readLength();");
 				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
 			}
@@ -358,7 +416,6 @@ public class BERHelper {
 				}
 
 				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				generator.output.println("/* " + tagHelper.toString() + " */");
 				byte[] tagBytes = tagHelper.getByteArray();
 				
 				String tagBytesAsString = "" + tagBytes[0];
@@ -368,7 +425,7 @@ public class BERHelper {
 				}
 				generator.output.println("reader.readTag();");
 				generator.output.println(
-						"reader.mustMatchTag(new byte[] {" + tagBytesAsString + "});");
+						"reader.mustMatchTag(new byte[] {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
 				
 				generator.output.println("reader.readLength();");
 			}
@@ -442,7 +499,17 @@ public class BERHelper {
 			}
 			writeTagsDecode(namedType, automaticTag);
 			
+			if(namedType.isOptional()) {
+				generator.output.println("if(matchedPrevious){");
+			}
+			generator.output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
+			if(namedType.isOptional()) {
+				generator.output.println("}");
+			}
+			else {
+				generator.output.println("matchedPrevious=true;");			
+			}
 		}
 		
 		generator.output.println("if(totalLength==-1) {");
@@ -503,18 +570,21 @@ public class BERHelper {
 
 		generator.output.println("while(totalLength==-1||totalLength>0){");
 
-		generator.output.println("boolean matchedPrevious=true;");
+		generator.output.println("boolean matchedPrevious=false;");
 		generator.output.println("int componentLength=0;");
 
 		generator.output.println("reader.readTag();");
 		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+		generator.output.println("if(totalLength==-1 && reader.matchTag(new byte[]{0})) {");
+		generator.output.println("reader.readTag();");
+		generator.output.println("reader.mustMatchTag(new byte[]{0});");
+		generator.output.println("return;");
+		generator.output.println("}");
 
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component; 
-			boolean isOptional = namedType.isOptional();
-			namedType.setOptional(true); // treat as optional
 			String componentName = Utils.normalize(namedType.getName());
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
@@ -525,16 +595,19 @@ public class BERHelper {
 			if(sequenceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
-			writeTagsDecode(namedType, automaticTag);
 			
+			writeSetTagsDecode(namedType, automaticTag);
+			generator.output.println("if(matchedPrevious){");
+			generator.output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
-			
-			generator.output.println("if(matchedPrevious) continue;");
-			
-			namedType.setOptional(isOptional); // restore		
+			generator.output.println("continue;");
+			generator.output.println("}");
+			generator.output.println();
 		}	
 		
 		generator.output.println("}");
+		generator.output.println("if(totalLength!=-1 && totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
+
 		generator.output.println("}");
 		
 		// pdu methods
@@ -737,12 +810,14 @@ public class BERHelper {
 			if(choiceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
-			namedType.setOptional(true); // force optional
-			writeTagsDecode(namedType, automaticTag);
-			
+
+			writeSetTagsDecode(namedType, automaticTag);
+			generator.output.println("if(matchedPrevious){");
+			generator.output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
-			
-			generator.output.println("if(matchedPrevious) return;");
+			generator.output.println("return;");
+			generator.output.println("}");
+			generator.output.println();
 		}
 		
 		generator.output.println("}");
@@ -803,10 +878,6 @@ public class BERHelper {
 	}
 	
 	void switchDecodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
-		generator.output.println("componentLength=reader.getLengthValue();");
-		if(namedType.isOptional()) {
-			generator.output.println("if(matchedPrevious){");
-		}
 		
 		Type type = namedType.getType();
 		if(type.isTypeReference()) {
@@ -860,15 +931,7 @@ public class BERHelper {
 		else {
 			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + namedType.getType().getName());
 		}
-
 		
 		generator.output.println("if(totalLength!=-1) totalLength-=componentLength;");
-		if(namedType.isOptional()) {
-			generator.output.println("}");
-		}
-		else {
-			generator.output.println("matchedPrevious=true;");			
-		}
-
 	}
 }

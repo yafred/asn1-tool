@@ -1,0 +1,23 @@
+G-017 DEFINITIONS ::= 
+BEGIN 
+
+Person ::= SEQUENCE {
+	first-name [0] IA5String OPTIONAL,
+	last-name [1] IA5String,
+	age [2] INTEGER
+}
+
+GpsInfo  ::= SET {
+   gpsLat    [0]  INTEGER,
+   gpsLong   [1]  INTEGER,
+   gpsAlt    [2]  INTEGER
+}
+
+Payment-method ::= CHOICE {
+  check       [0]  NumericString,
+  credit-card [1]  VisibleString,
+  cash        [2]  NULL
+}
+
+
+END
