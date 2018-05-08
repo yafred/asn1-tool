@@ -15,18 +15,20 @@ import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
+import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.NullType;
 import com.yafred.asn1.model.OctetStringType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
-import com.yafred.asn1.model.SequenceOfType;
 import com.yafred.asn1.model.SequenceType;
+import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
 import com.yafred.asn1.model.TypeReference;
+import com.yafred.asn1.model.TypeWithComponents;
 
 public class Generator {
 	Options options;
@@ -154,15 +156,19 @@ public class Generator {
 			berHelper.processRestrictedCharacterStringTypeAssignment((RestrictedCharacterStringType)type, className);
 		}	
 		else if (type.isSequenceType()) {
-			processSequenceTypeAssignment((SequenceType)type, className);
+			processTypeWithComponentsAssignment((SequenceType)type, className);
 			berHelper.processSequenceTypeAssignment((SequenceType)type, className);
 		}
-		else if (type.isSequenceOfType()) {
-			processSequenceOfTypeAssignment((SequenceOfType)type, className);
-			berHelper.processSequenceOfTypeAssignment((SequenceOfType)type, className);
+		else if (type.isSetType()) {
+			processTypeWithComponentsAssignment((SetType)type, className);
+			berHelper.processSetTypeAssignment((SetType)type, className);
+		}
+		else if (type.isListOfType()) {
+			processListOfTypeAssignment((ListOfType)type, className);
+			berHelper.processListOfTypeAssignment((ListOfType)type, className);
 		}
 		else if (type.isChoiceType()) {
-			processChoiceTypeAssignment((ChoiceType)type, className);
+			processTypeWithComponentsAssignment((ChoiceType)type, className);
 			berHelper.processChoiceTypeAssignment((ChoiceType)type, className);
 		}
 		else {
@@ -249,11 +255,11 @@ public class Generator {
 		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
 	}
 
-	private void processSequenceTypeAssignment(SequenceType sequenceType, String className) throws Exception {
+	private void processTypeWithComponentsAssignment(TypeWithComponents typeWithComponents, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
-		Utils.addAllIfNotNull(componentList, sequenceType.getRootComponentList());
-		Utils.addAllIfNotNull(componentList, sequenceType.getExtensionComponentList());
-		Utils.addAllIfNotNull(componentList, sequenceType.getAdditionalComponentList());
+		Utils.addAllIfNotNull(componentList, typeWithComponents.getRootComponentList());
+		Utils.addAllIfNotNull(componentList, typeWithComponents.getExtensionComponentList());
+		Utils.addAllIfNotNull(componentList, typeWithComponents.getAdditionalComponentList());
 
 		for(Component component : componentList) {
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
@@ -262,7 +268,7 @@ public class Generator {
 		}
 	}
 	
-	private void processSequenceOfTypeAssignment(SequenceOfType sequenceOfType, String className) throws Exception {
+	private void processListOfTypeAssignment(ListOfType sequenceOfType, String className) throws Exception {
 		Type type = sequenceOfType.getElementType();
 		if(type.isIntegerType()) {
 			processIntegerListElement((IntegerType)sequenceOfType.getElementType());
@@ -290,33 +296,6 @@ public class Generator {
 		}	
 		else {
 			throw new Exception("Generator.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
-		}
-	}
-	
-	private void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
-		ArrayList<Component> componentList = new ArrayList<Component>();
-		Utils.addAllIfNotNull(componentList, choiceType.getRootAlternativeList());
-		Utils.addAllIfNotNull(componentList, choiceType.getAdditionalAlternativeList());
-
-		/* May be later
-		output.println("public enum Choice {");
-		boolean isFirst = true;
-		for(Component component : componentList) {
-			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
-			NamedType namedType = (NamedType)component;
-			if(!isFirst) {
-				output.print(",");
-			}
-			output.println(Utils.normalize(namedType.getName()));
-			isFirst = false;	
-		}		
-		
-		output.println("}");
-		*/
-		
-		for(Component component : componentList) {
-			NamedType namedType = (NamedType)component;
-			switchProcessNamedType(namedType);
 		}
 	}
 	

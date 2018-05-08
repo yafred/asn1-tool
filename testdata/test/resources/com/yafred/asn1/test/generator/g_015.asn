@@ -1,0 +1,25 @@
+
+G-015 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+My-integer-list ::= SET OF INTEGER { ten(10), twenty(20) }
+
+My-string-list ::= [APPLICATION 2] SET OF [0] VisibleString 
+
+My-octet-string-list ::= [APPLICATION 2] SET OF [0] IMPLICIT OCTET STRING 
+
+My-boolean-list ::= SET OF BOOLEAN
+
+My-bitstring-list ::= SET OF BIT STRING
+          {
+              clerk      (0),
+              editor     (1),
+              artist     (2),
+              publisher  (3)
+          }
+
+My-enumerated-list::= SET OF ENUMERATED { banana, apple, pear, ..., lemon }
+
+My-enumerated-list2 ::= SET OF ENUMERATED { banana, apple, pear }
+
+END

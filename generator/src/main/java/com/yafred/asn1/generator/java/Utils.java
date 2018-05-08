@@ -59,8 +59,7 @@ public class Utils {
 			type = ((TypeReference) type).getReferencedType();
 		}
 
-		if (type.isChoiceType() || type.isSequenceType() || type.isSetType() || type.isSequenceOfType()
-				|| type.isSetOfType()) {
+		if (type.isTypeWithComponents()|| type.isListOfType()) {
 			ret = true;
 		}
 

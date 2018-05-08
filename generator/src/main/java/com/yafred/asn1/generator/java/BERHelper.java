@@ -8,13 +8,14 @@ import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
+import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.NullType;
 import com.yafred.asn1.model.OctetStringType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
-import com.yafred.asn1.model.SequenceOfType;
 import com.yafred.asn1.model.SequenceType;
+import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeReference;
@@ -457,13 +458,95 @@ public class BERHelper {
 		// pdu methods
 		processTypeAssignment(sequenceType, className);
 	}
-	
-	void processSequenceOfTypeAssignment(SequenceOfType sequenceOfType, String className) throws Exception {
-		Type elementType = sequenceOfType.getElementType();
+
+	void processSetTypeAssignment(SetType sequenceType, String className) throws Exception {
+		ArrayList<Component> componentList = new ArrayList<Component>();
+		Utils.addAllIfNotNull(componentList, sequenceType.getRootComponentList());
+		Utils.addAllIfNotNull(componentList, sequenceType.getExtensionComponentList());
+		Utils.addAllIfNotNull(componentList, sequenceType.getAdditionalComponentList());
+		
+		if(componentList.size() == 0) return;
+		
+	    // write encoding code
+		// Encoding section is equivalent to SEQUENCE encoding
+		generator.output.println("int write(" + BER_WRITER +
+            " writer) throws Exception {");
+		generator.output.println("int totalLength=0;");
+		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
+			Component component = componentList.get(componentIndex);
+			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component;
+			String componentName = Utils.normalize(namedType.getName());
+			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
+			generator.output.println("if(" + componentName + "!=null){");
+			generator.output.print("int length=0;");
+			switchEncodeComponent(namedType, componentName, componentClassName);
+			Tag automaticTag = null;
+			if(sequenceType.isAutomaticTaggingSelected()) {
+				automaticTag = new Tag(new Integer(componentIndex), null, null);
+			}
+			writeTagsEncode(namedType.getType(), automaticTag);
+			generator.output.println("totalLength+=length;");
+			generator.output.println("}");
+		}
+		generator.output.println("return totalLength;");
+		generator.output.println("}");
+
+        // write decoding code
+		// decoding is different, we cannot rely on the order of components
+		generator.output.println("void read(" + BER_READER +
+            " reader, int totalLength) throws Exception {");
+
+		generator.output.println("while(totalLength==-1||totalLength>0){");
+
+		generator.output.println("boolean matchedPrevious=true;");
+		generator.output.println("int componentLength=0;");
+
+		generator.output.println("reader.readTag();");
+		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+
+		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
+			Component component = componentList.get(componentIndex);
+			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			NamedType namedType = (NamedType)component; 
+			boolean isOptional = namedType.isOptional();
+			namedType.setOptional(true); // treat as optional
+			String componentName = Utils.normalize(namedType.getName());
+			String componentClassName = Utils.uNormalize(namedType.getName());
+			if(namedType.getType().isTypeReference()) {
+				TypeReference typeReference = (TypeReference)namedType.getType();
+				componentClassName = Utils.uNormalize(typeReference.getName());
+			}
+			Tag automaticTag = null;
+			if(sequenceType.isAutomaticTaggingSelected()) {
+				automaticTag = new Tag(new Integer(componentIndex), null, null);
+			}
+			writeTagsDecode(namedType, automaticTag);
+			
+			switchDecodeComponent(namedType, componentName, componentClassName);
+			
+			generator.output.println("if(matchedPrevious) continue;");
+			
+			namedType.setOptional(isOptional); // restore		
+		}	
+		
+		generator.output.println("}");
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(sequenceType, className);
+	}
+
+	void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
+		Type elementType = listOfType.getElementType();
 		String elementClassName = "";
-		if(sequenceOfType.getElementType().isTypeReference()) {
-			elementClassName = Utils.uNormalize(sequenceOfType.getElementType().getName());
-			elementType = ((TypeReference)sequenceOfType.getElementType()).getBuiltinType();
+		if(listOfType.getElementType().isTypeReference()) {
+			elementClassName = Utils.uNormalize(listOfType.getElementType().getName());
+			elementType = ((TypeReference)listOfType.getElementType()).getBuiltinType();
 		}
 		String javaType = elementClassName;
 		
@@ -526,10 +609,10 @@ public class BERHelper {
 			generator.output.println("length+=this.value.get(i).write(writer);");						
 		}
 		else {
-			throw new Exception("BERHelper.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
+			throw new Exception("BERHelper.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElementType().getName());
 		}
 
-		writeTagsEncode(sequenceOfType.getElementType());
+		writeTagsEncode(listOfType.getElementType());
 		generator.output.println("totalLength+=length;");
 		generator.output.println("}");
 		generator.output.println("}");
@@ -544,7 +627,7 @@ public class BERHelper {
 		generator.output.println("while(totalLength > 0 || totalLength==-1) {");
 		generator.output.println("reader.readTag();");
 		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-		writeElementTagsDecode(sequenceOfType.getElementType());
+		writeElementTagsDecode(listOfType.getElementType());
 		generator.output.println("int itemLength=reader.getLengthValue();");
 		if(elementType.isIntegerType()) {
 			generator.output.println("this.value.add(reader.readInteger(itemLength));");	
@@ -599,7 +682,7 @@ public class BERHelper {
 		generator.output.println("}");
 
 		// pdu methods
-		processTypeAssignment(sequenceOfType, className);
+		processTypeAssignment(listOfType, className);
 	}
 	
 	void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
