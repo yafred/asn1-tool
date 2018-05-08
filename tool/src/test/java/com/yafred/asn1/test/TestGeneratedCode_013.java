@@ -77,8 +77,8 @@ public class TestGeneratedCode_013 {
 		My_octet_string_list decodedPdu = (My_octet_string_list) testHelper.readPdu(My_octet_string_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
-		assertEquals(decodedPdu.getValue().get(0)[0], pdu.getValue().get(0)[0]);	
-		assertEquals(decodedPdu.getValue().get(1)[0], pdu.getValue().get(1)[0]);		
+		assertEquals(BERDumper.bytesToString(decodedPdu.getValue().get(0)), BERDumper.bytesToString(pdu.getValue().get(0)));	
+		assertEquals(BERDumper.bytesToString(decodedPdu.getValue().get(1)), BERDumper.bytesToString(pdu.getValue().get(1)));		
 	}
 
 	@Test

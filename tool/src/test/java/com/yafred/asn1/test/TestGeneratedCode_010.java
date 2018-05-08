@@ -74,7 +74,7 @@ public class TestGeneratedCode_010 {
 		assertNotNull(decodedPdu.getGpsInfo());
 		assertEquals(decodedPdu.getGpsInfo().getGpsLat(), pdu.getGpsInfo().getGpsLat());
 		assertEquals(decodedPdu.getGpsInfo().getGpsLong(), pdu.getGpsInfo().getGpsLong());
-		assertEquals(decodedPdu.getSiteInfo()[0], pdu.getSiteInfo()[0]);
+		assertEquals(BERDumper.bytesToString(decodedPdu.getSiteInfo()), BERDumper.bytesToString(pdu.getSiteInfo()));
 	}
 	
 }

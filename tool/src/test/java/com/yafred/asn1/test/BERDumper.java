@@ -2,7 +2,7 @@
  * online: http://lapo.it/asn1js/
  */
 
-package com.yafred.asn1.runtime;
+package com.yafred.asn1.test;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import java.util.ArrayList;
+
+import com.yafred.asn1.runtime.BERReader;
 
 
 public class BERDumper {

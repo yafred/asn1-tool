@@ -18,7 +18,7 @@ public class BERReader {
      */
     int lengthLength;
     int lengthValue;
-    boolean isInfiniteFormLength;
+    boolean isIndefiniteFormLength;
 
     /**
      * Tag
@@ -39,31 +39,9 @@ public class BERReader {
     }
 
     /**
-     * Returns true if array1 and array2 have same size and content
-     */
-    static public boolean match(byte[] array1, byte[] array2) {
-        boolean match = true;
-
-        if (array1.length == array2.length) {
-            int i = 0;
-
-            for (i = 0; (i < array1.length) && (array1[i] == array2[i]); i++)
-                ;
-
-            if (i < array1.length) {
-                match = false;
-            }
-        } else {
-            match = false;
-        }
-
-        return match;
-    }
-
-    /**
      * Returns number of bytes received since last call to reset() (or creation of this object).
      */
-    public int getNumReceived() {
+    public int getTraceLength() {
         return traceIndex;
     }
 
@@ -84,23 +62,6 @@ public class BERReader {
         return value;
     }
 
-    /**
-     * @param expectedByte
-     * @throws Exception
-     */
-    public void expectByte(byte expectedByte) throws Exception {
-        byte actualByte = (byte) readChar();
-
-        if (actualByte != expectedByte) {
-            throw new Exception("Unexpected byte (expected: " + expectedByte +
-                ", actual: " + actualByte);
-        }
-    }
-
-    public byte readByte() throws Exception {
-        return (byte) readChar();
-    }
-    
 
     public void mustMatchTag(byte[]tag) throws Exception {
     	if(tagNumBytes != tag.length) {
@@ -164,15 +125,6 @@ public class BERReader {
     /**
      *
      * @return
-     * @throws Exception
-     */
-    public byte getOneByteTag() {
-        return tagBuffer[0];
-    }
-
-    /**
-     *
-     * @return
      */
     public byte[] getTag() {
         byte[] ret = new byte[tagNumBytes];
@@ -187,14 +139,14 @@ public class BERReader {
     public void readLength() throws IOException {
         lengthLength = 0; // length of length
         lengthValue = 0; // value of length
-        isInfiniteFormLength = false;
+        isIndefiniteFormLength = false;
 
         int aByte = readChar();
 
         if (aByte == 0x80) {
             lengthLength = 1;
             lengthValue = -1;
-            isInfiniteFormLength = true;
+            isIndefiniteFormLength = true;
         } else {
             if (aByte > 0x7f) { // long form
 
@@ -219,13 +171,6 @@ public class BERReader {
         }
     }
 
-    public long skip(long length) throws IOException {
-        for (int i = 0; i < length; i++) {
-            readChar();
-        }
-
-        return length;
-    }
 
     public Integer readInteger(int nBytes) throws IOException {
         if (nBytes > 4) {
@@ -396,8 +341,8 @@ public class BERReader {
         this.readingUntaggedChoice = readingUntaggedChoice;
     }
 
-    public boolean isInfiniteFormLength() {
-        return isInfiniteFormLength;
+    public boolean isIndefiniteFormLength() {
+        return isIndefiniteFormLength;
     }
 
     public int getLengthLength() {

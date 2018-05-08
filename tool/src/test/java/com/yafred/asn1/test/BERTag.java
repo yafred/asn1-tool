@@ -1,4 +1,4 @@
-package com.yafred.asn1.runtime;
+package com.yafred.asn1.test;
 
 import java.util.ArrayList;
 

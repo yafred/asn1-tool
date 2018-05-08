@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
-import com.yafred.asn1.runtime.BERDumper;
 import com.yafred.asn1.runtime.BERReader;
 import com.yafred.asn1.runtime.BERWriter;
 

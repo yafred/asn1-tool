@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.yafred.asn1.runtime.BERDumper;
-
 import g_004.My_octet_string;
 
 public class TestGeneratedCode_004 {
