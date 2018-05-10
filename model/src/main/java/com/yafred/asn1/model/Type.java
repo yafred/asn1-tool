@@ -62,6 +62,10 @@ abstract public class Type {
     public boolean isObjectIdentifierType() {
         return false;
     }
+    
+    public boolean isRelativeOIDType() {
+        return false;
+    }
 
     public boolean isRealType() {
         return false;

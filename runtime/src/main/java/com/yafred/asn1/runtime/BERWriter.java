@@ -214,7 +214,85 @@ public class BERWriter {
 		
 		return 1;
 	}
+	
+	public int writeObjectIdentifier(long[] value) {
+		if(value == null) {
+			throw new RuntimeException("Object Identifier cannot be null");
+		}
+		if(value.length < 2) {
+			throw new RuntimeException("Object Identifier must have at least 2 arcs");
+		}
+		if(value[0] > 2) {
+			throw new RuntimeException("Object Identifier first arc must be 0, 1 or 2");
+		}
+		if(value[0] == 0 && value[1] > 39) {
+			throw new RuntimeException("Object Identifier second arc must be < 40 when first arc is 0");
+		}
+		if(value[0] == 1 && (value[1] == 0 || value[1] > 39)) {
+			throw new RuntimeException("Object Identifier second arc must be > 0 and < 40 when first arc is 1");
+		}
+		
+		int size = 0; 
+		for(int i = value.length-1; i > 1; i--) {
+			long arc = value[i];
+			boolean isLast = true;
+			do {
+				long aByte = arc % 128;
+				arc = arc / 128;
+				if(isLast) {
+					isLast = false;
+				}
+				else {
+					aByte |= 0x80;
+				}
+				writeByte((byte)aByte);				
+				size++;
+			}
+			while(arc > 0);
+		}
+		
+		long arc = 40 * value[0] + value[1];
+		boolean isLast = true;
+		do {
+			long aByte = arc % 128;
+			arc = arc / 128;
+			if(isLast) {
+				isLast = false;
+			}
+			else {
+				aByte |= 0x80;
+			}
+			writeByte((byte)aByte);				
+			size++;
+		}
+		while(arc > 0);
+		
+		return size;
+	}
 
+	public int writeRelativeOID(long[] value) {
+		int size = 0; 
+		for(int i = value.length-1; i >= 0; i--) {
+			long arc = value[i];
+			boolean isLast = true;
+			do {
+				long aByte = arc % 128;
+				arc = arc / 128;
+				if(isLast) {
+					isLast = false;
+				}
+				else {
+					aByte |= 0x80;
+				}
+				writeByte((byte)aByte);				
+				size++;
+			}
+			while(arc > 0);
+		}
+
+		return size;
+	}
+	
     /**
      * Provides a buffer containing the encoded data.
      * Returns null if no data has been encoded since the buffer has been flushed.

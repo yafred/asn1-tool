@@ -1,0 +1,26 @@
+G-018 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+My-Object-Id ::= OBJECT IDENTIFIER
+
+My-Relative-Object-Id ::= RELATIVE-OID
+
+
+My-Object-Sequence ::= SEQUENCE {
+   root OBJECT IDENTIFIER,
+   object1 RELATIVE-OID,
+   object2 RELATIVE-OID   
+}
+
+
+My-Ref-Object-Set ::= SET {
+   root My-Object-Id,
+   object1 My-Relative-Object-Id,
+   object2 My-Relative-Object-Id   
+}
+
+My-list-of-objects ::= SEQUENCE OF OBJECT IDENTIFIER
+
+My-list-of-ref-objects ::= SET OF My-Relative-Object-Id
+
+END

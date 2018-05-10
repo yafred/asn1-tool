@@ -267,6 +267,79 @@ public class BERReader {
 
         return result;
     }
+    
+    public long[] readObjectIdentifier(int nBytes) throws IOException {
+    	ArrayList<Long> objectIdentifier = new ArrayList<Long>();
+    	byte[] buffer = readOctetString(nBytes);
+    	long arc = -1;
+    	long mult = 1;
+        for (int i = nBytes-1; i >= 0; i--) {	
+            if((buffer[i] & 0x80) == 0x00) {
+            	if(arc != -1) {
+            		objectIdentifier.add(0, new Long(arc));
+            	}
+            	arc = buffer[i];
+            	mult = 1;
+            }
+            else {
+              	// mult *= 128;
+            	mult = Math.multiplyExact(mult, 128);
+            	// arc += mult * (buffer[i] & 0x7F);
+            	arc = Math.addExact(arc, Math.multiplyExact(mult, (buffer[i] & 0x7F))); // detect overflow
+            }
+        }
+        if(arc < 40) {
+            objectIdentifier.add(0, new Long(arc));
+            objectIdentifier.add(0, new Long(0));                  	
+        }
+        else if(arc < 80) {
+            objectIdentifier.add(0, new Long(arc-40));
+            objectIdentifier.add(0, new Long(1));                  	
+        }
+        else {
+            objectIdentifier.add(0, new Long(arc-80));
+            objectIdentifier.add(0, new Long(2));                  	
+        }    
+        
+        long[] ret = new long[objectIdentifier.size()];
+        int i=0;
+        for(Long arcAsLong : objectIdentifier) {
+        	ret[i] = arcAsLong.longValue();
+        	i++;
+        }
+        return ret;
+    }
+    
+    public long[] readRelativeOID(int nBytes) throws IOException {
+    	ArrayList<Long> objectIdentifier = new ArrayList<Long>();
+    	byte[] buffer = readOctetString(nBytes);
+    	long arc = -1;
+    	long mult = 1;
+        for (int i = nBytes-1; i >= 0; i--) {	
+            if((buffer[i] & 0x80) == 0x00) {
+            	if(arc != -1) {
+            		objectIdentifier.add(0, new Long(arc));
+            	}
+            	arc = buffer[i];
+            	mult = 1;
+            }
+            else {
+              	// mult *= 128;
+            	mult = Math.multiplyExact(mult, 128);
+            	// arc += mult * (buffer[i] & 0x7F);
+            	arc = Math.addExact(arc, Math.multiplyExact(mult, (buffer[i] & 0x7F))); // detect overflow
+            }
+        }
+        objectIdentifier.add(0, new Long(arc));
+        
+        long[] ret = new long[objectIdentifier.size()];
+        int i=0;
+        for(Long arcAsLong : objectIdentifier) {
+        	ret[i] = arcAsLong.longValue();
+        	i++;
+        }
+        return ret;
+    }
 
     public byte[] readOctetString(int nBytes) throws IOException {
         byte[] result = new byte[nBytes];

@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class TestBERReader  {
@@ -359,4 +360,163 @@ public class TestBERReader  {
 	           e.printStackTrace();
 		}
     }
+    
+	@Test
+	public void test_object_identifier() {
+		String hexaString = "29 28";
+		BERReader reader = makeReader(hexaString);
+
+		try {
+			long[] result = reader.readObjectIdentifier(2);
+			assertNotNull(result);
+			assertEquals(3, result.length);
+			assertEquals(1, result[0]);
+			assertEquals(1, result[1]);
+			assertEquals(40, result[2]);
+		} catch (IOException e) {
+			assertTrue("Test should succeed", false);
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void test_object_identifier1() {
+		String hexaString = "29 81 48";
+		BERReader reader = makeReader(hexaString);
+
+		try {
+			long[] result = reader.readObjectIdentifier(3);
+			assertNotNull(result);
+			assertEquals(3, result.length);
+			assertEquals(1, result[0]);
+			assertEquals(1, result[1]);
+			assertEquals(200, result[2]);
+		} catch (IOException e) {
+			assertTrue("Test should succeed", false);
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void test_object_identifier2() {
+		String hexaString = "90 20 dd 60";
+		BERReader reader = makeReader(hexaString);
+
+		try {
+			long[] result = reader.readObjectIdentifier(4);
+			assertNotNull(result);
+			assertEquals(3, result.length);
+			assertEquals(2, result[0]);
+			assertEquals(2000, result[1]);
+			assertEquals(12000, result[2]);
+		} catch (IOException e) {
+			assertTrue("Test should succeed", false);
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void test_object_identifier3() {
+		String hexaString = "19 ba ef 9a 15 83 a1 fb f9 6a";
+		BERReader reader = makeReader(hexaString);
+
+		try {
+			long[] result = reader.readObjectIdentifier(10);
+			assertNotNull(result);
+			assertEquals(4, result.length);
+			assertEquals(0, result[0]);
+			assertEquals(25, result[1]);
+			assertEquals(123456789, result[2]);
+			assertEquals(876543210, result[3]);
+		} catch (Exception e) {
+			assertTrue("Test should succeed", false);
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void test_object_identifier4() {
+		String hexaString = "19 ba ef 9a 15 a4 e5 c0 ad 6a";
+		BERReader reader = makeReader(hexaString);
+		boolean hasFailed = false;
+
+		try {
+			long[] result = reader.readObjectIdentifier(10);
+			assertNotNull(result);
+			assertEquals(4, result.length);
+			assertEquals(0, result[0]);
+			assertEquals(25, result[1]);
+			assertEquals(123456789, result[2]);
+			assertEquals(9876543210L, result[3]); 
+		} catch (Exception e) {
+			hasFailed = true;
+			e.printStackTrace();
+		}
+
+		assertFalse("Test should succeed", hasFailed);
+	}
+	
+	@Test
+	public void test_object_identifier5() {
+		String hexaString = "19 ba ef 9a 15 a4 e5 c0 ad a4 e5 c0 ad a4 e5 c0 ad 6a";
+		BERReader reader = makeReader(hexaString);
+		boolean hasFailed = false;
+
+		try {
+			long[] result = reader.readObjectIdentifier(18);
+			assertNotNull(result);
+			assertEquals(4, result.length);
+			assertEquals(0, result[0]);
+			assertEquals(25, result[1]);
+			assertEquals(123456789, result[2]);
+			// assertEquals(98765432109876543210L, result[3]);  // overflow
+		} catch (Exception e) {
+			hasFailed = true;
+			e.printStackTrace();
+		}
+
+		assertTrue("Test should fail", hasFailed);
+	}
+	
+	@Test
+	public void test_relative_object_identifier() {
+		String hexaString = "64 8f 50 dd 60";
+		BERReader reader = makeReader(hexaString);
+		boolean hasFailed = false;
+
+		try {
+			long[] result = reader.readRelativeOID(5);
+			assertNotNull(result);
+			assertEquals(3, result.length);
+			assertEquals(100, result[0]);
+			assertEquals(2000, result[1]);
+			assertEquals(12000, result[2]); 
+		} catch (Exception e) {
+			hasFailed = true;
+			e.printStackTrace();
+		}
+
+		assertFalse("Test should succeed", hasFailed);
+	}
+	
+	@Test
+	public void test_relative_object_identifier2() {
+		String hexaString = "19 ba ef 9a 15 a4 e5 c0 ad a4 e5 c0 ad a4 e5 c0 ad 6a";
+		BERReader reader = makeReader(hexaString);
+		boolean hasFailed = false;
+
+		try {
+			long[] result = reader.readRelativeOID(18);
+			assertNotNull(result);
+			assertEquals(3, result.length);
+			assertEquals(25, result[0]);
+			assertEquals(123456789, result[1]);
+			// assertEquals(98765432109876543210L, result[2]);  // overflow
+		} catch (Exception e) {
+			hasFailed = true;
+			e.printStackTrace();
+		}
+
+		assertTrue("Test should fail", hasFailed);
+	}
 }

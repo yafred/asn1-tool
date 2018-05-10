@@ -45,6 +45,8 @@ public class Utils {
 			javaType = "java.lang.Object";
 		} else if (type.isOctetStringType()) {
 			javaType = "byte[]";
+		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {
+			javaType = "long[]";
 		} else {
 			throw new Exception("Type not mapped: " + type.getName());
 		}

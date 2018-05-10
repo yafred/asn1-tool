@@ -20,7 +20,9 @@ import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.NullType;
+import com.yafred.asn1.model.ObjectIdentifierType;
 import com.yafred.asn1.model.OctetStringType;
+import com.yafred.asn1.model.RelativeOIDType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
@@ -151,6 +153,14 @@ public class Generator {
 			processBasicTypeAssignment(type);
 			berHelper.processOctetStringTypeAssignment((OctetStringType)type, className);
 		}	
+		else  if (type.isObjectIdentifierType()) {
+			processBasicTypeAssignment(type);
+			berHelper.processObjectIdentifierTypeAssignment((ObjectIdentifierType)type, className);
+		}	
+		else  if (type.isRelativeOIDType()) {
+			processBasicTypeAssignment(type);
+			berHelper.processRelativeOIDTypeAssignment((RelativeOIDType)type, className);
+		}	
 		else  if (type.isRestrictedCharacterStringType()) {
 			processBasicTypeAssignment(type);
 			berHelper.processRestrictedCharacterStringTypeAssignment((RestrictedCharacterStringType)type, className);
@@ -273,17 +283,8 @@ public class Generator {
 		if(type.isIntegerType()) {
 			processIntegerListElement((IntegerType)sequenceOfType.getElementType());
 		}
-		else if (type.isNullType()) {
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			processBasicListElement(type);			
-		}
-		else if (type.isBooleanType()) {
-			processBasicListElement(type);
-		}
-		else if (type.isOctetStringType()) {
-			processBasicListElement(type);
-		}	
-		else if (type.isRestrictedCharacterStringType()) {
-			processBasicListElement(type);
 		}
 		else if(type.isBitStringType()) {
 			processBitStringListElement((BitStringType)type);
@@ -312,19 +313,10 @@ public class Generator {
 		else if (type.isBitStringType()) {
 			processBitStringNamedType((BitStringType)type, componentName, uComponentName);
 		}
-		else if (type.isNullType()) {
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			processBasicNamedType(type, componentName, uComponentName);			
 		}
-		else  if (type.isBooleanType()) {
-			processBasicNamedType(type, componentName, uComponentName);
-		}
-		else  if (type.isOctetStringType()) {
-			processBasicNamedType(type, componentName, uComponentName);
-		}	
-		else  if (type.isRestrictedCharacterStringType()) {
-			processBasicNamedType(type, componentName, uComponentName);
-		}	
-		else  if (type.isTypeReference()) {
+		else if (type.isTypeReference()) {
 			processTypeReferenceNamedType((TypeReference)type, componentName, uComponentName);
 		}	
 		else 

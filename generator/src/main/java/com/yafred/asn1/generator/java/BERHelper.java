@@ -12,7 +12,9 @@ import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.NullType;
+import com.yafred.asn1.model.ObjectIdentifierType;
 import com.yafred.asn1.model.OctetStringType;
+import com.yafred.asn1.model.RelativeOIDType;
 import com.yafred.asn1.model.RestrictedCharacterStringType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
@@ -179,6 +181,41 @@ public class BERHelper {
 		// pdu methods
 		processTypeAssignment(octetStringType, className);
 	}
+
+	void processObjectIdentifierTypeAssignment(ObjectIdentifierType objectIdentifierType, String className) throws Exception {
+	    // write encoding code
+		generator.output.println("int write(" + BER_WRITER +
+	            " writer) throws Exception {");
+		generator.output.println("return writer.writeObjectIdentifier(this.getValue());");
+		generator.output.println("}");
+
+        // write decoding code
+		generator.output.println("void read(" + BER_READER +
+	            " reader, int length) throws Exception {");
+		generator.output.println("this.setValue(reader.readObjectIdentifier(length));");
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(objectIdentifierType, className);
+	}
+	
+	void processRelativeOIDTypeAssignment(RelativeOIDType relativeOIDType, String className) throws Exception {
+	    // write encoding code
+		generator.output.println("int write(" + BER_WRITER +
+	            " writer) throws Exception {");
+		generator.output.println("return writer.writeRelativeOID(this.getValue());");
+		generator.output.println("}");
+
+        // write decoding code
+		generator.output.println("void read(" + BER_READER +
+	            " reader, int length) throws Exception {");
+		generator.output.println("this.setValue(reader.readRelativeOID(length));");
+		generator.output.println("}");
+		
+		// pdu methods
+		processTypeAssignment(relativeOIDType, className);
+	}
+
 
 	void processRestrictedCharacterStringTypeAssignment(RestrictedCharacterStringType restrictedCharacterStringType, String className) throws Exception {
 	    // write encoding code
@@ -653,6 +690,12 @@ public class BERHelper {
 		else if(elementType.isOctetStringType()) {
 			generator.output.println("length+=writer.writeOctetString(this.value.get(i));");			
 		}
+		else if(elementType.isObjectIdentifierType()) {
+			generator.output.println("length+=writer.writeObjectIdentifier(this.value.get(i));");			
+		}
+		else if(elementType.isRelativeOIDType()) {
+			generator.output.println("length+=writer.writeRelativeOID(this.value.get(i));");			
+		}
 		else if(elementType.isBooleanType()) {
 			generator.output.println("length+=writer.writeBoolean(this.value.get(i));");			
 		}
@@ -710,6 +753,12 @@ public class BERHelper {
 		}
 		else if(elementType.isOctetStringType()) {
 			generator.output.println("this.value.add(reader.readOctetString(itemLength));");	
+		}
+		else if(elementType.isObjectIdentifierType()) {
+			generator.output.println("this.value.add(reader.readObjectIdentifier(itemLength));");	
+		}
+		else if(elementType.isRelativeOIDType()) {
+			generator.output.println("this.value.add(reader.readRelativeOID(itemLength));");	
 		}
 		else if(elementType.isBooleanType()) {
 			generator.output.println("this.value.add(reader.readBoolean(itemLength));");	
@@ -847,6 +896,12 @@ public class BERHelper {
 		else if(type.isOctetStringType()) {
 			generator.output.println("length=writer.writeOctetString(this." +  componentName + ");");			
 		}
+		else if(type.isObjectIdentifierType()) {
+			generator.output.println("length=writer.writeObjectIdentifier(this." +  componentName + ");");			
+		}
+		else if(type.isRelativeOIDType()) {
+			generator.output.println("length=writer.writeRelativeOID(this." +  componentName + ");");			
+		}
 		else if(type.isNullType()) {
 			// do nothing
 		}
@@ -898,6 +953,12 @@ public class BERHelper {
 		}
 		else if(type.isOctetStringType()) {
 			generator.output.println("this." + componentName + "=" + "reader.readOctetString(componentLength);");
+		}
+		else if(type.isObjectIdentifierType()) {
+			generator.output.println("this." + componentName + "=" + "reader.readObjectIdentifier(componentLength);");
+		}
+		else if(type.isRelativeOIDType()) {
+			generator.output.println("this." + componentName + "=" + "reader.readRelativeOID(componentLength);");
 		}
 		else if(type.isNullType()) {
 			generator.output.println("this." + componentName + "=new Object();");
