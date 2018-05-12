@@ -20,10 +20,10 @@ public class TestGeneratedCode_011 {
 		pdu.setCheck("012345678901234");
 		
 		String expectedHexa = "80 0f 30 31 32 33 34 35 36 37 38 39 30 31 32 33 34";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, expectedHexa);
+		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
 		assertNotNull(decodedPdu.getCheck());
 		assertEquals(decodedPdu.getCheck(), pdu.getCheck());
 	}
@@ -35,10 +35,10 @@ public class TestGeneratedCode_011 {
 		pdu.setName("bob");
 		
 		String expectedHexa = "61 05 16 03 62 6f 62";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Crooked.class, expectedHexa);
 		
 		// decode
-		Crooked decodedPdu = (Crooked) testHelper.readPdu(Crooked.class, expectedHexa);
+		Crooked decodedPdu = (Crooked) testHelper.readPdu(Crooked.class, Crooked.class, expectedHexa);
 		assertNotNull(decodedPdu.getName());
 		assertEquals(decodedPdu.getName(), pdu.getName());
 	}
@@ -54,10 +54,10 @@ public class TestGeneratedCode_011 {
 		pdu.setCredit_card(credit_card);
 		
 		String expectedHexa = "a1 21 80 01 00 81 14 30 31 32 33 34 35 36 37 38 39 30 31 32 33 34 35 36 37 38 39 82 06 30 34 32 30 31 38";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, expectedHexa);
+		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
 		assertNotNull(decodedPdu.getCredit_card());
 		assertEquals(decodedPdu.getCredit_card().getNumber(), pdu.getCredit_card().getNumber());
 		assertEquals(decodedPdu.getCredit_card().getExpiry_date(), pdu.getCredit_card().getExpiry_date());
@@ -70,10 +70,10 @@ public class TestGeneratedCode_011 {
 		pdu.setCash(new Object());
 		
 		String expectedHexa = "82 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, expectedHexa);
+		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
 		assertNotNull(decodedPdu.getCash());
 	}
 	

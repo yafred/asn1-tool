@@ -36,10 +36,10 @@ public class TestGeneratedCode_014 {
 		pdu.setValue(value);
 				
 		String expectedHexa = "30 22 30 0e 16 03 44 6f 65 16 04 4a 6f 68 6e 02 01 23 30 10 16 06 44 61 6c 74 6f 6e 16 03 4a 6f 65 02 01 1e";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Audience.class, expectedHexa);
 
 		// decode
-		Audience decodedPdu = (Audience) testHelper.readPdu(Audience.class, expectedHexa);
+		Audience decodedPdu = (Audience) testHelper.readPdu(Audience.class, Audience.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0).getLast_name(), pdu.getValue().get(0).getLast_name());		

@@ -17,10 +17,10 @@ public class TestGeneratedCode_007 {
 		pdu.setValue(Fruit.Enum.apple);
 
 		String expectedHexa = "0a 01 01";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Fruit.class, expectedHexa);
 
 		// decode
-		Fruit decodedPdu = (Fruit) testHelper.readPdu(Fruit.class, expectedHexa);
+		Fruit decodedPdu = (Fruit) testHelper.readPdu(Fruit.class, Fruit.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 }

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,7 @@ import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.parser.Asn1ModelValidator;
+import com.yafred.asn1.parser.Asn1SpecificationWriter;
 import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 
 @RunWith(Parameterized.class)
@@ -73,19 +75,29 @@ public class ParameterizedTest {
        
         assertEquals(0, parser.getNumberOfSyntaxErrors());
         
+        // create model
         SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
         Specification specification = visitor.visit(tree);
         
+        // validate model
         Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
        	asn1ModelValidator.visit(specification);
        	
        	assertEquals(0, asn1ModelValidator.getErrorList().size());
        	
+       	String outputPath = System.getProperty("buildDirectory") + File.separator + "generated-test-sources";
+       	
+       	// generate code
        	Generator generator = new Generator();
        	Options options = new Options();
-       	options.setOutputPath(System.getProperty("buildDirectory") + File.separator + "generated-test-sources");
+       	options.setOutputPath(outputPath);
        	options.setBeautify(true);
        	generator.setOptions(options);
        	generator.processSpecification(specification);	
+       	
+       	// attach asn.1 specification to generated code
+       	String tokenizedResourceName[] = resourceName.split("/");
+       	File asnFile = new File(outputPath + File.separator + tokenizedResourceName[tokenizedResourceName.length-1]);
+       	new Asn1SpecificationWriter(new PrintStream(asnFile)).visit(specification);
 	}
 }

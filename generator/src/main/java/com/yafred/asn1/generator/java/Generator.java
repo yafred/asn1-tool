@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.BooleanType;
 import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
@@ -19,11 +18,6 @@ import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.NullType;
-import com.yafred.asn1.model.ObjectIdentifierType;
-import com.yafred.asn1.model.OctetStringType;
-import com.yafred.asn1.model.RelativeOIDType;
-import com.yafred.asn1.model.RestrictedCharacterStringType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Specification;
@@ -40,9 +34,11 @@ public class Generator {
 	PrintWriter output;
 	BERHelper berHelper;
 	
+	
 	public Generator() {
 		berHelper = new BERHelper(this);
 	}
+	
 	
 	public void setOptions(Options options) throws Exception {
 		this.options = options;
@@ -62,6 +58,7 @@ public class Generator {
 		}
 	}
 	
+	
 	public void processSpecification(Specification specification) throws Exception {
 		ArrayList<ModuleDefinition> moduleDefinitionList = specification.getModuleDefinitionList();
 
@@ -70,6 +67,7 @@ public class Generator {
 		}
 	}
 
+	
 	private void processModuleDefinition(ModuleDefinition moduleDefinition) throws Exception {
 		// create java package
 		packageName = Utils.normalize(moduleDefinition.getModuleIdentifier().getModuleReference()).toLowerCase();
@@ -91,6 +89,7 @@ public class Generator {
 		}
 	}
 	
+	
 	private void processTypeAssignment(TypeAssignment typeAssignment) throws Exception {
 		// systematically create a class
 		String className = Utils.uNormalize(typeAssignment.getReference());
@@ -104,15 +103,16 @@ public class Generator {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());
 			output.println("public class " + className + " extends " + parentClassName);
 			output.println("{");
-			berHelper.processTypeAssignment(typeAssignment.getType(), className);
-			output.println("}");
 		} else {
 			output.println("public class " + className);
 			output.println("{");
 			switchProcessTypeAssignment(typeAssignment.getType(), className);
-			output.println("}");
 		}
 
+		// add BER methods to the POJO
+		berHelper.switchProcessTypeAssignment(typeAssignment.getType(), className);
+		
+		output.println("}");
 		output.close();
 		
 		String formattedSource = "";
@@ -128,63 +128,52 @@ public class Generator {
 		fileWriter.close();
 	}
 
+	
 	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
 		if (type.isIntegerType()) {
 			processIntegerTypeAssignment((IntegerType)type, className);
-			berHelper.processIntegerTypeAssignment((IntegerType)type, className);
 		}
 		else if(type.isBitStringType()) {
 			processBitStringTypeAssignment((BitStringType)type, className);			
-			berHelper.processBitStringTypeAssignment((BitStringType)type, className);
 		}
 		else if (type.isEnumeratedType()) {
 			processEnumeratedTypeAssignment((EnumeratedType)type, className);			
-			berHelper.processEnumeratedTypeAssignment((EnumeratedType)type, className);
 		}		
 		else if (type.isNullType()) {
 			processBasicTypeAssignment(type);			
-			berHelper.processNullTypeAssignment((NullType)type, className);
 		}
 		else  if (type.isBooleanType()) {
 			processBasicTypeAssignment(type);
-			berHelper.processBooleanTypeAssignment((BooleanType)type, className);
 		}
 		else  if (type.isOctetStringType()) {
 			processBasicTypeAssignment(type);
-			berHelper.processOctetStringTypeAssignment((OctetStringType)type, className);
 		}	
 		else  if (type.isObjectIdentifierType()) {
 			processBasicTypeAssignment(type);
-			berHelper.processObjectIdentifierTypeAssignment((ObjectIdentifierType)type, className);
 		}	
 		else  if (type.isRelativeOIDType()) {
 			processBasicTypeAssignment(type);
-			berHelper.processRelativeOIDTypeAssignment((RelativeOIDType)type, className);
 		}	
 		else  if (type.isRestrictedCharacterStringType()) {
 			processBasicTypeAssignment(type);
-			berHelper.processRestrictedCharacterStringTypeAssignment((RestrictedCharacterStringType)type, className);
 		}	
 		else if (type.isSequenceType()) {
 			processTypeWithComponentsAssignment((SequenceType)type, className);
-			berHelper.processSequenceTypeAssignment((SequenceType)type, className);
 		}
 		else if (type.isSetType()) {
 			processTypeWithComponentsAssignment((SetType)type, className);
-			berHelper.processSetTypeAssignment((SetType)type, className);
 		}
 		else if (type.isListOfType()) {
 			processListOfTypeAssignment((ListOfType)type, className);
-			berHelper.processListOfTypeAssignment((ListOfType)type, className);
 		}
 		else if (type.isChoiceType()) {
 			processTypeWithComponentsAssignment((ChoiceType)type, className);
-			berHelper.processChoiceTypeAssignment((ChoiceType)type, className);
 		}
 		else {
 			throw new Exception("Generator.switchProcessTypeAssignment: Code generation not supported for Type " + type.getName());
 		}
 	}
+	
 	
 	private void processBasicTypeAssignment(Type type) throws Exception {
 		String javaType = Utils.mapToJava(type);
@@ -192,6 +181,7 @@ public class Generator {
 		output.println("public " + javaType + " getValue() { return value; }");
 		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
 	}
+	
 	
 	private void processIntegerTypeAssignment(IntegerType integerType, String className) throws Exception {
 		String javaType = Utils.mapToJava(integerType);
@@ -208,6 +198,7 @@ public class Generator {
 		output.println("public void setValue(" + javaType + " value) { this.value = value; }");
 	}
 	
+	
 	private void processBasicListElement(Type type) throws Exception {
 		String javaType = Utils.mapToJava(type);
 
@@ -215,6 +206,7 @@ public class Generator {
 		output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
 		output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
 	}
+	
 	
 	private void processIntegerListElement(IntegerType integerType) throws Exception {
 		String javaType = Utils.mapToJava(integerType);
@@ -278,6 +270,7 @@ public class Generator {
 		}
 	}
 	
+	
 	private void processListOfTypeAssignment(ListOfType sequenceOfType, String className) throws Exception {
 		Type type = sequenceOfType.getElementType();
 		if(type.isIntegerType()) {
@@ -299,6 +292,7 @@ public class Generator {
 			throw new Exception("Generator.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
 		}
 	}
+	
 	
 	private void switchProcessNamedType(NamedType namedType) throws Exception {	
 		String uComponentName = Utils.uNormalize(namedType.getName());
@@ -323,6 +317,7 @@ public class Generator {
 			throw new Exception("Code generation not supported for component '" + componentName + "' of Type " + type.getName());
 	}
 	
+	
 	private void processBasicNamedType(Type type, String componentName, String uComponentName) throws Exception {
 		String javaType = Utils.mapToJava(type);
 
@@ -330,6 +325,7 @@ public class Generator {
 		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
+	
 	
 	private void processIntegerNamedType(IntegerType integerType, String componentName, String uComponentName) throws Exception {
 		String javaType = Utils.mapToJava(integerType);
@@ -347,6 +343,7 @@ public class Generator {
 		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
+	
 	
 	private void processEnumeratedListElement(EnumeratedType enumeratedType) throws Exception {
 		String javaType = "Enum";
@@ -372,6 +369,7 @@ public class Generator {
 		output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
 	}
 	
+	
 	private void processEnumeratedNamedType(EnumeratedType enumeratedType, String componentName, String uComponentName) throws Exception {
 		String javaType = uComponentName;
 		output.println("static public enum " + javaType + " {");
@@ -396,6 +394,7 @@ public class Generator {
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
 	
+	
 	private void processBitStringListElement(BitStringType bitStringType) throws Exception {
 		String javaType = Utils.mapToJava(bitStringType);
 
@@ -407,6 +406,7 @@ public class Generator {
 		output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
 		output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
 	}
+	
 	
 	private void processBitStringNamedType(BitStringType bitStringType, String componentName, String uComponentName) throws Exception {
 		String javaType = Utils.mapToJava(bitStringType);
@@ -421,6 +421,7 @@ public class Generator {
 		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 	}
+	
 	
 	private void processTypeReferenceListElement(TypeReference typeReference) throws Exception {
 		String javaType = Utils.uNormalize(typeReference.getName());
@@ -440,6 +441,7 @@ public class Generator {
 		}
 	}
 	
+	
 	private void processTypeReferenceNamedType(TypeReference typeReference, String componentName, String uComponentName) throws Exception {
 		String javaType = Utils.uNormalize(typeReference.getName());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
@@ -447,9 +449,9 @@ public class Generator {
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
-			output.println("private " + javaType + " " + componentName + ";");
-			output.println("public " + javaType + ".Enum get" + uComponentName +"() { if(this." + componentName + "==null) return null; else return this." + componentName + ".getValue(); }");
-			output.println("public void set" + uComponentName + "(" + javaType + ".Enum " + componentName + ") { this." + componentName + " = new " + javaType + "();  this." + componentName + ".setValue(" + componentName + ");}");			
+			output.println("private " + javaType + ".Enum " + componentName + ";");
+			output.println("public " + javaType + ".Enum get" + uComponentName +"() { return this." + componentName + "; }");
+			output.println("public void set" + uComponentName + "(" + javaType + ".Enum " + componentName + ") { this." + componentName + " = " + componentName + ";}");			
 		}
 		else {
 			output.println("private " + javaType + " " + componentName + ";");

@@ -22,10 +22,10 @@ public class TestGeneratedCode_008 {
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 04 50";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Occupation.class, expectedHexa);
 
 		// decode
-		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 	
@@ -37,10 +37,10 @@ public class TestGeneratedCode_008 {
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 07 80";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Occupation.class, expectedHexa);
 
 		// decode
-		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 	
@@ -53,10 +53,10 @@ public class TestGeneratedCode_008 {
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 05 a0";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Occupation.class, expectedHexa);
 
 		// decode
-		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 	
@@ -69,10 +69,10 @@ public class TestGeneratedCode_008 {
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 04 50";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Occupation.class, expectedHexa);
 
 		// decode
-		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, expectedHexa);
+		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 }

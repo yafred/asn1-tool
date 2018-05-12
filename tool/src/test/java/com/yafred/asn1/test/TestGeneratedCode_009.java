@@ -34,10 +34,10 @@ public class TestGeneratedCode_009 {
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 16 04 52 6f 6d 65 80 06 42 65 72 6c 69 6e 16 06 4c 6f 6e 64 6f 6e 02 02 00 b4 0a 01 08 03 02 04 30";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Flight.class, expectedHexa);
 
 		// decode
-		Flight decodedPdu = (Flight) testHelper.readPdu(Flight.class, expectedHexa);
+		Flight decodedPdu = (Flight) testHelper.readPdu(Flight.class, Flight.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 	}
@@ -57,10 +57,10 @@ public class TestGeneratedCode_009 {
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Flight_modern.class, expectedHexa);
 
 		// decode
-		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
+		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, Flight_modern.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 		assertEquals(decodedPdu.getCrew_format(), pdu.getCrew_format());
@@ -71,10 +71,10 @@ public class TestGeneratedCode_009 {
 		Flight_with_optional pdu = new Flight_with_optional();
 		
 		String expectedHexa = "30 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Flight_with_optional.class, expectedHexa);
 
 		// decode
-		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, expectedHexa);
+		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, Flight_with_optional.class, expectedHexa);
 	}
 	
 	@Test
@@ -84,10 +84,10 @@ public class TestGeneratedCode_009 {
 		pdu.setStop1("Berlin");
 		
 		String expectedHexa = "30 0e 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Flight_with_optional.class, expectedHexa);
 
 		// decode
-		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, expectedHexa);
+		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, Flight_with_optional.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getStop1(), pdu.getStop1());
 	}
@@ -106,10 +106,10 @@ public class TestGeneratedCode_009 {
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 80 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30 00 00";
-		//testHelper.writePdu(pdu, expectedHexa);
+		//testHelper.writePdu(pdu, Flight_modern.class, expectedHexa);
 
 		// decode
-		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, expectedHexa);
+		Flight_modern decodedPdu = (Flight_modern) testHelper.readPdu(Flight_modern.class, Flight_modern.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 		assertEquals(decodedPdu.getCrew_format(), pdu.getCrew_format());
@@ -122,10 +122,10 @@ public class TestGeneratedCode_009 {
 		pdu.setStop1("Berlin");
 		
 		String expectedHexa = "30 80 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 00 00";
-		//testHelper.writePdu(pdu, expectedHexa);
+		//testHelper.writePdu(pdu, Flight_with_optional.class, expectedHexa);
 
 		// decode
-		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, expectedHexa);
+		Flight_with_optional decodedPdu = (Flight_with_optional) testHelper.readPdu(Flight_with_optional.class, Flight_with_optional.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getStop1(), pdu.getStop1());
 	}
@@ -137,10 +137,10 @@ public class TestGeneratedCode_009 {
 		pdu.setDestination("Berlin");
 		
 		String expectedHexa = "30 80 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 00 00";
-		//testHelper.writePdu(pdu, expectedHexa);
+		//testHelper.writePdu(pdu, Flight_without_optional.class, expectedHexa);
 
 		// decode
-		Flight_without_optional decodedPdu = (Flight_without_optional) testHelper.readPdu(Flight_without_optional.class, expectedHexa);
+		Flight_without_optional decodedPdu = (Flight_without_optional) testHelper.readPdu(Flight_without_optional.class, Flight_without_optional.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 	}
@@ -159,10 +159,10 @@ public class TestGeneratedCode_009 {
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, Flight_with_refs.class, expectedHexa);
 
 		// decode
-		Flight_with_refs decodedPdu = (Flight_with_refs) testHelper.readPdu(Flight_with_refs.class, expectedHexa);
+		Flight_with_refs decodedPdu = (Flight_with_refs) testHelper.readPdu(Flight_with_refs.class, Flight_with_refs.class, expectedHexa);
 		assertEquals(decodedPdu.getOrigin(), pdu.getOrigin());
 		assertEquals(decodedPdu.getDestination(), pdu.getDestination());
 		assertEquals(decodedPdu.getCrew_format(), pdu.getCrew_format());

@@ -29,10 +29,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 06 02 01 0a 02 01 14";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_integer_list.class, expectedHexa);
 
 		// decode
-		My_integer_list decodedPdu = (My_integer_list) testHelper.readPdu(My_integer_list.class, expectedHexa);
+		My_integer_list decodedPdu = (My_integer_list) testHelper.readPdu(My_integer_list.class, My_integer_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), new Integer(10));		
@@ -48,10 +48,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 80 02 01 0a 02 01 14 00 00";
-		//testHelper.writePdu(pdu, expectedHexa);
+		//testHelper.writePdu(pdu, My_integer_list.class, expectedHexa);
 
 		// decode
-		My_integer_list decodedPdu = (My_integer_list) testHelper.readPdu(My_integer_list.class, expectedHexa);
+		My_integer_list decodedPdu = (My_integer_list) testHelper.readPdu(My_integer_list.class, My_integer_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), new Integer(10));		
@@ -67,10 +67,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "62 0a 80 03 6f 6e 65 80 03 74 77 6f";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_string_list.class, expectedHexa);
 
 		// decode
-		My_string_list decodedPdu = (My_string_list) testHelper.readPdu(My_string_list.class, expectedHexa);
+		My_string_list decodedPdu = (My_string_list) testHelper.readPdu(My_string_list.class, My_string_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), pdu.getValue().get(0));		
@@ -86,10 +86,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "62 08 80 02 0a 0b 80 02 01 02";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_octet_string_list.class, expectedHexa);
 
 		// decode
-		My_octet_string_list decodedPdu = (My_octet_string_list) testHelper.readPdu(My_octet_string_list.class, expectedHexa);
+		My_octet_string_list decodedPdu = (My_octet_string_list) testHelper.readPdu(My_octet_string_list.class, My_octet_string_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(BERDumper.bytesToString(decodedPdu.getValue().get(0)), BERDumper.bytesToString(pdu.getValue().get(0)));	
@@ -113,10 +113,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 08 03 02 05 a0 03 02 04 50";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_bitstring_list.class, expectedHexa);
 		
 		// decode
-		My_bitstring_list decodedPdu = (My_bitstring_list) testHelper.readPdu(My_bitstring_list.class, expectedHexa);
+		My_bitstring_list decodedPdu = (My_bitstring_list) testHelper.readPdu(My_bitstring_list.class, My_bitstring_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), pdu.getValue().get(0));	
@@ -133,10 +133,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 06 0a 01 01 0a 01 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_enumerated_list.class, expectedHexa);
 
 		// decode
-		My_enumerated_list decodedPdu = (My_enumerated_list) testHelper.readPdu(My_enumerated_list.class, expectedHexa);
+		My_enumerated_list decodedPdu = (My_enumerated_list) testHelper.readPdu(My_enumerated_list.class, My_enumerated_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), pdu.getValue().get(0));	
@@ -153,10 +153,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 06 0a 01 01 0a 01 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_enumerated_list2.class, expectedHexa);
 
 		// decode
-		My_enumerated_list2 decodedPdu = (My_enumerated_list2) testHelper.readPdu(My_enumerated_list2.class, expectedHexa);
+		My_enumerated_list2 decodedPdu = (My_enumerated_list2) testHelper.readPdu(My_enumerated_list2.class, My_enumerated_list2.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), pdu.getValue().get(0));	
@@ -172,10 +172,10 @@ public class TestGeneratedCode_015 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 06 01 01 ff 01 01 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_boolean_list.class, expectedHexa);
 
 		// decode
-		My_boolean_list decodedPdu = (My_boolean_list) testHelper.readPdu(My_boolean_list.class, expectedHexa);
+		My_boolean_list decodedPdu = (My_boolean_list) testHelper.readPdu(My_boolean_list.class, My_boolean_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
 		assertEquals(decodedPdu.getValue().get(0), pdu.getValue().get(0));	

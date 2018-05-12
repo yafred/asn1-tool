@@ -15,10 +15,10 @@ public class TestGeneratedCode_003 {
 		pdu.setValue(new Object());
 		
 		String expectedHexa = "42 00";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_null.class, expectedHexa);
 
 		// decode
-		My_null decodedPdu = (My_null) testHelper.readPdu(My_null.class, expectedHexa);
+		My_null decodedPdu = (My_null) testHelper.readPdu(My_null.class, My_null.class, expectedHexa);
 		
 		assertNotNull(decodedPdu.getValue());
 	}

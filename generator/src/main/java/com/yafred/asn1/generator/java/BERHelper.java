@@ -1,21 +1,16 @@
 package com.yafred.asn1.generator.java;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.BooleanType;
 import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
-import com.yafred.asn1.model.IntegerType;
 import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.NullType;
-import com.yafred.asn1.model.ObjectIdentifierType;
-import com.yafred.asn1.model.OctetStringType;
-import com.yafred.asn1.model.RelativeOIDType;
-import com.yafred.asn1.model.RestrictedCharacterStringType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Tag;
@@ -24,19 +19,25 @@ import com.yafred.asn1.model.TypeReference;
 
 public class BERHelper {
 	Generator generator;
+	File packageDirectory;
+	PrintWriter output;
+
 	final static private String BER_READER = "com.yafred.asn1.runtime.BERReader";
 	final static private String BER_WRITER = "com.yafred.asn1.runtime.BERWriter";
 
+	
 	public BERHelper(Generator generator) {
 		this.generator = generator;
-		
 	}
+	
 
-	void processTypeAssignment(Type type, String className) throws Exception {
+	void switchProcessTypeAssignment(Type type, String className) throws Exception {
+		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
+		
         ArrayList<Tag> tagList = Utils.getTagChain(type);
 		
 		// readPdu method
-		generator.output.println("public static " + className + " readPdu(" + BER_READER
+		output.println("public static " + className + " readPdu(" + BER_READER
 				+ " reader) throws Exception {");
 		writePduTagsDecode(type);
 		String lengthText = "reader.getLengthValue()";
@@ -45,214 +46,168 @@ public class BERHelper {
 			lengthText = "0";
 		}
 
-		generator.output.println(className + " ret = new " + className + "();");
-
-		generator.output.println("ret.read(reader, " + lengthText + ");");
-		generator.output.println("return ret;");
-		generator.output.println("}");
+		output.println(className + " ret=new " + className + "();");
+		output.println("read(ret, reader, " + lengthText + ");");
+		output.println("return ret;");
+		output.println("}");
 
 		// writePdu method
-		generator.output.println("public static void writePdu(" + className + " pdu, "
+		output.println("public static void writePdu(" + className + " pdu, "
 				+ BER_WRITER + " writer) throws Exception {");
         String lengthDeclaration = "";
         if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
-            lengthDeclaration = "int length = ";
+            lengthDeclaration = "int componentLength = ";
         }
-        generator.output.println(lengthDeclaration + "pdu.write(writer);");
+        output.println(lengthDeclaration + "write(pdu, writer);");
 		writeTagsEncode(type);
-		generator.output.println("writer.flush();");
-		generator.output.println("}");
+		output.println("writer.flush();");
+		output.println("}");
+		
+		// switch
+		if (type.isTypeReference()) {
+			// nothing more
+		} 
+		else if (type.isIntegerType() || type.isBooleanType() || type.isBitStringType() || type.isOctetStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType() || type.isRestrictedCharacterStringType()) {
+			processBasicTypeAssignment(type, className);
+		}
+		else if (type.isEnumeratedType()) {
+			processEnumeratedTypeAssignment((EnumeratedType)type, className);
+		}		
+		else if (type.isNullType()) {
+			processNullTypeAssignment((NullType)type, className);
+		}
+		else if (type.isSequenceType()) {
+			processSequenceTypeAssignment((SequenceType)type, className);
+		}
+		else if (type.isSetType()) {
+			processSetTypeAssignment((SetType)type, className);
+		}
+		else if (type.isListOfType()) {
+			processListOfTypeAssignment((ListOfType)type, className);
+		}
+		else if (type.isChoiceType()) {
+			processChoiceTypeAssignment((ChoiceType)type, className);
+		}
+		else {
+			throw new Exception("BERHelp.switchProcessTypeAssignment: Code generation not supported for Type " + type.getName());
+		}
 	}
+	
 	
 	void processEnumeratedTypeAssignment(EnumeratedType enumeratedType, String className) throws Exception {
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
             " writer) throws Exception {");
-		generator.output.println("int intValue=-1;");
-		generator.output.println("switch(getValue()) {");
+		output.println("int intValue=-1;");
+		output.println("switch(instance.getValue()) {");
 		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-			generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-			generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-			generator.output.println("break;");
+			output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+			output.println("intValue=" + namedNumber.getNumber() + ";");
+			output.println("break;");
 		}
 		if(enumeratedType.getAdditionalEnumeration() != null) {
 			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-				generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-				generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-				generator.output.println("break;");
+				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("break;");
 			}
 		}
-		generator.output.println("}");
-		generator.output.println("return writer.writeInteger(intValue);");
-		generator.output.println("}");
+		output.println("}");
+		output.println("return writer.writeInteger(intValue);");
+		output.println("}");
 
         // write decoding code
-		generator.output.println("void read(" + BER_READER +
+		output.println("public static void read(" + className + " instance," + BER_READER +
             " reader, int length) throws Exception {");
-		generator.output.println("int intValue=reader.readInteger(length);");
+		output.println("int intValue=reader.readInteger(length);");
 		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-			generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-			generator.output.println("setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
-			generator.output.println("}");
+			output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+			output.println("instance.setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
+			output.println("}");
 		}
 		if(enumeratedType.getAdditionalEnumeration() == null) {
-			generator.output.println("if(null == getValue()){");
-			generator.output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
-			generator.output.println("}");
+			output.println("if(null == instance.getValue()){");
+			output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+			output.println("}");
 		}
 		else {
 			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				generator.output.println("setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
-				generator.output.println("}");
+				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				output.println("instance.setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
+				output.println("}");
 			}
-			generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
+			output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
 		}
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(enumeratedType, className);
+		output.println("return;");
+		output.println("}");
 	}
 	
-	void processIntegerTypeAssignment(IntegerType integerType, String className) throws Exception {
+	
+	void processBasicTypeAssignment(Type type, String className) throws Exception {
+		String writeMethod = "";
+		String readMethod = "";
+		
+		if(type.isIntegerType()) {
+			writeMethod = "writeInteger";
+			readMethod = "readInteger";
+		}
+		else if(type.isBooleanType()) {
+			writeMethod = "writeBoolean";
+			readMethod = "readBoolean";
+		}
+		else if(type.isBitStringType()) {
+			writeMethod = "writeBitString";
+			readMethod = "readBitString";
+		}
+		else if(type.isOctetStringType()) {
+			writeMethod = "writeOctetString";
+			readMethod = "readOctetString";
+		}
+		else if(type.isObjectIdentifierType()) {
+			writeMethod = "writeObjectIdentifier";
+			readMethod = "readObjectIdentifier";
+		}
+		else if(type.isRelativeOIDType()) {
+			writeMethod = "writeRelativeOID";
+			readMethod = "readRelativeOID";
+		}
+		else if(type.isRestrictedCharacterStringType()) {
+			writeMethod = "writeRestrictedCharacterString";
+			readMethod = "readRestrictedCharacterString";
+		}
+		
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
             " writer) throws Exception {");
-		generator.output.println("return writer.writeInteger(this.getValue());");
-		generator.output.println("}");
+		output.println("return writer." + writeMethod + "(instance.getValue());");
+		output.println("}");
 
         // write decoding code
-		generator.output.println("void read(" + BER_READER +
+		output.println("public static void read(" + className + " instance," + BER_READER +
             " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readInteger(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(integerType, className);
+		output.println("instance.setValue(reader." + readMethod + "(length));");
+		output.println("}");
 	}
 
-	void processBitStringTypeAssignment(BitStringType bitStringType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-            " writer) throws Exception {");
-		generator.output.println("return writer.writeBitString(this.getValue());");
-		generator.output.println("}");
-
-        // write decoding code
-		generator.output.println("void read(" + BER_READER +
-            " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readBitString(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(bitStringType, className);
-	}
-
-	void processBooleanTypeAssignment(BooleanType booleanType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-	            " writer) throws Exception {");
-		generator.output.println("return writer.writeBoolean(this.getValue());");
-		generator.output.println("}");
-
-        // write decoding code
-		generator.output.println("void read(" + BER_READER +
-	            " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readBoolean(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(booleanType, className);
-	}
-	
-	void processOctetStringTypeAssignment(OctetStringType octetStringType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-	            " writer) throws Exception {");
-		generator.output.println("return writer.writeOctetString(this.getValue());");
-		generator.output.println("}");
-
-        // write decoding code
-		generator.output.println("void read(" + BER_READER +
-	            " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readOctetString(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(octetStringType, className);
-	}
-
-	void processObjectIdentifierTypeAssignment(ObjectIdentifierType objectIdentifierType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-	            " writer) throws Exception {");
-		generator.output.println("return writer.writeObjectIdentifier(this.getValue());");
-		generator.output.println("}");
-
-        // write decoding code
-		generator.output.println("void read(" + BER_READER +
-	            " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readObjectIdentifier(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(objectIdentifierType, className);
-	}
-	
-	void processRelativeOIDTypeAssignment(RelativeOIDType relativeOIDType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-	            " writer) throws Exception {");
-		generator.output.println("return writer.writeRelativeOID(this.getValue());");
-		generator.output.println("}");
-
-        // write decoding code
-		generator.output.println("void read(" + BER_READER +
-	            " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readRelativeOID(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(relativeOIDType, className);
-	}
-
-
-	void processRestrictedCharacterStringTypeAssignment(RestrictedCharacterStringType restrictedCharacterStringType, String className) throws Exception {
-	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-	            " writer) throws Exception {");
-		generator.output.println("return writer.writeRestrictedCharacterString(this.getValue());");
-		generator.output.println("}");
-
-		// write decoding code
-		generator.output.println("void read(" + BER_READER + " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(reader.readRestrictedCharacterString(length));");
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(restrictedCharacterStringType, className);
-	}
 
 	void processNullTypeAssignment(NullType nullType, String className) throws Exception {
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
 	            " writer) throws Exception {");
-		generator.output.println("return 0;");
-		generator.output.println("}");
+		output.println("return 0;");
+		output.println("}");
 
         // write decoding code
-		generator.output.println("void read(" + BER_READER + " reader, int length) throws Exception {");
-		generator.output.println("this.setValue(new java.lang.Object());"); // dummy value
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(nullType, className);
+		output.println("public static void read(" + className + " instance," + BER_READER + " reader, int length) throws Exception {");
+		output.println("instance.setValue(new java.lang.Object());"); // dummy value
+		output.println("}");
 	}
 		
 
 	private void writeTagsEncode(Type type) throws Exception {
 		writeTagsEncode(type, null);
 	}
+	
 	
 	private void writeTagsEncode(Type type, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
@@ -268,7 +223,7 @@ public class BERHelper {
 				}
 
 				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				generator.output.println("length += writer.writeLength(length);");
+				output.println("componentLength += writer.writeLength(componentLength);");
 
 				byte[] tagBytes = tagHelper.getByteArray();
 				String tagBytesAsString = "new byte[] {";
@@ -280,8 +235,8 @@ public class BERHelper {
 				}
 				tagBytesAsString += "}";
 				
-				generator.output.println(
-							"length += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println(
+							"componentLength += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 			}
 		}
 	}
@@ -317,39 +272,40 @@ public class BERHelper {
 			if(iTag == 0) {
 				if(namedType.isOptional()) {
 					// we could test if this is a potential end
-					generator.output.println("if(totalLength==-1 && reader.matchTag(new byte[]{0})) {");
-					generator.output.println("reader.readTag();");
-					generator.output.println("reader.mustMatchTag(new byte[]{0});");
-					generator.output.println("return;");
-					generator.output.println("}");
-					generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-					generator.output.println("if(matchedPrevious){");
-					generator.output.println("reader.readLength();");
-					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
-					generator.output.println("}");
+					output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
+					output.println("reader.readTag();");
+					output.println("reader.mustMatchTag(new byte[]{0});");
+					output.println("return;");
+					output.println("}");
+					output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+					output.println("if(matchedPrevious){");
+					output.println("reader.readLength();");
+					output.println("if(length!=-1) length-=reader.getLengthLength();");
+					output.println("}");
 				}
 				else {
-					generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");					
-					generator.output.println("reader.readLength();");
-					generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+					output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");					
+					output.println("reader.readLength();");
+					output.println("if(length!=-1) length-=reader.getLengthLength();");
 				}
 			}
 			else {
 				if(namedType.isOptional()) {
-					generator.output.println("if(matchedPrevious){");
+					output.println("if(matchedPrevious){");
 				}
-				generator.output.println("reader.readTag();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				generator.output.println("reader.readLength();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				output.println("reader.readTag();");
+				output.println("if(length!=-1) length-=reader.getTagLength();");
+				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
 				if(namedType.isOptional()) {
-					generator.output.println("}");
+					output.println("}");
 				}
 			}
 		}
 	}
 
+	
 	private void writeSetTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
 		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
@@ -378,20 +334,20 @@ public class BERHelper {
 			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
-				generator.output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				generator.output.println("if(matchedPrevious){");
-				generator.output.println("reader.readLength();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
-				generator.output.println("}");
+				output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("if(matchedPrevious){");
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
+				output.println("}");
 			}
 			else {
-				generator.output.println("if(matchedPrevious){");
-				generator.output.println("reader.readTag();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				generator.output.println("reader.readLength();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
-				generator.output.println("}");
+				output.println("if(matchedPrevious){");
+				output.println("reader.readTag();");
+				output.println("if(length!=-1) length-=reader.getTagLength();");
+				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
+				output.println("}");
 			}
 		}
 	}
@@ -423,25 +379,26 @@ public class BERHelper {
 			
 			if(iTag == 0) {
 				// we could test if this is a potential end
-				generator.output.println("if(totalLength==-1 && reader.matchTag(new byte[]{0})) {");
-				generator.output.println("reader.readTag();");
-				generator.output.println("reader.mustMatchTag(new byte[]{0});");
-				generator.output.println("break;");
-				generator.output.println("}");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				generator.output.println("reader.readLength();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
+				output.println("reader.readTag();");
+				output.println("reader.mustMatchTag(new byte[]{0});");
+				output.println("break;");
+				output.println("}");
+				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
 			}
 			else {
-				generator.output.println("reader.readTag();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-				generator.output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				generator.output.println("reader.readLength();");
-				generator.output.println("if(totalLength!=-1) totalLength-=reader.getLengthLength();");
+				output.println("reader.readTag();");
+				output.println("if(length!=-1) length-=reader.getTagLength();");
+				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
 			}
 		}
 	}
 
+	
 	private void writePduTagsDecode(Type type) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
 		if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
@@ -460,14 +417,15 @@ public class BERHelper {
 				for(int i=1; i<tagBytes.length; i++) {
 					tagBytesAsString += "," + tagBytes[i];
 				}
-				generator.output.println("reader.readTag();");
-				generator.output.println(
+				output.println("reader.readTag();");
+				output.println(
 						"reader.mustMatchTag(new byte[] {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
 				
-				generator.output.println("reader.readLength();");
+				output.println("reader.readLength();");
 			}
 		}
 	}
+	
 	
 	void processSequenceTypeAssignment(SequenceType sequenceType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
@@ -478,47 +436,48 @@ public class BERHelper {
 		if(componentList.size() == 0) return;
 		
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-            " writer) throws Exception {");
-		generator.output.println("int totalLength=0;");
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
+		output.println("int length=0;");
 		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
 			String componentName = Utils.normalize(namedType.getName());
+			String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
-			generator.output.println("if(" + componentName + "!=null){");
-			generator.output.print("int length=0;");
+			output.println("if(" + componentGetter + "!=null){");
+			output.print("int componentLength=0;");
 			switchEncodeComponent(namedType, componentName, componentClassName);
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
-			generator.output.println("totalLength+=length;");
-			generator.output.println("}");
+			output.println("length+=componentLength;");
+			output.println("}");
 		}
-		generator.output.println("return totalLength;");
-		generator.output.println("}");
+		output.println("return length;");
+		output.println("}");
 
         // write decoding code
-		generator.output.println("void read(" + BER_READER +
-            " reader, int totalLength) throws Exception {");
-		generator.output.println("boolean matchedPrevious=true;");
-		generator.output.println("int componentLength=0;");
+		output.println("public static void read(" + className + " instance, " + BER_READER +
+	            " reader, int length) throws Exception {");
+		output.println("boolean matchedPrevious=true;");
+		output.println("int componentLength=0;");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
-			generator.output.println("if(totalLength==0) return;"); 			
+			output.println("if(length==0) return;"); 			
 			if(componentIndex != 0) {
-				generator.output.println("if(matchedPrevious){");
+				output.println("if(matchedPrevious){");
 			}
-			generator.output.println("reader.readTag();");
-			generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+			output.println("reader.readTag();");
+			output.println("if(length!=-1) length-=reader.getTagLength();");
 			if(componentIndex != 0) {
-				generator.output.println("}");
+				output.println("}");
 			}
 
 			Component component = componentList.get(componentIndex);
@@ -537,86 +496,86 @@ public class BERHelper {
 			writeTagsDecode(namedType, automaticTag);
 			
 			if(namedType.isOptional()) {
-				generator.output.println("if(matchedPrevious){");
+				output.println("if(matchedPrevious){");
 			}
-			generator.output.println("componentLength=reader.getLengthValue();");
+			output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
 			if(namedType.isOptional()) {
-				generator.output.println("}");
+				output.println("}");
 			}
 			else {
-				generator.output.println("matchedPrevious=true;");			
+				output.println("matchedPrevious=true;");			
 			}
 		}
 		
-		generator.output.println("if(totalLength==-1) {");
-		generator.output.println("reader.readTag();");
-		generator.output.println("reader.mustMatchTag(new byte[]{0});");
-		generator.output.println("reader.readTag();");
-		generator.output.println("reader.mustMatchTag(new byte[]{0});");
-		generator.output.println("}");
+		output.println("if(length==-1) {");
+		output.println("reader.readTag();");
+		output.println("reader.mustMatchTag(new byte[]{0});");
+		output.println("reader.readTag();");
+		output.println("reader.mustMatchTag(new byte[]{0});");
+		output.println("}");
 
-		generator.output.println("else if(totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(sequenceType, className);
+		output.println("else if(length!=0) throw new Exception(\"length should be 0, not \" + length);"); 
+		output.println("return;");
+		output.println("}");
 	}
 
-	void processSetTypeAssignment(SetType sequenceType, String className) throws Exception {
+	
+	void processSetTypeAssignment(SetType setType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
-		Utils.addAllIfNotNull(componentList, sequenceType.getRootComponentList());
-		Utils.addAllIfNotNull(componentList, sequenceType.getExtensionComponentList());
-		Utils.addAllIfNotNull(componentList, sequenceType.getAdditionalComponentList());
+		Utils.addAllIfNotNull(componentList, setType.getRootComponentList());
+		Utils.addAllIfNotNull(componentList, setType.getExtensionComponentList());
+		Utils.addAllIfNotNull(componentList, setType.getAdditionalComponentList());
 		
 		if(componentList.size() == 0) return;
 		
 	    // write encoding code
 		// Encoding section is equivalent to SEQUENCE encoding
-		generator.output.println("int write(" + BER_WRITER +
-            " writer) throws Exception {");
-		generator.output.println("int totalLength=0;");
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
+		output.println("int length=0;");
 		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
 			String componentName = Utils.normalize(namedType.getName());
+			String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
-			generator.output.println("if(" + componentName + "!=null){");
-			generator.output.print("int length=0;");
+			output.println("if(" + componentGetter + "!=null){");
+			output.print("int componentLength=0;");
 			switchEncodeComponent(namedType, componentName, componentClassName);
 			Tag automaticTag = null;
-			if(sequenceType.isAutomaticTaggingSelected()) {
+			if(setType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
-			generator.output.println("totalLength+=length;");
-			generator.output.println("}");
+			output.println("length+=componentLength;");
+			output.println("}");
 		}
-		generator.output.println("return totalLength;");
-		generator.output.println("}");
+		output.println("return length;");
+		output.println("}");
 
         // write decoding code
 		// decoding is different, we cannot rely on the order of components
-		generator.output.println("void read(" + BER_READER +
-            " reader, int totalLength) throws Exception {");
+		output.println("public static void read(" + className + " instance," + BER_READER +
+	            " reader, int length) throws Exception {");
 
-		generator.output.println("while(totalLength==-1||totalLength>0){");
+		output.println("while(length==-1||length>0){");
 
-		generator.output.println("boolean matchedPrevious=false;");
-		generator.output.println("int componentLength=0;");
+		output.println("boolean matchedPrevious=false;");
+		output.println("int componentLength=0;");
 
-		generator.output.println("reader.readTag();");
-		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
-		generator.output.println("if(totalLength==-1 && reader.matchTag(new byte[]{0})) {");
-		generator.output.println("reader.readTag();");
-		generator.output.println("reader.mustMatchTag(new byte[]{0});");
-		generator.output.println("return;");
-		generator.output.println("}");
+		output.println("reader.readTag();");
+		output.println("if(length!=-1) length-=reader.getTagLength();");
+		output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
+		output.println("reader.readTag();");
+		output.println("reader.mustMatchTag(new byte[]{0});");
+		output.println("return;");
+		output.println("}");
 
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
@@ -629,28 +588,27 @@ public class BERHelper {
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
 			Tag automaticTag = null;
-			if(sequenceType.isAutomaticTaggingSelected()) {
+			if(setType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 			
 			writeSetTagsDecode(namedType, automaticTag);
-			generator.output.println("if(matchedPrevious){");
-			generator.output.println("componentLength=reader.getLengthValue();");
+			output.println("if(matchedPrevious){");
+			output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
-			generator.output.println("continue;");
-			generator.output.println("}");
-			generator.output.println();
+			output.println("continue;");
+			output.println("}");
+			output.println();
 		}	
 		
-		generator.output.println("}");
-		generator.output.println("if(totalLength!=-1 && totalLength!=0) throw new Exception(\"length should be 0, not \" + totalLength);"); 
+		output.println("}");
+		output.println("if(length!=-1 && length!=0) throw new Exception(\"length should be 0, not \" + length);"); 
 
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(sequenceType, className);
+		output.println("return;");
+		output.println("}");
 	}
 
+	
 	void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
 		Type elementType = listOfType.getElementType();
 		String elementClassName = "";
@@ -675,137 +633,135 @@ public class BERHelper {
 		}
 		
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-            " writer) throws Exception {");
-		generator.output.println("int totalLength=0;");
-		generator.output.println("if(this.value != null) {");
-		generator.output.println("for(int i=this.value.size()-1; i>=0; i--) {");
-		generator.output.println("int length=0;");
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
+		output.println("int length=0;");
+		output.println("if(instance.getValue() != null) {");
+		output.println("for(int i=instance.getValue().size()-1; i>=0; i--) {");
+		output.println("int componentLength=0;");
 		if(elementType.isIntegerType()) {
-			generator.output.println("length+=writer.writeInteger(this.value.get(i));");			
+			output.println("componentLength+=writer.writeInteger(instance.getValue().get(i));");			
 		}
 		else if(elementType.isRestrictedCharacterStringType()) {
-			generator.output.println("length+=writer.writeRestrictedCharacterString(this.value.get(i));");			
+			output.println("componentLength+=writer.writeRestrictedCharacterString(instance.getValue().get(i));");			
 		}
 		else if(elementType.isOctetStringType()) {
-			generator.output.println("length+=writer.writeOctetString(this.value.get(i));");			
+			output.println("componentLength+=writer.writeOctetString(instance.getValue().get(i));");			
 		}
 		else if(elementType.isObjectIdentifierType()) {
-			generator.output.println("length+=writer.writeObjectIdentifier(this.value.get(i));");			
+			output.println("componentLength+=writer.writeObjectIdentifier(instance.getValue().get(i));");			
 		}
 		else if(elementType.isRelativeOIDType()) {
-			generator.output.println("length+=writer.writeRelativeOID(this.value.get(i));");			
+			output.println("componentLength+=writer.writeRelativeOID(instance.getValue().get(i));");			
 		}
 		else if(elementType.isBooleanType()) {
-			generator.output.println("length+=writer.writeBoolean(this.value.get(i));");			
+			output.println("componentLength+=writer.writeBoolean(instance.getValue().get(i));");			
 		}
 		else if(elementType.isBitStringType()) {
-			generator.output.println("length+=writer.writeBitString(this.value.get(i));");			
+			output.println("componentLength+=writer.writeBitString(instance.getValue().get(i));");			
 		}
 		else if(elementType.isEnumeratedType()) {
-			generator.output.println("int intValue=-1;");
-			generator.output.println("switch(this.value.get(i)) {");
+			output.println("int intValue=-1;");
+			output.println("switch(instance.getValue().get(i)) {");
 			EnumeratedType enumeratedType = (EnumeratedType)elementType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-				generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-				generator.output.println("break;");
+				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-					generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-					generator.output.println("break;");
+					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					output.println("intValue=" + namedNumber.getNumber() + ";");
+					output.println("break;");
 				}
 			}
-			generator.output.println("}");
-			generator.output.println("length+=writer.writeInteger(intValue);");			
+			output.println("}");
+			output.println("componentLength+=writer.writeInteger(intValue);");			
 		}
 		else if(elementType.isSequenceType() || elementType.isSetType()) {
-			generator.output.println("length+=this.value.get(i).write(writer);");						
+			output.println("componentLength+=" + elementClassName + ".write(instance.getValue().get(i),writer);");						
 		}
 		else {
 			throw new Exception("BERHelper.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElementType().getName());
 		}
 
 		writeTagsEncode(listOfType.getElementType());
-		generator.output.println("totalLength+=length;");
-		generator.output.println("}");
-		generator.output.println("}");
-		generator.output.println("return totalLength;");
-		generator.output.println("}");
+		output.println("length+=componentLength;");
+		output.println("}");
+		output.println("}");
+		output.println("return length;");
+		output.println("}");
 
 		
         // write decoding code
-		generator.output.println("void read(" + BER_READER +
-            " reader, int totalLength) throws Exception {");
-		generator.output.println("this.value=new java.util.ArrayList<" + javaType + ">();");
-		generator.output.println("while(totalLength > 0 || totalLength==-1) {");
-		generator.output.println("reader.readTag();");
-		generator.output.println("if(totalLength!=-1) totalLength-=reader.getTagLength();");
+		output.println("public static void read(" + className + " instance," + BER_READER +
+	            " reader, int length) throws Exception {");
+		output.println("instance.setValue(new java.util.ArrayList<" + javaType + ">());");
+		output.println("while(length > 0 || length==-1) {");
+		output.println("reader.readTag();");
+		output.println("if(length!=-1) length-=reader.getTagLength();");
 		writeElementTagsDecode(listOfType.getElementType());
-		generator.output.println("int itemLength=reader.getLengthValue();");
+		output.println("int itemLength=reader.getLengthValue();");
 		if(elementType.isIntegerType()) {
-			generator.output.println("this.value.add(reader.readInteger(itemLength));");	
+			output.println("instance.getValue().add(reader.readInteger(itemLength));");	
 		}
 		else if(elementType.isRestrictedCharacterStringType()) {
-			generator.output.println("this.value.add(reader.readRestrictedCharacterString(itemLength));");	
+			output.println("instance.getValue().add(reader.readRestrictedCharacterString(itemLength));");	
 		}
 		else if(elementType.isOctetStringType()) {
-			generator.output.println("this.value.add(reader.readOctetString(itemLength));");	
+			output.println("instance.getValue().add(reader.readOctetString(itemLength));");	
 		}
 		else if(elementType.isObjectIdentifierType()) {
-			generator.output.println("this.value.add(reader.readObjectIdentifier(itemLength));");	
+			output.println("instance.getValue().add(reader.readObjectIdentifier(itemLength));");	
 		}
 		else if(elementType.isRelativeOIDType()) {
-			generator.output.println("this.value.add(reader.readRelativeOID(itemLength));");	
+			output.println("instance.getValue().add(reader.readRelativeOID(itemLength));");	
 		}
 		else if(elementType.isBooleanType()) {
-			generator.output.println("this.value.add(reader.readBoolean(itemLength));");	
+			output.println("instance.getValue().add(reader.readBoolean(itemLength));");	
 		}
 		else if(elementType.isBitStringType()) {
-			generator.output.println("this.value.add(reader.readBitString(itemLength));");	
+			output.println("instance.getValue().add(reader.readBitString(itemLength));");	
 		}
 		else if(elementType.isEnumeratedType()) {
 			EnumeratedType enumeratedType = (EnumeratedType)elementType;
-			generator.output.println("int intValue=reader.readInteger(itemLength);");
-			generator.output.println(javaType + " item=null;");
+			output.println("int intValue=reader.readInteger(itemLength);");
+			output.println(javaType + " item=null;");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				generator.output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
-				generator.output.println("}");
+				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+				output.println("}");
 			}
-			generator.output.println("if(item!=null){");
-			generator.output.println("this.value.add(item);");
-			generator.output.println("}");
+			output.println("if(item!=null){");
+			output.println("instance.getValue().add(item);");
+			output.println("}");
 			if(enumeratedType.getAdditionalEnumeration() == null) {
-				generator.output.println("else {");
-				generator.output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
-				generator.output.println("}");
+				output.println("else {");
+				output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+				output.println("}");
 			}
 			else {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-					generator.output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
-					generator.output.println("this.value.add(item);");
-					generator.output.println("}");
+					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+					output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+					output.println("instance.getValue().add(item);");
+					output.println("}");
 				}
-				generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
+				output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
 		else if(elementType.isSequenceType() || elementType.isSetType()) {
-			generator.output.println(javaType + " item=new " + javaType + "();");
-			generator.output.println("item.read(reader, itemLength);");
-			generator.output.println("this.value.add(item);");			
+			output.println(javaType + " item=new " + javaType + "();");
+			output.println(javaType + ".read(item, reader, itemLength);");
+			output.println("instance.getValue().add(item);");			
 		}
 		
-		generator.output.println("if(totalLength!=-1) totalLength-=itemLength;");
-		generator.output.println("}");
-		generator.output.println("}");
-
-		// pdu methods
-		processTypeAssignment(listOfType, className);
+		output.println("if(length!=-1) length-=itemLength;");
+		output.println("}");
+		output.println("}");
 	}
+	
 	
 	void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
@@ -813,38 +769,39 @@ public class BERHelper {
 		Utils.addAllIfNotNull(componentList, choiceType.getAdditionalAlternativeList());
 		
 	    // write encoding code
-		generator.output.println("int write(" + BER_WRITER +
-            " writer) throws Exception {");
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
 		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
 			String componentName = Utils.normalize(namedType.getName());
+			String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
-			generator.output.println("if(" + componentName + "!=null){");
-			generator.output.print("int length=0;");
+			output.println("if(" + componentGetter + "!=null){");
+			output.print("int componentLength=0;");
 			switchEncodeComponent(namedType, componentName, componentClassName);
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
-			generator.output.println("return length;");
-			generator.output.println("}");
+			output.println("return componentLength;");
+			output.println("}");
 		}
-		generator.output.println("return 0;");
-		generator.output.println("}");
+		output.println("return 0;");
+		output.println("}");
 
         // write decoding code
-		generator.output.println("void read(" + BER_READER +
-            " reader, int totalLength) throws Exception {");
-		generator.output.println("boolean matchedPrevious=false;");
-		generator.output.println("int componentLength=0;");
-		generator.output.println("reader.readTag();");
+		output.println("public static void read(" + className + " instance," + BER_READER +
+	            " reader, int length) throws Exception {");
+		output.println("boolean matchedPrevious=false;");
+		output.println("int componentLength=0;");
+		output.println("reader.readTag();");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
@@ -861,76 +818,79 @@ public class BERHelper {
 			}
 
 			writeSetTagsDecode(namedType, automaticTag);
-			generator.output.println("if(matchedPrevious){");
-			generator.output.println("componentLength=reader.getLengthValue();");
+			output.println("if(matchedPrevious){");
+			output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
-			generator.output.println("return;");
-			generator.output.println("}");
-			generator.output.println();
+			output.println("return;");
+			output.println("}");
+			output.println();
 		}
 		
-		generator.output.println("}");
-		
-		// pdu methods
-		processTypeAssignment(choiceType, className);
+		output.println("}");
 	}
 	
+	
 	void switchEncodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
+		String referencedClassName = "";
 		Type type = namedType.getType();
 		if(type.isTypeReference()) {
+			referencedClassName = Utils.uNormalize(((TypeReference) type).getName());
 			type = ((TypeReference)type).getBuiltinType();
 		}
 		
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+		
 		if(type.isRestrictedCharacterStringType()) {
-			generator.output.println("length=writer.writeRestrictedCharacterString(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeRestrictedCharacterString(" +  componentGetter + ");");			
 		}
 		else if(type.isIntegerType()) {
-			generator.output.println("length=writer.writeInteger(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeInteger(" +  componentGetter + ");");			
 		}
 		else if(type.isBooleanType()) {
-			generator.output.println("length=writer.writeBoolean(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeBoolean(" +  componentGetter + ");");			
 		}	
 		else if(type.isBitStringType()) {
-			generator.output.println("length=writer.writeBitString(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeBitString(" +  componentGetter + ");");			
 		}
 		else if(type.isOctetStringType()) {
-			generator.output.println("length=writer.writeOctetString(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeOctetString(" +  componentGetter + ");");			
 		}
 		else if(type.isObjectIdentifierType()) {
-			generator.output.println("length=writer.writeObjectIdentifier(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeObjectIdentifier(" +  componentGetter + ");");			
 		}
 		else if(type.isRelativeOIDType()) {
-			generator.output.println("length=writer.writeRelativeOID(this." +  componentName + ");");			
+			output.println("componentLength=writer.writeRelativeOID(" +  componentGetter + ");");			
 		}
 		else if(type.isNullType()) {
 			// do nothing
 		}
-		else if(namedType.getType().isEnumeratedType()) {
-			generator.output.println("int intValue=-1;");
-			generator.output.println("switch(this." +  componentName + ") {");
-			EnumeratedType enumeratedType = (EnumeratedType)namedType.getType();
+		else if(type.isEnumeratedType()) {
+			output.println("int intValue=-1;");
+			output.println("switch(" +  componentGetter + ") {");
+			EnumeratedType enumeratedType = (EnumeratedType)type;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-				generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-				generator.output.println("break;");
+				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					generator.output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-					generator.output.println("intValue=" + namedNumber.getNumber() + ";");
-					generator.output.println("break;");
+					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					output.println("intValue=" + namedNumber.getNumber() + ";");
+					output.println("break;");
 				}
 			}
-			generator.output.println("}");
-			generator.output.println("length=writer.writeInteger(intValue);");			
+			output.println("}");
+			output.println("componentLength=writer.writeInteger(intValue);");			
 		}
 		else if(namedType.getType().isTypeReference()) {
-			generator.output.println("length=this." + componentName + ".write(writer);");		
+			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer);");		
 		}
 		else {
 			throw new Exception("BERHelper.switchEncodeComponent: Code generation not supported for Type " + namedType.getType().getName());
 		}
 	}
+	
 	
 	void switchDecodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
 		
@@ -939,60 +899,67 @@ public class BERHelper {
 			type = ((TypeReference)type).getBuiltinType();
 		}
 		
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+		String componentSetter = "instance.set" + Utils.uNormalize(componentName) + "(";
+		
 		if(type.isRestrictedCharacterStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readRestrictedCharacterString(componentLength);");
+			output.println(componentSetter + "reader.readRestrictedCharacterString(componentLength));");
 		}
 		else if(type.isIntegerType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readInteger(componentLength);");
+			output.println(componentSetter + "reader.readInteger(componentLength));");
 		}
 		else if(type.isBooleanType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readBoolean(componentLength);");
+			output.println(componentSetter + "reader.readBoolean(componentLength));");
 		}	
 		else if(type.isBitStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readBitString(componentLength);");
+			output.println(componentSetter + "reader.readBitString(componentLength));");
 		}
 		else if(type.isOctetStringType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readOctetString(componentLength);");
+			output.println(componentSetter + "reader.readOctetString(componentLength));");
 		}
 		else if(type.isObjectIdentifierType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readObjectIdentifier(componentLength);");
+			output.println(componentSetter + "reader.readObjectIdentifier(componentLength));");
 		}
 		else if(type.isRelativeOIDType()) {
-			generator.output.println("this." + componentName + "=" + "reader.readRelativeOID(componentLength);");
+			output.println(componentSetter + "reader.readRelativeOID(componentLength));");
 		}
 		else if(type.isNullType()) {
-			generator.output.println("this." + componentName + "=new Object();");
+			output.println(componentSetter + "new Object());");
 		}
-		else if(namedType.getType().isEnumeratedType()) {
-			EnumeratedType enumeratedType = (EnumeratedType)namedType.getType();
-			generator.output.println("int intValue=reader.readInteger(componentLength);");
+		else if(type.isEnumeratedType()) {
+			EnumeratedType enumeratedType = (EnumeratedType)type;
+			String enumSuffix = "";
+			if(namedType.getType().isTypeReference()) {
+				enumSuffix = ".Enum";
+			}
+			output.println("int intValue=reader.readInteger(componentLength);");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				generator.output.println("this." + componentName + "=" + componentClassName + "." + Utils.normalize(namedNumber.getName()) + ";");
-				generator.output.println("}");
+				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalize(namedNumber.getName()) + ");");
+				output.println("}");
 			}
 			if(enumeratedType.getAdditionalEnumeration() == null) {
-				generator.output.println("if(this." + componentName + "==null){");
-				generator.output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
-				generator.output.println("}");
+				output.println("if(" + componentGetter + "==null){");
+				output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+				output.println("}");
 			}
 			else {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					generator.output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-					generator.output.println("this." + componentName + "=" + componentClassName + "." + Utils.normalize(namedNumber.getName()) + ";");
-					generator.output.println("}");
+					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+					output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalize(namedNumber.getName()) + ");");
+					output.println("}");
 				}
-				generator.output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
+				output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
 		else if(namedType.getType().isTypeReference()) {
-			generator.output.println("this." + componentName + "=new " + componentClassName + "();");
-			generator.output.println("this." + componentName + ".read(reader, componentLength);");		
+			output.println(componentSetter + "new " + componentClassName + "());");
+			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
 		}
 		else {
 			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + namedType.getType().getName());
 		}
 		
-		generator.output.println("if(totalLength!=-1) totalLength-=componentLength;");
+		output.println("if(length!=-1) length-=componentLength;");
 	}
 }

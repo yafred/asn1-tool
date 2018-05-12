@@ -16,10 +16,10 @@ public class TestGeneratedCode_001 {
 		pdu.setValue(new Integer(10));
 
 		String expectedHexa = "02 01 0a";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_integer.class, expectedHexa);
 
 		// decode
-		My_integer decodedPdu = (My_integer) testHelper.readPdu(My_integer.class, expectedHexa);
+		My_integer decodedPdu = (My_integer) testHelper.readPdu(My_integer.class, My_integer.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 	
@@ -29,10 +29,10 @@ public class TestGeneratedCode_001 {
 		pdu.setValue(ColorType.blue);
 
 		String expectedHexa = "02 01 02";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, ColorType.class, expectedHexa);
 
 		// decode
-		ColorType decodedPdu = (ColorType) testHelper.readPdu(ColorType.class, expectedHexa);
+		ColorType decodedPdu = (ColorType) testHelper.readPdu(ColorType.class, ColorType.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 }

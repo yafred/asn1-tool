@@ -24,10 +24,10 @@ public class TestGeneratedCode_018 {
 		pdu.setValue(new long[] { 1, 20, 2345 }); 
 		
 		String expectedHexa = "06 03 3c 92 29";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_Object_Id.class, expectedHexa);
 
 		// decode
-		My_Object_Id decodedPdu = (My_Object_Id) testHelper.readPdu(My_Object_Id.class, expectedHexa);
+		My_Object_Id decodedPdu = (My_Object_Id) testHelper.readPdu(My_Object_Id.class, My_Object_Id.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(pdu.getValue().length, decodedPdu.getValue().length);
 		assertEquals(pdu.getValue()[0], decodedPdu.getValue()[0]);
@@ -41,10 +41,10 @@ public class TestGeneratedCode_018 {
 		pdu.setValue(new long[] { 10, 20, 2345 }); 
 		
 		String expectedHexa = "0d 04 0a 14 92 29";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_Relative_Object_Id.class, expectedHexa);
 
 		// decode
-		My_Relative_Object_Id decodedPdu = (My_Relative_Object_Id) testHelper.readPdu(My_Relative_Object_Id.class, expectedHexa);
+		My_Relative_Object_Id decodedPdu = (My_Relative_Object_Id) testHelper.readPdu(My_Relative_Object_Id.class, My_Relative_Object_Id.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(pdu.getValue().length, decodedPdu.getValue().length);
 		assertEquals(pdu.getValue()[0], decodedPdu.getValue()[0]);
@@ -60,10 +60,10 @@ public class TestGeneratedCode_018 {
 		pdu.setObject2(new long[] { 2181 });
 		
 		String expectedHexa = "30 0d 80 03 2d 81 16 81 02 91 04 82 02 91 05";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_Object_Sequence.class, expectedHexa);
 
 		// decode
-		My_Object_Sequence decodedPdu = (My_Object_Sequence) testHelper.readPdu(My_Object_Sequence.class, expectedHexa);
+		My_Object_Sequence decodedPdu = (My_Object_Sequence) testHelper.readPdu(My_Object_Sequence.class, My_Object_Sequence.class, expectedHexa);
 		assertNotNull(decodedPdu.getRoot());
 		assertEquals(3, decodedPdu.getRoot().length);
 		assertEquals(1, decodedPdu.getRoot()[0]);
@@ -87,10 +87,10 @@ public class TestGeneratedCode_018 {
 		pdu.setObject2(new long[] { 2181 });
 		
 		String expectedHexa = "31 0d 80 03 2d 81 16 81 02 91 04 82 02 91 05";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_Ref_Object_Set.class, expectedHexa);
 
 		// decode
-		My_Ref_Object_Set decodedPdu = (My_Ref_Object_Set) testHelper.readPdu(My_Ref_Object_Set.class, expectedHexa);
+		My_Ref_Object_Set decodedPdu = (My_Ref_Object_Set) testHelper.readPdu(My_Ref_Object_Set.class, My_Ref_Object_Set.class, expectedHexa);
 		assertNotNull(decodedPdu.getRoot());
 		assertEquals(3, decodedPdu.getRoot().length);
 		assertEquals(1, decodedPdu.getRoot()[0]);
@@ -118,10 +118,10 @@ public class TestGeneratedCode_018 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "30 0f 06 03 2d 81 16 06 03 2d 81 70 06 03 2d 87 68";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_list_of_objects.class, expectedHexa);
 
 		// decode
-		My_list_of_objects decodedPdu = (My_list_of_objects) testHelper.readPdu(My_list_of_objects.class, expectedHexa);
+		My_list_of_objects decodedPdu = (My_list_of_objects) testHelper.readPdu(My_list_of_objects.class, My_list_of_objects.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(pdu.getValue().size(), decodedPdu.getValue().size());
 		for(int i=0; i<pdu.getValue().size(); i++) {
@@ -145,10 +145,10 @@ public class TestGeneratedCode_018 {
 		pdu.setValue(value);
 		
 		String expectedHexa = "31 12 0d 04 01 05 81 16 0d 04 01 05 81 70 0d 04 01 05 87 68";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, My_list_of_ref_objects.class, expectedHexa);
 
 		// decode
-		My_list_of_ref_objects decodedPdu = (My_list_of_ref_objects) testHelper.readPdu(My_list_of_ref_objects.class, expectedHexa);
+		My_list_of_ref_objects decodedPdu = (My_list_of_ref_objects) testHelper.readPdu(My_list_of_ref_objects.class, My_list_of_ref_objects.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(pdu.getValue().size(), decodedPdu.getValue().size());
 		for(int i=0; i<pdu.getValue().size(); i++) {

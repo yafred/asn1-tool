@@ -35,10 +35,10 @@ public class TestGeneratedCode_010 {
 		pdu.setNlementID(new Integer(12444));
 		
 		String expectedHexa = "30 2a a0 0f 80 01 01 81 02 04 d2 82 02 15 b3 83 02 1a 0a 81 02 0a 0b a2 0b 80 01 9c 81 02 00 be 82 02 00 c8 83 02 0c 0d 84 02 30 9c";
-		testHelper.writePdu(pdu, expectedHexa);
+		testHelper.writePdu(pdu, ACEI.class, expectedHexa);
 
 		// decode
-		ACEI decodedPdu = (ACEI) testHelper.readPdu(ACEI.class, expectedHexa);
+		ACEI decodedPdu = (ACEI) testHelper.readPdu(ACEI.class, ACEI.class, expectedHexa);
 	}
 	
 	@Test
@@ -63,10 +63,10 @@ public class TestGeneratedCode_010 {
 		
 		
 		String expectedHexa = "30 80 a0 80 80 01 06 83 02 00 e2 00 00 a2 80 80 01 01 81 01 0d 00 00 83 01 65 00 00";
-		//testHelper.writePdu(pdu, expectedHexa);
+		//testHelper.writePdu(pdu, ACEI.class, expectedHexa);
 
 		// decode
-		ACEI decodedPdu = (ACEI) testHelper.readPdu(ACEI.class, expectedHexa);
+		ACEI decodedPdu = (ACEI) testHelper.readPdu(ACEI.class, ACEI.class, expectedHexa);
 		
 		assertNotNull(decodedPdu.getMessage());
 		assertEquals(decodedPdu.getMessage().getMessageSequence(), pdu.getMessage().getMessageSequence());
