@@ -1,0 +1,63 @@
+G-019 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Single-Child-Family ::= SEQUENCE {
+
+   mother SEQUENCE {
+      last-name IA5String,
+      first-name IA5String,
+      age INTEGER,
+      info SEQUENCE {
+         job IA5String
+         } OPTIONAL
+      },
+      
+   father SEQUENCE {
+      last-name IA5String,
+      first-name IA5String,
+      age INTEGER
+      },
+
+   child SEQUENCE {
+      last-name IA5String,
+      first-name IA5String,
+      age INTEGER
+      }
+   }
+
+
+Person ::= SET {
+   name IA5String,
+   gender ENUMERATED { male, female, other },
+   info SET {
+      age INTEGER,
+      job IA5String
+      }
+   }
+
+
+-- This will work because of AUTOMATIC TAGGING
+Gift ::= CHOICE {
+   car CHOICE {
+      sport-car ENUMERATED { lotus, ferrari, ... },
+      family-car ENUMERATED { peugeot, renault, ... }
+      },
+   money CHOICE {
+      cash NULL,
+      check NULL
+      }
+   }
+   
+Gift-as-set ::= SET {
+   car SET {
+      sport-car ENUMERATED { lotus, ferrari, ... } OPTIONAL,
+      family-car ENUMERATED { peugeot, renault, ... } OPTIONAL
+      } OPTIONAL,
+   money SET {
+      cash NULL OPTIONAL,
+      check NULL OPTIONAL
+      } OPTIONAL
+   }
+
+
+END

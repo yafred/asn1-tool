@@ -264,17 +264,17 @@ public class Generator {
 		Utils.addAllIfNotNull(componentList, typeWithComponents.getAdditionalComponentList());
 
 		for(Component component : componentList) {
-			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
+			if(!component.isNamedType()) throw new Exception("Generator.processTypeWithComponentsAssignment: Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
 			switchProcessNamedType(namedType);
 		}
 	}
 	
 	
-	private void processListOfTypeAssignment(ListOfType sequenceOfType, String className) throws Exception {
-		Type type = sequenceOfType.getElementType();
+	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
+		Type type = listOfType.getElementType();
 		if(type.isIntegerType()) {
-			processIntegerListElement((IntegerType)sequenceOfType.getElementType());
+			processIntegerListElement((IntegerType)listOfType.getElementType());
 		}
 		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			processBasicListElement(type);			
@@ -289,7 +289,7 @@ public class Generator {
 			processTypeReferenceListElement((TypeReference)type);
 		}	
 		else {
-			throw new Exception("Generator.processSequenceOfTypeAssignment: Code generation not supported for Type " + sequenceOfType.getElementType().getName());
+			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElementType().getName());
 		}
 	}
 	
@@ -313,8 +313,11 @@ public class Generator {
 		else if (type.isTypeReference()) {
 			processTypeReferenceNamedType((TypeReference)type, componentName, uComponentName);
 		}	
+		else if (type.isTypeWithComponents()) {
+			processNestedTypeWithComponentsAssignment((TypeWithComponents)type, componentName);
+		}		
 		else 
-			throw new Exception("Code generation not supported for component '" + componentName + "' of Type " + type.getName());
+			throw new Exception("Generator.switchProcessNamedType: Code generation not supported for component '" + componentName + "' of Type " + type.getName());
 	}
 	
 	
@@ -463,4 +466,37 @@ public class Generator {
 			}
 		}
 	}
+	
+
+	private void processNestedTypeWithComponentsAssignment(TypeWithComponents type, String componentName) throws Exception {
+		String className = Utils.uNormalize(componentName);
+		
+		// create accessors
+		output.println("private " + className + " " + componentName + ";");
+		output.println("public " + className + " get" + className +"() { return " + componentName + "; }");
+		output.println("public void set" + className + "(" + className + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("public " + className + " set" + className + "() { if(this." + componentName + "==null) this." + componentName + "=new " + className + "();");
+		output.println("return this." + componentName + "; }");
+
+		// create an inner class
+		/*
+		 * Note: In case of multiple nesting levels, component names must be unique.
+		 * SEQUENCE {
+		 *   comp1 SEQUENCE {
+		 *      comp1 SEQUENCE {
+		 *      }
+		 *   }
+		 * }
+		 * This will generate Java code that won't compile
+		 */
+		output.println("static public class " + className);
+		output.println("{");
+		switchProcessTypeAssignment(type, className);
+
+		// add BER methods to the POJO
+		berHelper.switchProcessTypeAssignment(type, className);
+		
+		output.println("}");
+	}
+
 }

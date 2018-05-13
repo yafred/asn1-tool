@@ -211,44 +211,65 @@ public class BERHelper {
 	
 	private void writeTagsEncode(Type type, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
-		if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
-			if(automaticTag != null) {
+		
+		if(tagList == null) {
+			tagList = new ArrayList<Tag>();
+		}
+		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE
+			return;
+		}
+		
+		if(automaticTag != null) {
+			if(tagList.size() == 0) {
+				tagList.add(automaticTag);
+			}
+			else {
 				tagList.set(0, automaticTag);
 			}
-			for (int iTag = tagList.size() - 1; iTag >= 0; iTag--) {
-				boolean isConstructedForm = true;
+		}
+		for (int iTag = tagList.size() - 1; iTag >= 0; iTag--) {
+			boolean isConstructedForm = true;
 
-				if ((iTag == (tagList.size() - 1)) && !Utils.isConstructed(type)) {
-					isConstructedForm = false;
-				}
-
-				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				output.println("componentLength += writer.writeLength(componentLength);");
-
-				byte[] tagBytes = tagHelper.getByteArray();
-				String tagBytesAsString = "new byte[] {";
-				for(int i=0; i<tagBytes.length; i++) {
-					if(i!=0) {
-						tagBytesAsString += ",";
-					}
-					tagBytesAsString += tagBytes[i];
-				}
-				tagBytesAsString += "}";
-				
-				output.println(
-							"componentLength += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+			if ((iTag == (tagList.size() - 1)) && !Utils.isConstructed(type)) {
+				isConstructedForm = false;
 			}
+
+			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
+			output.println("componentLength += writer.writeLength(componentLength);");
+
+			byte[] tagBytes = tagHelper.getByteArray();
+			String tagBytesAsString = "new byte[] {";
+			for(int i=0; i<tagBytes.length; i++) {
+				if(i!=0) {
+					tagBytesAsString += ",";
+				}
+				tagBytesAsString += tagBytes[i];
+			}
+			tagBytesAsString += "}";
+			
+			output.println(
+						"componentLength += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 		}
 	}
 
 
-	private void writeTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
+	private void writeSequenceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
-		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
+		
+		if(tagList == null) {
+			tagList = new ArrayList<Tag>();
+		}
+		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE
 			return;
 		}
+		
 		if(automaticTag != null) {
-			tagList.set(0, automaticTag);
+			if(tagList.size() == 0) {
+				tagList.add(automaticTag);
+			}
+			else {
+				tagList.set(0, automaticTag);
+			}
 		}
 
 		for (int iTag = 0; iTag < tagList.size(); iTag++) {
@@ -306,13 +327,23 @@ public class BERHelper {
 	}
 
 	
-	private void writeSetTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
+	private void writeSetOrChoiceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
-		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
+
+		if(tagList == null) {
+			tagList = new ArrayList<Tag>();
+		}
+		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE
 			return;
 		}
+		
 		if(automaticTag != null) {
-			tagList.set(0, automaticTag);
+			if(tagList.size() == 0) {
+				tagList.add(automaticTag);
+			}
+			else {
+				tagList.set(0, automaticTag);
+			}
 		}
 
 		for (int iTag = 0; iTag < tagList.size(); iTag++) {
@@ -493,7 +524,7 @@ public class BERHelper {
 			if(sequenceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
-			writeTagsDecode(namedType, automaticTag);
+			writeSequenceTagsDecode(namedType, automaticTag);
 			
 			if(namedType.isOptional()) {
 				output.println("if(matchedPrevious){");
@@ -592,7 +623,7 @@ public class BERHelper {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 			
-			writeSetTagsDecode(namedType, automaticTag);
+			writeSetOrChoiceTagsDecode(namedType, automaticTag);
 			output.println("if(matchedPrevious){");
 			output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
@@ -817,7 +848,7 @@ public class BERHelper {
 				automaticTag = new Tag(new Integer(componentIndex), null, null);
 			}
 
-			writeSetTagsDecode(namedType, automaticTag);
+			writeSetOrChoiceTagsDecode(namedType, automaticTag);
 			output.println("if(matchedPrevious){");
 			output.println("componentLength=reader.getLengthValue();");
 			switchDecodeComponent(namedType, componentName, componentClassName);
@@ -885,6 +916,9 @@ public class BERHelper {
 		}
 		else if(namedType.getType().isTypeReference()) {
 			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer);");		
+		}
+		else if(namedType.getType().isTypeWithComponents()) {
+			output.println("componentLength=" + Utils.uNormalize(componentName) + ".write(" + componentGetter + ",writer);");		
 		}
 		else {
 			throw new Exception("BERHelper.switchEncodeComponent: Code generation not supported for Type " + namedType.getType().getName());
@@ -955,6 +989,10 @@ public class BERHelper {
 		else if(namedType.getType().isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");
 			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
+		}
+		else if(namedType.getType().isTypeWithComponents()) {
+			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");
+			output.println(Utils.uNormalize(componentName) + ".read(" + componentGetter + ",reader, componentLength);");		
 		}
 		else {
 			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + namedType.getType().getName());
