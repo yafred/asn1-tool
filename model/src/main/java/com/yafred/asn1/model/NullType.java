@@ -9,7 +9,7 @@ public class NullType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(5), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(5), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

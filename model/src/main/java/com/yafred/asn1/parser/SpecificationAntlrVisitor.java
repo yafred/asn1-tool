@@ -860,11 +860,11 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.namedType() != null) {
 				String name = ctx.namedType().LCASE_ID().getText();
 				Type type = ctx.namedType().type().accept(new TypeVisitor());
-				sequenceOfType = new SequenceOfType(name, type);
+				sequenceOfType = new SequenceOfType(new NamedType(name, type));
 			}
 			else {
 				Type type = ctx.type().accept(new TypeVisitor());
-				sequenceOfType = new SequenceOfType(null, type);
+				sequenceOfType = new SequenceOfType(new NamedType(null, type));
 			}
 			return sequenceOfType;
 		}
@@ -877,11 +877,11 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.namedType() != null) {
 				String name = ctx.namedType().LCASE_ID().getText();
 				Type type = ctx.namedType().type().accept(new TypeVisitor());
-				setOfType = new SetOfType(name, type);
+				setOfType = new SetOfType(new NamedType(name, type));
 			}
 			else {
 				Type type = ctx.type().accept(new TypeVisitor());
-				setOfType = new SetOfType(null, type);
+				setOfType = new SetOfType(new NamedType(null, type));
 			}
 			return setOfType;
 		}

@@ -8,7 +8,7 @@ public class TimeOfDayType extends RestrictedCharacterStringType {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(32), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(32), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

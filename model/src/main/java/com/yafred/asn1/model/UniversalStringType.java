@@ -9,7 +9,7 @@ public class UniversalStringType extends RestrictedCharacterStringType {
 
 	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(28), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(28), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

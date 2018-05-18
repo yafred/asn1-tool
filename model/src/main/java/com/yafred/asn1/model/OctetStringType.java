@@ -9,7 +9,7 @@ public class OctetStringType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(4), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(4), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

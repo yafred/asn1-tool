@@ -40,7 +40,7 @@ public class EnumeratedType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(10), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(10), TagClass.UNIVERSAL_TAG, null);
     }
 
 	@Override

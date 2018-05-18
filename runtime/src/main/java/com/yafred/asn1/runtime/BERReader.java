@@ -209,7 +209,7 @@ public class BERReader {
             result += (aByte << ((i - 1) * 8));
         }
 
-        return new Integer(result | resultMask);
+        return Integer.valueOf(result | resultMask);
     }
 
     public String readRestrictedCharacterString(int nBytes) throws IOException {

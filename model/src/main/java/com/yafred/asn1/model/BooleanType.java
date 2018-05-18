@@ -9,7 +9,7 @@ public class BooleanType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(1), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(1), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

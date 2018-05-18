@@ -9,7 +9,7 @@ public class CharacterStringType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(29), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(29), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

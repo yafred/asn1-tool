@@ -9,7 +9,7 @@ public class DateType extends RestrictedCharacterStringType {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(31), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(31), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

@@ -54,7 +54,7 @@ public class TestBERWriter  {
 	public void test_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(new Integer(10));
+		writer.writeInteger(Integer.valueOf(10));
 		
 		assertEquals("0a", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}

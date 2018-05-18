@@ -9,7 +9,7 @@ public class PrintableStringType extends RestrictedCharacterStringType {
 
 	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(19), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(19), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

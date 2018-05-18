@@ -9,7 +9,7 @@ public class UTF8StringType extends RestrictedCharacterStringType {
 
 	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(12), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(12), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

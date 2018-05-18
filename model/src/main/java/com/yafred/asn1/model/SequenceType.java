@@ -18,7 +18,7 @@ public class SequenceType extends TypeWithComponents {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(16), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(16), TagClass.UNIVERSAL_TAG, null);
     }
      
     @Override

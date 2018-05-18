@@ -20,7 +20,7 @@ public class TestGeneratedCode_017 {
 		Person pdu = new Person();
 		pdu.setFirst_name("John");
 		pdu.setLast_name("Doe");
-		pdu.setAge(new Integer(25));
+		pdu.setAge(Integer.valueOf(25));
 				
 		String expectedHexa = "30 14 a0 06 16 04 4a 6f 68 6e a1 05 16 03 44 6f 65 a2 03 02 01 19";
 		testHelper.writePdu(pdu, Person.class, expectedHexa);
@@ -37,7 +37,7 @@ public class TestGeneratedCode_017 {
 		
 		Person pdu = new Person();
 		pdu.setLast_name("Doe");
-		pdu.setAge(new Integer(25));
+		pdu.setAge(Integer.valueOf(25));
 				
 		String expectedHexa = "30 0c a1 05 16 03 44 6f 65 a2 03 02 01 19";
 		testHelper.writePdu(pdu, Person.class, expectedHexa);
@@ -53,9 +53,9 @@ public class TestGeneratedCode_017 {
 	public void test_3() throws Exception {
 		
 		GpsInfo pdu = new GpsInfo();
-		pdu.setGpsLat(new Integer(1));
-		pdu.setGpsLong(new Integer(2));
-		pdu.setGpsAlt(new Integer(3));
+		pdu.setGpsLat(Integer.valueOf(1));
+		pdu.setGpsLong(Integer.valueOf(2));
+		pdu.setGpsAlt(Integer.valueOf(3));
 				
 		String expectedHexa = "31 0f a0 03 02 01 01 a1 03 02 01 02 a2 03 02 01 03";
 		testHelper.writePdu(pdu, GpsInfo.class, expectedHexa);
@@ -71,9 +71,9 @@ public class TestGeneratedCode_017 {
 	public void test_4() throws Exception {
 		
 		GpsInfo pdu = new GpsInfo();
-		pdu.setGpsLat(new Integer(1));
-		pdu.setGpsLong(new Integer(2));
-		pdu.setGpsAlt(new Integer(3));
+		pdu.setGpsLat(Integer.valueOf(1));
+		pdu.setGpsLong(Integer.valueOf(2));
+		pdu.setGpsAlt(Integer.valueOf(3));
 				
 		String expectedHexa = "31 0f a0 03 02 01 01 a1 03 02 01 02 a2 03 02 01 03";
 		testHelper.writePdu(pdu, GpsInfo.class, expectedHexa);

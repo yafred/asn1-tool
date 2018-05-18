@@ -10,7 +10,7 @@ public class TagHelperTest {
 
 	@Test
 	public void test_1() {
-		Tag tag = new Tag(new Integer(32), TagClass.UNIVERSAL_TAG, null);
+		Tag tag = new Tag(Integer.valueOf(32), TagClass.UNIVERSAL_TAG, null);
 		TagHelper tagHelper = new TagHelper(tag, true);
 		
 		byte[] encoded = tagHelper.getByteArray();

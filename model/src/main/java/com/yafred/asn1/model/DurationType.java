@@ -9,7 +9,7 @@ public class DurationType extends RestrictedCharacterStringType {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(34), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(34), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

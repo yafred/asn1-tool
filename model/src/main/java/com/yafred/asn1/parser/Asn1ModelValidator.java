@@ -235,7 +235,7 @@ public class Asn1ModelValidator {
 		}
 		if(type.isListOfType()) {
 			ListOfType listOfType = (ListOfType)type;
-			visitType(listOfType.getElementType(), moduleDefinition);
+			visitType(listOfType.getElement().getType(), moduleDefinition);
 		}
 		if(type.isSetType()) {
 			SetType setType = (SetType)type;
@@ -518,8 +518,8 @@ public class Asn1ModelValidator {
 		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 			if(namedNumber.getNumber() == null) {
 				// find next number available
-				for(; rootEnumerationMap.containsKey(new Integer(availableNumber)); availableNumber++) {}
-				namedNumber.setNumber(new Integer(availableNumber));
+				for(; rootEnumerationMap.containsKey(Integer.valueOf(availableNumber)); availableNumber++) {}
+				namedNumber.setNumber(Integer.valueOf(availableNumber));
 				availableNumber++;
 			}
 		}
@@ -530,8 +530,8 @@ public class Asn1ModelValidator {
 			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 				if(namedNumber.getNumber() == null) {
 					// Find next number available
-					for(; rootEnumerationMap.containsKey(new Integer(availableNumber)); availableNumber++) {}
-					namedNumber.setNumber(new Integer(availableNumber));
+					for(; rootEnumerationMap.containsKey(Integer.valueOf(availableNumber)); availableNumber++) {}
+					namedNumber.setNumber(Integer.valueOf(availableNumber));
 					availableNumber++;
 				}
 				else {

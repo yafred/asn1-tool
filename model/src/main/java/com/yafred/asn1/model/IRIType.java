@@ -9,7 +9,7 @@ public class IRIType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(35), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(35), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

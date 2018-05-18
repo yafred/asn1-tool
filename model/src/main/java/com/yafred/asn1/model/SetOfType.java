@@ -3,8 +3,8 @@ package com.yafred.asn1.model;
 
 public class SetOfType extends ListOfType {
 	
-    public SetOfType(String elementName, Type type) {
-    	super(elementName, type);
+    public SetOfType(NamedType element) {
+    	super(element);
     }
 
     @Override
@@ -14,7 +14,7 @@ public class SetOfType extends ListOfType {
     
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(17), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(17), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

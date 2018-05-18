@@ -29,7 +29,7 @@ public class BitStringType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(3), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(3), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

@@ -1,0 +1,11 @@
+G-020 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+
+Person ::= SET {
+   names SEQUENCE OF name IA5String,
+   scores SEQUENCE OF INTEGER
+   }
+
+
+END

@@ -8,7 +8,7 @@ public class RelativeOIDType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(13), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(13), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

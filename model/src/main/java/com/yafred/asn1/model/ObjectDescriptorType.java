@@ -9,7 +9,7 @@ public class ObjectDescriptorType extends Type {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(7), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(7), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

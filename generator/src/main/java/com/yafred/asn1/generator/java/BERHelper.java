@@ -10,7 +10,6 @@ import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.NullType;
 import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Tag;
@@ -62,19 +61,26 @@ public class BERHelper {
 		writeTagsEncode(type);
 		output.println("writer.flush();");
 		output.println("}");
-		
+					
 		// switch
 		if (type.isTypeReference()) {
 			// nothing more
 		} 
-		else if (type.isIntegerType() || type.isBooleanType() || type.isBitStringType() || type.isOctetStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType() || type.isRestrictedCharacterStringType()) {
-			processBasicTypeAssignment(type, className);
-		}
-		else if (type.isEnumeratedType()) {
-			processEnumeratedTypeAssignment((EnumeratedType)type, className);
-		}		
-		else if (type.isNullType()) {
-			processNullTypeAssignment((NullType)type, className);
+		else if (!type.isTypeWithComponents() && !type.isListOfType()) {
+	        // read method
+			output.println("public static void read(" + className + " instance," + BER_READER +
+	            " reader, int componentLength) throws Exception {");
+			switchDecodeComponent(type, "value", className);
+			output.println("}");
+
+			// write method
+			output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
+			output.println("int componentLength=0;");
+			switchEncodeComponent(type, "value", className);
+			output.println("return componentLength;");
+			output.println("}");
+
 		}
 		else if (type.isSequenceType()) {
 			processSequenceTypeAssignment((SequenceType)type, className);
@@ -93,117 +99,7 @@ public class BERHelper {
 		}
 	}
 	
-	
-	void processEnumeratedTypeAssignment(EnumeratedType enumeratedType, String className) throws Exception {
-	    // write encoding code
-		output.println("public static int write(" + className + " instance," + BER_WRITER +
-            " writer) throws Exception {");
-		output.println("int intValue=-1;");
-		output.println("switch(instance.getValue()) {");
-		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-			output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-			output.println("intValue=" + namedNumber.getNumber() + ";");
-			output.println("break;");
-		}
-		if(enumeratedType.getAdditionalEnumeration() != null) {
-			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-				output.println("intValue=" + namedNumber.getNumber() + ";");
-				output.println("break;");
-			}
-		}
-		output.println("}");
-		output.println("return writer.writeInteger(intValue);");
-		output.println("}");
-
-        // write decoding code
-		output.println("public static void read(" + className + " instance," + BER_READER +
-            " reader, int length) throws Exception {");
-		output.println("int intValue=reader.readInteger(length);");
-		for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-			output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-			output.println("instance.setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
-			output.println("}");
-		}
-		if(enumeratedType.getAdditionalEnumeration() == null) {
-			output.println("if(null == instance.getValue()){");
-			output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
-			output.println("}");
-		}
-		else {
-			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				output.println("instance.setValue(Enum." + Utils.normalize(namedNumber.getName()) + ");");
-				output.println("}");
-			}
-			output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
-		}
-		output.println("return;");
-		output.println("}");
-	}
-	
-	
-	void processBasicTypeAssignment(Type type, String className) throws Exception {
-		String writeMethod = "";
-		String readMethod = "";
 		
-		if(type.isIntegerType()) {
-			writeMethod = "writeInteger";
-			readMethod = "readInteger";
-		}
-		else if(type.isBooleanType()) {
-			writeMethod = "writeBoolean";
-			readMethod = "readBoolean";
-		}
-		else if(type.isBitStringType()) {
-			writeMethod = "writeBitString";
-			readMethod = "readBitString";
-		}
-		else if(type.isOctetStringType()) {
-			writeMethod = "writeOctetString";
-			readMethod = "readOctetString";
-		}
-		else if(type.isObjectIdentifierType()) {
-			writeMethod = "writeObjectIdentifier";
-			readMethod = "readObjectIdentifier";
-		}
-		else if(type.isRelativeOIDType()) {
-			writeMethod = "writeRelativeOID";
-			readMethod = "readRelativeOID";
-		}
-		else if(type.isRestrictedCharacterStringType()) {
-			writeMethod = "writeRestrictedCharacterString";
-			readMethod = "readRestrictedCharacterString";
-		}
-		
-	    // write encoding code
-		output.println("public static int write(" + className + " instance," + BER_WRITER +
-            " writer) throws Exception {");
-		output.println("return writer." + writeMethod + "(instance.getValue());");
-		output.println("}");
-
-        // write decoding code
-		output.println("public static void read(" + className + " instance," + BER_READER +
-            " reader, int length) throws Exception {");
-		output.println("instance.setValue(reader." + readMethod + "(length));");
-		output.println("}");
-	}
-
-
-	void processNullTypeAssignment(NullType nullType, String className) throws Exception {
-	    // write encoding code
-		output.println("public static int write(" + className + " instance," + BER_WRITER +
-	            " writer) throws Exception {");
-		output.println("return 0;");
-		output.println("}");
-
-        // write decoding code
-		output.println("public static void read(" + className + " instance," + BER_READER + " reader, int length) throws Exception {");
-		output.println("instance.setValue(new java.lang.Object());"); // dummy value
-		output.println("}");
-	}
-		
-
 	private void writeTagsEncode(Type type) throws Exception {
 		writeTagsEncode(type, null);
 	}
@@ -410,21 +306,21 @@ public class BERHelper {
 			
 			if(iTag == 0) {
 				// we could test if this is a potential end
-				output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
+				output.println("if(listLength==-1 && reader.matchTag(new byte[]{0})) {");
 				output.println("reader.readTag();");
 				output.println("reader.mustMatchTag(new byte[]{0});");
 				output.println("break;");
 				output.println("}");
 				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
-				output.println("if(length!=-1) length-=reader.getLengthLength();");
+				output.println("if(listLength!=-1) listLength-=reader.getLengthLength();");
 			}
 			else {
 				output.println("reader.readTag();");
-				output.println("if(length!=-1) length-=reader.getTagLength();");
+				output.println("if(listLength!=-1) listLength-=reader.getTagLength();");
 				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
-				output.println("if(length!=-1) length-=reader.getLengthLength();");
+				output.println("if(listLength!=-1) listLength-=reader.getLengthLength();");
 			}
 		}
 	}
@@ -483,10 +379,10 @@ public class BERHelper {
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.print("int componentLength=0;");
-			switchEncodeComponent(namedType, componentName, componentClassName);
+			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
 			output.println("length+=componentLength;");
@@ -522,7 +418,7 @@ public class BERHelper {
 			}
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			writeSequenceTagsDecode(namedType, automaticTag);
 			
@@ -530,7 +426,8 @@ public class BERHelper {
 				output.println("if(matchedPrevious){");
 			}
 			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType, componentName, componentClassName);
+			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+			output.println("if(length!=-1) length-=componentLength;");
 			if(namedType.isOptional()) {
 				output.println("}");
 			}
@@ -578,10 +475,10 @@ public class BERHelper {
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.print("int componentLength=0;");
-			switchEncodeComponent(namedType, componentName, componentClassName);
+			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(setType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
 			output.println("length+=componentLength;");
@@ -620,13 +517,14 @@ public class BERHelper {
 			}
 			Tag automaticTag = null;
 			if(setType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			
 			writeSetOrChoiceTagsDecode(namedType, automaticTag);
 			output.println("if(matchedPrevious){");
 			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType, componentName, componentClassName);
+			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+			output.println("if(length!=-1) length-=componentLength;");
 			output.println("continue;");
 			output.println("}");
 			output.println();
@@ -641,12 +539,32 @@ public class BERHelper {
 
 	
 	void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
-		Type elementType = listOfType.getElementType();
+		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
-		if(listOfType.getElementType().isTypeReference()) {
-			elementClassName = Utils.uNormalize(listOfType.getElementType().getName());
-			elementType = ((TypeReference)listOfType.getElementType()).getBuiltinType();
+		if(listOfType.getElement().getType().isTypeReference()) {
+			elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
+			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
+		
+	    // write encoding code
+		output.println("public static int write(" + className + " instance," + BER_WRITER +
+	            " writer) throws Exception {");
+		output.println("int length=0;");
+		output.println("if(instance.getValue() != null) {");
+		output.println("for(int i=instance.getValue().size()-1; i>=0; i--) {");
+		output.println("int componentLength=0;");
+		
+		switchEncodeListElement(elementType, elementClassName, "value");
+
+		writeTagsEncode(listOfType.getElement().getType());
+		output.println("length+=componentLength;");
+		output.println("}");
+		output.println("}");
+		output.println("return length;");
+		output.println("}");
+
+		
+        // write decoding code
 		String javaType = elementClassName;
 		
 		if(!Utils.isConstructed(elementType)) {
@@ -662,133 +580,18 @@ public class BERHelper {
 				}
 			}
 		}
-		
-	    // write encoding code
-		output.println("public static int write(" + className + " instance," + BER_WRITER +
-	            " writer) throws Exception {");
-		output.println("int length=0;");
-		output.println("if(instance.getValue() != null) {");
-		output.println("for(int i=instance.getValue().size()-1; i>=0; i--) {");
-		output.println("int componentLength=0;");
-		if(elementType.isIntegerType()) {
-			output.println("componentLength+=writer.writeInteger(instance.getValue().get(i));");			
-		}
-		else if(elementType.isRestrictedCharacterStringType()) {
-			output.println("componentLength+=writer.writeRestrictedCharacterString(instance.getValue().get(i));");			
-		}
-		else if(elementType.isOctetStringType()) {
-			output.println("componentLength+=writer.writeOctetString(instance.getValue().get(i));");			
-		}
-		else if(elementType.isObjectIdentifierType()) {
-			output.println("componentLength+=writer.writeObjectIdentifier(instance.getValue().get(i));");			
-		}
-		else if(elementType.isRelativeOIDType()) {
-			output.println("componentLength+=writer.writeRelativeOID(instance.getValue().get(i));");			
-		}
-		else if(elementType.isBooleanType()) {
-			output.println("componentLength+=writer.writeBoolean(instance.getValue().get(i));");			
-		}
-		else if(elementType.isBitStringType()) {
-			output.println("componentLength+=writer.writeBitString(instance.getValue().get(i));");			
-		}
-		else if(elementType.isEnumeratedType()) {
-			output.println("int intValue=-1;");
-			output.println("switch(instance.getValue().get(i)) {");
-			EnumeratedType enumeratedType = (EnumeratedType)elementType;
-			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-				output.println("intValue=" + namedNumber.getNumber() + ";");
-				output.println("break;");
-			}
-			if(enumeratedType.getAdditionalEnumeration() != null) {
-				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
-					output.println("intValue=" + namedNumber.getNumber() + ";");
-					output.println("break;");
-				}
-			}
-			output.println("}");
-			output.println("componentLength+=writer.writeInteger(intValue);");			
-		}
-		else if(elementType.isSequenceType() || elementType.isSetType()) {
-			output.println("componentLength+=" + elementClassName + ".write(instance.getValue().get(i),writer);");						
-		}
-		else {
-			throw new Exception("BERHelper.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElementType().getName());
-		}
-
-		writeTagsEncode(listOfType.getElementType());
-		output.println("length+=componentLength;");
-		output.println("}");
-		output.println("}");
-		output.println("return length;");
-		output.println("}");
-
-		
-        // write decoding code
 		output.println("public static void read(" + className + " instance," + BER_READER +
-	            " reader, int length) throws Exception {");
+	            " reader, int listLength) throws Exception {");
 		output.println("instance.setValue(new java.util.ArrayList<" + javaType + ">());");
-		output.println("while(length > 0 || length==-1) {");
+		output.println("while(listLength > 0 || listLength==-1) {");
 		output.println("reader.readTag();");
-		output.println("if(length!=-1) length-=reader.getTagLength();");
-		writeElementTagsDecode(listOfType.getElementType());
-		output.println("int itemLength=reader.getLengthValue();");
-		if(elementType.isIntegerType()) {
-			output.println("instance.getValue().add(reader.readInteger(itemLength));");	
-		}
-		else if(elementType.isRestrictedCharacterStringType()) {
-			output.println("instance.getValue().add(reader.readRestrictedCharacterString(itemLength));");	
-		}
-		else if(elementType.isOctetStringType()) {
-			output.println("instance.getValue().add(reader.readOctetString(itemLength));");	
-		}
-		else if(elementType.isObjectIdentifierType()) {
-			output.println("instance.getValue().add(reader.readObjectIdentifier(itemLength));");	
-		}
-		else if(elementType.isRelativeOIDType()) {
-			output.println("instance.getValue().add(reader.readRelativeOID(itemLength));");	
-		}
-		else if(elementType.isBooleanType()) {
-			output.println("instance.getValue().add(reader.readBoolean(itemLength));");	
-		}
-		else if(elementType.isBitStringType()) {
-			output.println("instance.getValue().add(reader.readBitString(itemLength));");	
-		}
-		else if(elementType.isEnumeratedType()) {
-			EnumeratedType enumeratedType = (EnumeratedType)elementType;
-			output.println("int intValue=reader.readInteger(itemLength);");
-			output.println(javaType + " item=null;");
-			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
-				output.println("}");
-			}
-			output.println("if(item!=null){");
-			output.println("instance.getValue().add(item);");
-			output.println("}");
-			if(enumeratedType.getAdditionalEnumeration() == null) {
-				output.println("else {");
-				output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
-				output.println("}");
-			}
-			else {
-				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-					output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
-					output.println("instance.getValue().add(item);");
-					output.println("}");
-				}
-				output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
-			}
-		}
-		else if(elementType.isSequenceType() || elementType.isSetType()) {
-			output.println(javaType + " item=new " + javaType + "();");
-			output.println(javaType + ".read(item, reader, itemLength);");
-			output.println("instance.getValue().add(item);");			
-		}
+		output.println("if(listLength!=-1) listLength-=reader.getTagLength();");
+		writeElementTagsDecode(listOfType.getElement().getType());
+		output.println("int componentLength=reader.getLengthValue();");
 		
-		output.println("if(length!=-1) length-=itemLength;");
+		switchDecodeListElement(elementType, elementClassName, "value", javaType);
+		
+		output.println("if(listLength!=-1) listLength-=componentLength;");
 		output.println("}");
 		output.println("}");
 	}
@@ -815,10 +618,10 @@ public class BERHelper {
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.print("int componentLength=0;");
-			switchEncodeComponent(namedType, componentName, componentClassName);
+			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			writeTagsEncode(namedType.getType(), automaticTag);
 			output.println("return componentLength;");
@@ -845,13 +648,14 @@ public class BERHelper {
 			}
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
-				automaticTag = new Tag(new Integer(componentIndex), null, null);
+				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 
 			writeSetOrChoiceTagsDecode(namedType, automaticTag);
 			output.println("if(matchedPrevious){");
 			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType, componentName, componentClassName);
+			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+			output.println("if(length!=-1) length-=componentLength;");
 			output.println("return;");
 			output.println("}");
 			output.println();
@@ -861,44 +665,44 @@ public class BERHelper {
 	}
 	
 	
-	void switchEncodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
+	void switchEncodeComponent(Type type, String componentName, String componentClassName) throws Exception {
 		String referencedClassName = "";
-		Type type = namedType.getType();
-		if(type.isTypeReference()) {
-			referencedClassName = Utils.uNormalize(((TypeReference) type).getName());
-			type = ((TypeReference)type).getBuiltinType();
+		Type builtinType = type;
+		if(builtinType.isTypeReference()) {
+			referencedClassName = Utils.uNormalize(((TypeReference) builtinType).getName());
+			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		
 		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 		
-		if(type.isRestrictedCharacterStringType()) {
+		if(builtinType.isRestrictedCharacterStringType()) {
 			output.println("componentLength=writer.writeRestrictedCharacterString(" +  componentGetter + ");");			
 		}
-		else if(type.isIntegerType()) {
+		else if(builtinType.isIntegerType()) {
 			output.println("componentLength=writer.writeInteger(" +  componentGetter + ");");			
 		}
-		else if(type.isBooleanType()) {
+		else if(builtinType.isBooleanType()) {
 			output.println("componentLength=writer.writeBoolean(" +  componentGetter + ");");			
 		}	
-		else if(type.isBitStringType()) {
+		else if(builtinType.isBitStringType()) {
 			output.println("componentLength=writer.writeBitString(" +  componentGetter + ");");			
 		}
-		else if(type.isOctetStringType()) {
+		else if(builtinType.isOctetStringType()) {
 			output.println("componentLength=writer.writeOctetString(" +  componentGetter + ");");			
 		}
-		else if(type.isObjectIdentifierType()) {
+		else if(builtinType.isObjectIdentifierType()) {
 			output.println("componentLength=writer.writeObjectIdentifier(" +  componentGetter + ");");			
 		}
-		else if(type.isRelativeOIDType()) {
+		else if(builtinType.isRelativeOIDType()) {
 			output.println("componentLength=writer.writeRelativeOID(" +  componentGetter + ");");			
 		}
-		else if(type.isNullType()) {
+		else if(builtinType.isNullType()) {
 			// do nothing
 		}
-		else if(type.isEnumeratedType()) {
+		else if(builtinType.isEnumeratedType()) {
 			output.println("int intValue=-1;");
 			output.println("switch(" +  componentGetter + ") {");
-			EnumeratedType enumeratedType = (EnumeratedType)type;
+			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
 				output.println("intValue=" + namedNumber.getNumber() + ";");
@@ -914,56 +718,131 @@ public class BERHelper {
 			output.println("}");
 			output.println("componentLength=writer.writeInteger(intValue);");			
 		}
-		else if(namedType.getType().isTypeReference()) {
+		else if(type.isTypeReference()) {
 			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer);");		
 		}
-		else if(namedType.getType().isTypeWithComponents()) {
+		else if(type.isTypeWithComponents()) {
 			output.println("componentLength=" + Utils.uNormalize(componentName) + ".write(" + componentGetter + ",writer);");		
 		}
+		else if(type.isListOfType()) {
+			ListOfType listOfType = (ListOfType)type;
+			Type elementType = listOfType.getElement().getType();
+			String elementClassName = "";
+			if(listOfType.getElement().getType().isTypeReference()) {
+				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
+				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
+			}
+			output.println("int listLength=0;");
+			output.println("if(" + componentGetter + " != null) {");
+			output.println("for(int i=" + componentGetter + ".size()-1; i>=0; i--) {");
+			output.println("componentLength=0;");
+			switchEncodeListElement(elementType, elementClassName, componentName);
+			writeTagsEncode(listOfType.getElement().getType());
+			output.println("listLength+=componentLength;");
+			output.println("}");
+			output.println("}");
+			output.println("componentLength=listLength;");			
+		}
 		else {
-			throw new Exception("BERHelper.switchEncodeComponent: Code generation not supported for Type " + namedType.getType().getName());
+			throw new Exception("BERHelper.switchEncodeComponent: Code generation not supported for Type " + type.getName());
 		}
 	}
 	
 	
-	void switchDecodeComponent(NamedType namedType, String componentName, String componentClassName) throws Exception {
+	void switchEncodeListElement(Type elementType, String elementClassName, String componentName) throws Exception {
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+
+		if(elementType.isRestrictedCharacterStringType()) {
+			output.println("componentLength+=writer.writeRestrictedCharacterString(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isIntegerType()) {
+			output.println("componentLength+=writer.writeInteger(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isBooleanType()) {
+			output.println("componentLength+=writer.writeBoolean(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isBitStringType()) {
+			output.println("componentLength+=writer.writeBitString(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isOctetStringType()) {
+			output.println("componentLength+=writer.writeOctetString(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isObjectIdentifierType()) {
+			output.println("componentLength+=writer.writeObjectIdentifier(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isRelativeOIDType()) {
+			output.println("componentLength+=writer.writeRelativeOID(" + componentGetter + ".get(i));");			
+		}
+		else if(elementType.isNullType()) {
+			// do nothing
+		}
+		else if(elementType.isEnumeratedType()) {
+			output.println("int intValue=-1;");
+			output.println("switch(" + componentGetter + ".get(i)) {");
+			EnumeratedType enumeratedType = (EnumeratedType)elementType;
+			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("break;");
+			}
+			if(enumeratedType.getAdditionalEnumeration() != null) {
+				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					output.println("intValue=" + namedNumber.getNumber() + ";");
+					output.println("break;");
+				}
+			}
+			output.println("}");
+			output.println("componentLength+=writer.writeInteger(intValue);");			
+		}
+		else if(elementType.isSequenceType() || elementType.isSetType()) {
+			output.println("componentLength+=" + elementClassName + ".write(" + componentGetter + ".get(i),writer);");						
+		}
+		else {
+			throw new Exception("BERHelper.processListOfTypeAssignment: Code generation not supported for Type " + elementType.getName());
+		}
+
+	}
 		
-		Type type = namedType.getType();
+	
+	void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
+		
+		Type builtinType = type;
 		if(type.isTypeReference()) {
-			type = ((TypeReference)type).getBuiltinType();
+			builtinType = ((TypeReference)type).getBuiltinType();
 		}
 		
 		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 		String componentSetter = "instance.set" + Utils.uNormalize(componentName) + "(";
 		
-		if(type.isRestrictedCharacterStringType()) {
+		if(builtinType.isRestrictedCharacterStringType()) {
 			output.println(componentSetter + "reader.readRestrictedCharacterString(componentLength));");
 		}
-		else if(type.isIntegerType()) {
+		else if(builtinType.isIntegerType()) {
 			output.println(componentSetter + "reader.readInteger(componentLength));");
 		}
-		else if(type.isBooleanType()) {
+		else if(builtinType.isBooleanType()) {
 			output.println(componentSetter + "reader.readBoolean(componentLength));");
 		}	
-		else if(type.isBitStringType()) {
+		else if(builtinType.isBitStringType()) {
 			output.println(componentSetter + "reader.readBitString(componentLength));");
 		}
-		else if(type.isOctetStringType()) {
+		else if(builtinType.isOctetStringType()) {
 			output.println(componentSetter + "reader.readOctetString(componentLength));");
 		}
-		else if(type.isObjectIdentifierType()) {
+		else if(builtinType.isObjectIdentifierType()) {
 			output.println(componentSetter + "reader.readObjectIdentifier(componentLength));");
 		}
-		else if(type.isRelativeOIDType()) {
+		else if(builtinType.isRelativeOIDType()) {
 			output.println(componentSetter + "reader.readRelativeOID(componentLength));");
 		}
-		else if(type.isNullType()) {
+		else if(builtinType.isNullType()) {
 			output.println(componentSetter + "new Object());");
 		}
-		else if(type.isEnumeratedType()) {
-			EnumeratedType enumeratedType = (EnumeratedType)type;
+		else if(builtinType.isEnumeratedType()) {
+			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
 			String enumSuffix = "";
-			if(namedType.getType().isTypeReference()) {
+			if(type.isTypeReference() || componentName.equals("value")) {
 				enumSuffix = ".Enum";
 			}
 			output.println("int intValue=reader.readInteger(componentLength);");
@@ -986,18 +865,118 @@ public class BERHelper {
 				output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
-		else if(namedType.getType().isTypeReference()) {
+		else if(type.isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");
 			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
 		}
-		else if(namedType.getType().isTypeWithComponents()) {
+		else if(type.isTypeWithComponents()) {
 			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");
 			output.println(Utils.uNormalize(componentName) + ".read(" + componentGetter + ",reader, componentLength);");		
 		}
-		else {
-			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + namedType.getType().getName());
+		else if(type.isListOfType()) {
+			ListOfType listOfType = (ListOfType)type;
+			Type elementType = listOfType.getElement().getType();
+			String elementClassName = "";
+			if(listOfType.getElement().getType().isTypeReference()) {
+				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
+				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
+			}
+			String javaType = elementClassName;
+			
+			if(!Utils.isConstructed(elementType)) {
+				if(!elementType.isEnumeratedType()) {
+					javaType= Utils.mapToJava(elementType);
+				}
+				else {
+					if(elementClassName.equals("")) {
+						javaType = "Enum";
+					}
+					else {
+						javaType = elementClassName + ".Enum";
+					}
+				}
+			}
+			output.println(componentSetter + "new java.util.ArrayList<" + javaType + ">());");
+			output.println("int listLength=componentLength;");
+			output.println("int keepComponentLength=componentLength;");			
+			output.println("while(listLength > 0 || listLength==-1) {");
+			output.println("reader.readTag();");
+			output.println("if(listLength!=-1) listLength-=reader.getTagLength();");
+			writeElementTagsDecode(listOfType.getElement().getType());
+			output.println("componentLength=reader.getLengthValue();");
+			
+			switchDecodeListElement(elementType, elementClassName, componentName, javaType);
+			
+			output.println("if(listLength!=-1) listLength-=componentLength;");
+			output.println("}");
+			output.println("componentLength=keepComponentLength;");			
 		}
-		
-		output.println("if(length!=-1) length-=componentLength;");
+		else {
+			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + type.getName());
+		}
 	}
+	
+	
+	void switchDecodeListElement(Type elementType, String elementClassName, String componentName, String javaType) throws Exception {
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+
+		if(elementType.isRestrictedCharacterStringType()) {
+			output.println(componentGetter + ".add(reader.readRestrictedCharacterString(componentLength));");	
+		}
+		else if(elementType.isIntegerType()) {
+			output.println(componentGetter + ".add(reader.readInteger(componentLength));");	
+		}
+		else if(elementType.isBooleanType()) {
+			output.println(componentGetter + ".add(reader.readBoolean(componentLength));");	
+		}
+		else if(elementType.isBitStringType()) {
+			output.println(componentGetter + ".add(reader.readBitString(componentLength));");	
+		}
+		else if(elementType.isOctetStringType()) {
+			output.println(componentGetter + ".add(reader.readOctetString(componentLength));");	
+		}
+		else if(elementType.isObjectIdentifierType()) {
+			output.println(componentGetter + ".add(reader.readObjectIdentifier(componentLength));");	
+		}
+		else if(elementType.isRelativeOIDType()) {
+			output.println(componentGetter + ".add(reader.readRelativeOID(componentLength));");	
+		}
+		else if(elementType.isNullType()) {
+			output.println(componentGetter + ".add(new Object());");	
+		}
+		else if(elementType.isEnumeratedType()) {
+			EnumeratedType enumeratedType = (EnumeratedType)elementType;
+			output.println("int intValue=reader.readInteger(componentLength);");
+			output.println(javaType + " item=null;");
+			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
+				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+				output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+				output.println("}");
+			}
+			output.println("if(item!=null){");
+			output.println(componentGetter + ".add(item);");
+			output.println("}");
+			if(enumeratedType.getAdditionalEnumeration() == null) {
+				output.println("else {");
+				output.println("throw new Exception(\"Invalid enumeration value: \" + intValue);");
+				output.println("}");
+			}
+			else {
+				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
+					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
+					output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+					output.println(componentGetter + ".add(item);");
+					output.println("}");
+				}
+				output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
+			}
+		}
+		else if(elementType.isSequenceType() || elementType.isSetType()) {
+			output.println(javaType + " item=new " + javaType + "();");
+			output.println(javaType + ".read(item, reader, componentLength);");
+			output.println(componentGetter + ".add(item);");			
+		}
+
+	}
+
 }

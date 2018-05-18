@@ -9,7 +9,7 @@ public class NumericStringType extends RestrictedCharacterStringType {
 
 	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(18), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(18), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

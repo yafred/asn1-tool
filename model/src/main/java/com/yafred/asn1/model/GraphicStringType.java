@@ -9,7 +9,7 @@ public class GraphicStringType extends RestrictedCharacterStringType {
     
 	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(25), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(25), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

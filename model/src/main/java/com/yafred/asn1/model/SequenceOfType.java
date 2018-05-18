@@ -3,8 +3,8 @@ package com.yafred.asn1.model;
 
 public class SequenceOfType extends ListOfType { 
 	
-    public SequenceOfType(String elementName, Type type) {
-    	super(elementName, type);
+    public SequenceOfType(NamedType element) {
+    	super(element);
     }
 
     @Override
@@ -14,7 +14,7 @@ public class SequenceOfType extends ListOfType {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(16), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(16), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

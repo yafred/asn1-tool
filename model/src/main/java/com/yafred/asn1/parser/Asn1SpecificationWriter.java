@@ -305,7 +305,7 @@ public class Asn1SpecificationWriter {
 	    		}
 	    		isFirst = false;
 	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
-	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagNumber = Integer.valueOf(automaticTagCounter);
 	    			automaticTagCounter++;
 	    		}
 	    		visit(component, automaticTagNumber);
@@ -320,7 +320,7 @@ public class Asn1SpecificationWriter {
 	    	for(Component component : typeWithComponents.getExtensionComponentList()) {
 	    		out.println(",");
 	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
-	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagNumber = Integer.valueOf(automaticTagCounter);
 	    			automaticTagCounter++;
 	    		}
 	    		visit(component, automaticTagNumber);
@@ -332,7 +332,7 @@ public class Asn1SpecificationWriter {
 	    	for(Component component : typeWithComponents.getAdditionalComponentList()) {
 	    		out.println(",");
 	    		if(typeWithComponents.isAutomaticTaggingSelected()) {
-	    			automaticTagNumber = new Integer(automaticTagCounter);
+	    			automaticTagNumber = Integer.valueOf(automaticTagCounter);
 	    			automaticTagCounter++;
 	    		}
 	    		visit(component, automaticTagNumber);
@@ -344,10 +344,10 @@ public class Asn1SpecificationWriter {
 	}
 	
 	private void visitListOfType(ListOfType listOfType) {
-    	if(listOfType.getElementName() != null) {
-    		out.print(listOfType.getElementName() + " ");
+    	if(listOfType.getElement().getName() != null) {
+    		out.print(listOfType.getElement().getName() + " ");
     	}
-		visitType(listOfType.getElementType());
+		visitType(listOfType.getElement().getType());
 	}
 	
 	private void visit(Component component, Integer automaticTagNumber) {

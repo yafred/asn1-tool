@@ -39,8 +39,8 @@ public class TestGeneratedCode_013 {
 		My_integer_list decodedPdu = (My_integer_list) testHelper.readPdu(My_integer_list.class, My_integer_list.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
-		assertEquals(decodedPdu.getValue().get(0), new Integer(10));		
-		assertEquals(decodedPdu.getValue().get(1), new Integer(20));		
+		assertEquals(decodedPdu.getValue().get(0), Integer.valueOf(10));		
+		assertEquals(decodedPdu.getValue().get(1), Integer.valueOf(20));		
 	}
 	
 	@Test

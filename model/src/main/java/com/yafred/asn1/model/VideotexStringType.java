@@ -9,7 +9,7 @@ public class VideotexStringType extends RestrictedCharacterStringType {
 
  	@Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(21), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(21), TagClass.UNIVERSAL_TAG, null);
     }
     
 	@Override

@@ -18,7 +18,7 @@ public class SetType extends TypeWithComponents {
 
     @Override
 	public Tag getUniversalTag() {
-        return new Tag(new Integer(17), TagClass.UNIVERSAL_TAG, null);
+        return new Tag(Integer.valueOf(17), TagClass.UNIVERSAL_TAG, null);
     }
 
      @Override

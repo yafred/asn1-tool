@@ -13,7 +13,7 @@ public class TestGeneratedCode_001 {
 	@Test
 	public void test_1() throws Exception {
 		My_integer pdu = new My_integer();
-		pdu.setValue(new Integer(10));
+		pdu.setValue(Integer.valueOf(10));
 
 		String expectedHexa = "02 01 0a";
 		testHelper.writePdu(pdu, My_integer.class, expectedHexa);

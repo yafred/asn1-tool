@@ -22,13 +22,13 @@ public class TestGeneratedCode_019 {
 		Single_Child_Family pdu = new Single_Child_Family();
 		pdu.setMother().setLast_name("Doe");
 		pdu.setMother().setFirst_name("Sarah");
-		pdu.setMother().setAge(new Integer(30));
+		pdu.setMother().setAge(Integer.valueOf(30));
 		pdu.setFather().setLast_name("Doe");
 		pdu.setFather().setFirst_name("John");
-		pdu.setFather().setAge(new Integer(30));
+		pdu.setFather().setAge(Integer.valueOf(30));
 		pdu.setChild().setLast_name("Doe");
 		pdu.setChild().setFirst_name("Mary");
-		pdu.setChild().setAge(new Integer(5));
+		pdu.setChild().setAge(Integer.valueOf(5));
 
 		String expectedHexa = "30 31 a0 0f 80 03 44 6f 65 81 05 53 61 72 61 68 82 01 1e a1 0e 80 03 44 6f 65 81 04 4a 6f 68 6e "
 				+ "82 01 1e a2 0e 80 03 44 6f 65 81 04 4d 61 72 79 82 01 05";
@@ -60,14 +60,14 @@ public class TestGeneratedCode_019 {
 		Single_Child_Family pdu = new Single_Child_Family();
 		pdu.setMother().setLast_name("Doe");
 		pdu.setMother().setFirst_name("Sarah");
-		pdu.setMother().setAge(new Integer(30));
+		pdu.setMother().setAge(Integer.valueOf(30));
 		pdu.setMother().setInfo().setJob("Seller");
 		pdu.setFather().setLast_name("Doe");
 		pdu.setFather().setFirst_name("John");
-		pdu.setFather().setAge(new Integer(30));
+		pdu.setFather().setAge(Integer.valueOf(30));
 		pdu.setChild().setLast_name("Doe");
 		pdu.setChild().setFirst_name("Mary");
-		pdu.setChild().setAge(new Integer(5));
+		pdu.setChild().setAge(Integer.valueOf(5));
 
 		String expectedHexa = "30 3b a0 19 80 03 44 6f 65 81 05 53 61 72 61 68 82 01 1e a3 08 80 06 53 65 6c 6c 65 72 a1 0e 80 "
 				+ "03 44 6f 65 81 04 4a 6f 68 6e 82 01 1e a2 0e 80 03 44 6f 65 81 04 4d 61 72 79 82 01 05";
@@ -101,7 +101,7 @@ public class TestGeneratedCode_019 {
 		Person pdu = new Person();
 		pdu.setName("Bill");
 		pdu.setGender(Gender.male);
-		pdu.setInfo().setAge(new Integer(20));
+		pdu.setInfo().setAge(Integer.valueOf(20));
 		pdu.setInfo().setJob("student");
 
 		String expectedHexa = "31 17 80 04 42 69 6c 6c 81 01 00 a2 0c 80 01 14 81 07 73 74 75 64 65 6e 74";

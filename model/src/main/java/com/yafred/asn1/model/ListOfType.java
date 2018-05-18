@@ -2,29 +2,22 @@ package com.yafred.asn1.model;
 
 
 abstract public class ListOfType extends Type { 
-	String elementName;
-	Type elementType;
 	
-    public ListOfType(String elementName, Type elementType) {
-    	this.elementName = elementName;
-    	this.elementType = elementType;
-    }
+	NamedType element;
 
-    public String getElementName() {
-		return elementName;
+	public ListOfType(NamedType namedType) {
+		this.element = namedType;
+	}
+	
+	public NamedType getElement() {
+		return element;
 	}
 
-	public void setElementName(String elementName) {
-		this.elementName = elementName;
+
+	public void setElement(NamedType element) {
+		this.element = element;
 	}
 
-	public Type getElementType() {
-		return elementType;
-	}
-
-	public void setElementType(Type elementType) {
-		this.elementType = elementType;
-	}
 
 	@Override
 	public boolean isListOfType() {
