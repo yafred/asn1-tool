@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/yafred/asn1-tool.svg?branch=master)](https://travis-ci.org/yafred/asn1-tool)
 [![Coverage Status](https://coveralls.io/repos/github/yafred/asn1-tool/badge.svg?branch=master)](https://coveralls.io/github/yafred/asn1-tool?branch=master)
 
-## Test the tool (as a user)
+## Using the tool
   
   * Download [latest release](https://github.com/yafred/asn1-tool/releases) 
   * java -jar asn1-tool.jar
@@ -13,34 +13,67 @@
      * -jp \<package> use this package as a prefix for generated Java code (ASN.1 module names are added to this prefix to get the full package name).
   * You can create an alias with alias on Linux or doskey on Windows 
   
-## Test the tool (as a developer)
+## Example
 
-  * mvn clean package
+### Write your ASN.1 specification
 
-## Parsing
+```
+G-009 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
 
-ASN.1 specifications are transformed in a Java model using an [Antlr](http://www.antlr.org/) visitor.
+Flight ::= SEQUENCE {
+   origin             IA5String,
+   destination        IA5String,
+   seats  INTEGER,
+   crew-format ENUMERATED { six, eight, ten }
+}
 
-  * Grammar: _grammar/src/main/antlr4/com/yafred/asn1/grammar/ASN.g4_
-  * Java Model: _model/src/main/java/com/yafred/asn1/model_
-  * Visitor: _model/src/main/java/com/yafred/asn1/parser/SpecificationAntlrVisitor.java_
-  * Building the Java model: _model/src/main/java/com/yafred/asn1/parser/Asn1ModelBuilder.java_
-  * Using the Java model to write an ASN.1 specification: _model/src/main/java/com/yafred/asn1/parser/Asn1SpecificationWriter.java_
-  * Test resources: _testdata/src/test/resources/com/yafred/asn1/test_
-  * JUnit tests: _grammar/src/test/java/com/yafred/asn1/grammar/test/ParameterizedTest.java_
-  * JUnit tests: _model/src/test/java/com/yafred/asn1/model/test/ParameterizedTest.java_
+END
+```
 
-## Validation
+### Validate it
 
-Check that the Java model complies with the rules described in ITU-T X.680 (08/2015) 
+```
+java -jar asn1-tool.jar -f your_spec.asn -p
 
-  * Validating the Java model: _model/src/main/java/com/yafred/asn1/parser/Asn1ModelValidator.java_
-  
-## Code generation
+G-009 DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
 
-Generate source code to encode and decode values from types described in a ASN.1 specification
+   EXPORTS ALL;
+   IMPORTS;
 
-  * Java code generator for encoding/decoding values from the specification: _generator/src/main/java/com/yafred/asn1/generator/java_
-  * Java Runtime libraries to help running the generated code: _runtime/src/main/java/com/yafred/asn1/runtime_
+   Flight ::= SEQUENCE {
+      origin [0] IMPLICIT IA5String,
+      destination [1] IMPLICIT IA5String,
+      seats [2] IMPLICIT INTEGER,
+      crew-format [3] IMPLICIT ENUMERATED { six(0), eight(1), ten(2) }
+   }
 
+END
+```
 
+### Generate the java code 
+
+```
+java -jar asn1-tool.jar -f your_spec.asn -jo -jo your_ouput_folder
+```
+
+### Integrate the java bindings in your code
+
+```
+Flight obj = new Flight();
+obj.setOrigin("Rome");
+obj.setDestination("London");
+obj.setSeats(Integer.valueOf(250));
+obj.setCrew_format(Flight.Crew_format.eight);
+```
+
+### Use the BER encoders/decoders to serialize/deserialize your objects
+
+```
+ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
+BERWriter writer = new BERWriter(bufferOut);
+Flight.writePdu(obj, writer);
+byte[] berEncoded = bufferOut.toByteArray(); 
+
+```
