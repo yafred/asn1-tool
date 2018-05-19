@@ -12,6 +12,10 @@
      * -jo \<path> generate Java code in the given folder.
      * -jp \<package> use this package as a prefix for generated Java code (ASN.1 module names are added to this prefix to get the full package name).
   * You can create an alias with alias on Linux or doskey on Windows 
+
+## Warning
+
+This tool is in development
   
 ## Example
 
@@ -71,9 +75,15 @@ obj.setCrew_format(Flight.Crew_format.eight);
 ### Use the BER encoders/decoders to serialize/deserialize your objects
 
 ```
+// encode a Flight
 ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
 BERWriter writer = new BERWriter(bufferOut);
 Flight.writePdu(obj, writer);
+
 byte[] berEncoded = bufferOut.toByteArray(); 
 
+// decode a Flight
+ByteArrayInputStream input = new ByteArrayInputStream(berEncoded);
+BERReader reader = new BERReader(input);
+obj = Flight.readPdu(reader);
 ```
