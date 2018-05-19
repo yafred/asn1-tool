@@ -545,6 +545,9 @@ public class BERHelper {
 			elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
+		if(listOfType.getElement().getType().isTypeWithComponents()) {
+			elementClassName = "Item";
+		}		
 		
 	    // write encoding code
 		output.println("public static int write(" + className + " instance," + BER_WRITER +
@@ -795,7 +798,7 @@ public class BERHelper {
 			output.println("}");
 			output.println("componentLength+=writer.writeInteger(intValue);");			
 		}
-		else if(elementType.isSequenceType() || elementType.isSetType()) {
+		else if(elementType.isTypeWithComponents()) {
 			output.println("componentLength+=" + elementClassName + ".write(" + componentGetter + ".get(i),writer);");						
 		}
 		else {
@@ -897,6 +900,7 @@ public class BERHelper {
 				}
 			}
 			output.println(componentSetter + "new java.util.ArrayList<" + javaType + ">());");
+			output.println("{");
 			output.println("int listLength=componentLength;");
 			output.println("int keepComponentLength=componentLength;");			
 			output.println("while(listLength > 0 || listLength==-1) {");
@@ -910,6 +914,7 @@ public class BERHelper {
 			output.println("if(listLength!=-1) listLength-=componentLength;");
 			output.println("}");
 			output.println("componentLength=keepComponentLength;");			
+			output.println("}");
 		}
 		else {
 			throw new Exception("BERHelper.switchDecodeComponent: Code generation not supported for Type " + type.getName());
@@ -971,7 +976,7 @@ public class BERHelper {
 				output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
-		else if(elementType.isSequenceType() || elementType.isSetType()) {
+		else if(elementType.isTypeWithComponents()) {
 			output.println(javaType + " item=new " + javaType + "();");
 			output.println(javaType + ".read(item, reader, componentLength);");
 			output.println(componentGetter + ".add(item);");			

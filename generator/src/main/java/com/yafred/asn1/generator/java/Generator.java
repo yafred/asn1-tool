@@ -293,9 +293,12 @@ public class Generator {
 		else if(type.isEnumeratedType()) {
 			processEnumeratedType((EnumeratedType)type, "value", "Enum", true);
 		}
-		else  if (type.isTypeReference()) {
-			processTypeReferenceListElement((TypeReference)type);
-		}	
+		else if(type.isTypeReference()) {
+			processTypeReferenceListElement((TypeReference)type, "value");
+		}
+		else if(type.isTypeWithComponents()) {
+			processTypeWithComponentsListElement((TypeWithComponents)type, "value", "item");			
+		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
@@ -332,22 +335,45 @@ public class Generator {
 	}
 	
 	
-	private void processTypeReferenceListElement(TypeReference typeReference) throws Exception {
+	private void processTypeReferenceListElement(TypeReference typeReference, String componentName) throws Exception {
+		String uComponentName = Utils.uNormalize(componentName);
+
 		String javaType = Utils.uNormalize(typeReference.getName());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
 			javaType = Utils.mapToJava(typeReference.getBuiltinType());
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
-			output.println("private java.util.ArrayList<" + javaType + ".Enum> value;");
-			output.println("public java.util.ArrayList<" + javaType + ".Enum> getValue() { return value; }");
-			output.println("public void setValue(java.util.ArrayList<" + javaType + ".Enum> value) { this.value = value; }");
+			output.println("private java.util.ArrayList<" + javaType + ".Enum> " + componentName + ";");
+			output.println("public java.util.ArrayList<" + javaType + ".Enum> get" + uComponentName + "() { return " + componentName + "; }");
+			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + ".Enum> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 		}
 		else {
-			output.println("private java.util.ArrayList<" + javaType + "> value;");
-			output.println("public java.util.ArrayList<" + javaType + "> getValue() { return value; }");
-			output.println("public void setValue(java.util.ArrayList<" + javaType + "> value) { this.value = value; }");
+			output.println("private java.util.ArrayList<" + javaType + "> " + componentName + ";");
+			output.println("public java.util.ArrayList<" + javaType + "> get" + uComponentName + "() { return " + componentName + "; }");
+			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 		}
+	}
+	
+	
+	private void processTypeWithComponentsListElement(TypeWithComponents typeWithComponents, String componentName, String elementName) throws Exception {
+		String itemClassName = Utils.uNormalize(elementName);
+		String uComponentName = Utils.uNormalize(componentName);
+		
+		// create accessors
+		output.println("private java.util.ArrayList<" + itemClassName + "> " + componentName + ";");
+		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return " + componentName + "; }");
+		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+
+		// create an inner class
+		output.println("static public class " + itemClassName);
+		output.println("{");
+		switchProcessTypeAssignment(typeWithComponents, itemClassName);
+
+		// add BER methods to the POJO
+		berHelper.switchProcessTypeAssignment(typeWithComponents, itemClassName);
+		
+		output.println("}");		
 	}
 	
 	
@@ -407,8 +433,6 @@ public class Generator {
 	
 	
 	private void processListOfTypeNamedType(ListOfType listOfType, String componentName) throws Exception {
-		String className = Utils.uNormalize(componentName);
- 
 		Type type = listOfType.getElement().getType();
 		if(type.isIntegerType()) {
 			processIntegerType((IntegerType)listOfType.getElement().getType(), componentName, true, false);
@@ -423,17 +447,11 @@ public class Generator {
 			processEnumeratedType((EnumeratedType)type, componentName, "Enum", true);
 		}
 		else  if (type.isTypeReference()) {
-			processTypeReferenceListElement((TypeReference)type);
+			processTypeReferenceListElement((TypeReference)type, componentName);
 		}	
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
-		
-		// create an inner class
-		output.println("static public class " + className);
-		output.println("{");
-		
-		output.println("}");
 	}
 
 }

@@ -6,6 +6,26 @@ Person ::= SET {
    names SEQUENCE OF name IA5String,
    scores SEQUENCE OF INTEGER
    }
+   
+   
+Person-2 ::= SEQUENCE {
+   names SET OF name IA5String,
+   scores SET OF INTEGER
+   }
+   
+Choice-of-lists ::= CHOICE {
+   names SET OF name IA5String,
+   scores SET OF INTEGER
+   }
+   
 
+
+Name ::= IA5String
+Score ::= INTEGER
+
+Person-3 ::= SEQUENCE {
+   names SET OF name Name,
+   scores SET OF Score
+   }
 
 END

@@ -1,0 +1,46 @@
+G-021 DEFINITIONS  ::= 
+BEGIN 
+
+
+Players ::= SEQUENCE OF player SEQUENCE {
+   name IA5String,
+   age INTEGER
+} 
+
+
+Races ::= SEQUENCE OF SET {
+   name [0] VisibleString,
+   distance [1] INTEGER,
+   difficulty [2] ENUMERATED { low, middle, high }
+}
+
+
+Request ::= SEQUENCE {
+   id INTEGER,
+   text IA5String
+}
+
+Response ::= SEQUENCE {
+   id INTEGER,
+   errorMessage IA5String
+}
+
+
+Traffic ::= SET OF [0] CHOICE { 
+   request [0] Request,
+   response [1] Response
+}
+
+
+Traffic-2 ::= SET OF [0] CHOICE {
+   request [0] SEQUENCE {
+      id INTEGER,
+      text IA5String
+   },
+   response [1] SEQUENCE {
+      id INTEGER,
+      errorMessage IA5String
+   }
+} 
+
+END
