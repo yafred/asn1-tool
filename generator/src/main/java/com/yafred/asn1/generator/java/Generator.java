@@ -297,7 +297,11 @@ public class Generator {
 			processTypeReferenceListElement((TypeReference)type, "value");
 		}
 		else if(type.isTypeWithComponents()) {
-			processTypeWithComponentsListElement((TypeWithComponents)type, "value", "item");			
+			String elementName = "item";
+			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+				elementName = Utils.normalize(listOfType.getElement().getName());
+			}
+			processTypeWithComponentsListElement((TypeWithComponents)type, "value", elementName);			
 		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
@@ -450,7 +454,11 @@ public class Generator {
 			processTypeReferenceListElement((TypeReference)type, componentName);
 		}	
 		else if(type.isTypeWithComponents()) {
-			processTypeWithComponentsListElement((TypeWithComponents)type, componentName, "item");			
+			String elementName = "item";
+			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+				elementName = Utils.normalize(listOfType.getElement().getName());
+			}
+			processTypeWithComponentsListElement((TypeWithComponents)type, componentName, elementName);			
 		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());

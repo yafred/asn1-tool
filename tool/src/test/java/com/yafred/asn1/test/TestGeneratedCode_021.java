@@ -20,14 +20,14 @@ public class TestGeneratedCode_021 {
 
 	@Test
 	public void test_1() throws Exception {
-		Players.Item player1 = new Players.Item();
+		Players.Player player1 = new Players.Player();
 		player1.setName("Freja");
 		player1.setAge(Integer.valueOf(5));
-		Players.Item player2 = new Players.Item();
+		Players.Player player2 = new Players.Player();
 		player2.setName("Astrid");
 		player2.setAge(Integer.valueOf(6));
 		
-		ArrayList<Players.Item> players = new ArrayList<Players.Item>();
+		ArrayList<Players.Player> players = new ArrayList<Players.Player>();
 		players.add(player1);
 		players.add(player2);
 
@@ -48,14 +48,14 @@ public class TestGeneratedCode_021 {
 
 	@Test
 	public void test_2() throws Exception {
-		Players.Item player1 = new Players.Item();
+		Players.Player player1 = new Players.Player();
 		player1.setName("Freja");
 		player1.setAge(Integer.valueOf(5));
-		Players.Item player2 = new Players.Item();
+		Players.Player player2 = new Players.Player();
 		player2.setName("Astrid");
 		player2.setAge(Integer.valueOf(6));
 		
-		ArrayList<Players.Item> players = new ArrayList<Players.Item>();
+		ArrayList<Players.Player> players = new ArrayList<Players.Player>();
 		players.add(player1);
 		players.add(player2);
 

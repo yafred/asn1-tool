@@ -547,6 +547,9 @@ public class BERHelper {
 		}
 		if(listOfType.getElement().getType().isTypeWithComponents()) {
 			elementClassName = "Item";
+			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+				elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+			}
 		}		
 		
 	    // write encoding code
@@ -737,6 +740,9 @@ public class BERHelper {
 			}
 			if(listOfType.getElement().getType().isTypeWithComponents()) {
 				elementClassName = "Item";
+				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+				}
 			}
 			output.println("int listLength=0;");
 			output.println("if(" + componentGetter + " != null) {");
@@ -889,6 +895,9 @@ public class BERHelper {
 			}
 			if(listOfType.getElement().getType().isTypeWithComponents()) {
 				elementClassName = "Item";
+				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+				}
 			}
 			String javaType = elementClassName;
 			
