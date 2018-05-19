@@ -449,6 +449,9 @@ public class Generator {
 		else  if (type.isTypeReference()) {
 			processTypeReferenceListElement((TypeReference)type, componentName);
 		}	
+		else if(type.isTypeWithComponents()) {
+			processTypeWithComponentsListElement((TypeWithComponents)type, componentName, "item");			
+		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}

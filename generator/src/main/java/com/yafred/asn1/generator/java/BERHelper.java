@@ -378,7 +378,7 @@ public class BERHelper {
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
 			output.println("if(" + componentGetter + "!=null){");
-			output.print("int componentLength=0;");
+			output.println("int componentLength=0;");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
@@ -474,7 +474,7 @@ public class BERHelper {
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
 			output.println("if(" + componentGetter + "!=null){");
-			output.print("int componentLength=0;");
+			output.println("int componentLength=0;");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(setType.isAutomaticTaggingSelected()) {
@@ -620,7 +620,7 @@ public class BERHelper {
 				componentClassName = Utils.uNormalize(typeReference.getName());
 			}
 			output.println("if(" + componentGetter + "!=null){");
-			output.print("int componentLength=0;");
+			output.println("int componentLength=0;");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
@@ -734,6 +734,9 @@ public class BERHelper {
 			if(listOfType.getElement().getType().isTypeReference()) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
+			}
+			if(listOfType.getElement().getType().isTypeWithComponents()) {
+				elementClassName = "Item";
 			}
 			output.println("int listLength=0;");
 			output.println("if(" + componentGetter + " != null) {");
@@ -883,6 +886,9 @@ public class BERHelper {
 			if(listOfType.getElement().getType().isTypeReference()) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
+			}
+			if(listOfType.getElement().getType().isTypeWithComponents()) {
+				elementClassName = "Item";
 			}
 			String javaType = elementClassName;
 			

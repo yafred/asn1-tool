@@ -1,0 +1,17 @@
+G-022 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+
+Team ::= SET {
+   coach SEQUENCE {
+      name IA5String,
+      years INTEGER
+   },
+   players SEQUENCE OF player SEQUENCE {
+      name IA5String,
+      years INTEGER
+   }
+}
+   
+
+END
