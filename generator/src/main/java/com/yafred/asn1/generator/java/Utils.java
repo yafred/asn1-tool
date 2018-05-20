@@ -12,10 +12,39 @@ import com.yafred.asn1.model.TypeReference;
 public class Utils {
 
 	/**
+	 * ASN.1 name to package name
+	 */
+	public static String normalizeConstant(String name) {
+		return name.replace('-', '_');
+	}
+	
+	/**
+	 * ASN.1 name to package name
+	 */
+	public static String normalizePackageName(String name) {
+		return name.replace('-', '_');
+	}
+		
+	/**
 	 * ASN.1 name to Java name
 	 */
 	public static String normalize(String name) {
-		return name.replace('-', '_');
+		StringBuffer buffer = new StringBuffer();
+		boolean forceUppercase = false;
+		for (int i = 0; i < name.length(); i++){
+		    char c = name.charAt(i);        
+		    if(c == '-') {
+		    	forceUppercase = true;
+		    }
+		    else {
+		    	if(forceUppercase) {
+		    		c = Character.toUpperCase(c);
+		    		forceUppercase = false;
+		    	}
+		    	buffer.append(c);
+		    }
+		}
+		return buffer.toString();
 	}
 
 	/**
@@ -27,7 +56,7 @@ public class Utils {
 
 		String retName = new String(temp);
 
-		return retName.replace('-', '_');
+		return normalize(retName);
 	}
 	
 	public static String mapToJava(Type type) throws Exception {

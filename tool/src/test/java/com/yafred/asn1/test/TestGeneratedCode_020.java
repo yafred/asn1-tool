@@ -7,9 +7,9 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 import org.junit.Test;
 
-import g_020.Choice_of_lists;
+import g_020.ChoiceOfLists;
 import g_020.Person;
-import g_020.Person_2;
+import g_020.Person2;
 
 
 
@@ -76,7 +76,7 @@ public class TestGeneratedCode_020 {
 
 	@Test
 	public void test_3() throws Exception {
-		Person_2 pdu = new Person_2();
+		Person2 pdu = new Person2();
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Bill");
 		names.add("Joe");
@@ -87,10 +87,10 @@ public class TestGeneratedCode_020 {
 		pdu.setScores(scores);
 		
 		String expectedHexa = "30 15 a0 0b 16 04 42 69 6c 6c 16 03 4a 6f 65 a1 06 02 01 14 02 01 12";
-		testHelper.writePdu(pdu, Person_2.class, expectedHexa);
+		testHelper.writePdu(pdu, Person2.class, expectedHexa);
 
 		// decode
-		Person_2 decodedPdu = (Person_2) testHelper.readPdu(Person_2.class, Person_2.class, expectedHexa);
+		Person2 decodedPdu = (Person2) testHelper.readPdu(Person2.class, Person2.class, expectedHexa);
 		assertNotNull(decodedPdu.getNames());
 		assertEquals(pdu.getNames().size(), decodedPdu.getNames().size());
 		for(int i=0; i<pdu.getNames().size(); i++) {
@@ -105,7 +105,7 @@ public class TestGeneratedCode_020 {
 
 	@Test
 	public void test_4() throws Exception {
-		Person_2 pdu = new Person_2();
+		Person2 pdu = new Person2();
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Bill");
 		names.add("Joe");
@@ -116,10 +116,10 @@ public class TestGeneratedCode_020 {
 		pdu.setScores(scores);
 		
 		String expectedHexa = "30 80 a0 80 16 04 42 69 6c 6c 16 03 4a 6f 65 00 00 a1 80 02 01 14 02 01 12 00 00 00 00";
-		//testHelper.writePdu(pdu, Person_2.class, expectedHexa);
+		//testHelper.writePdu(pdu, Person2.class, expectedHexa);
 
 		// decode
-		Person_2 decodedPdu = (Person_2) testHelper.readPdu(Person_2.class, Person_2.class, expectedHexa);
+		Person2 decodedPdu = (Person2) testHelper.readPdu(Person2.class, Person2.class, expectedHexa);
 		assertNotNull(decodedPdu.getNames());
 		assertEquals(pdu.getNames().size(), decodedPdu.getNames().size());
 		for(int i=0; i<pdu.getNames().size(); i++) {
@@ -134,17 +134,17 @@ public class TestGeneratedCode_020 {
 
 	@Test
 	public void test_5() throws Exception {
-		Choice_of_lists pdu = new Choice_of_lists();
+		ChoiceOfLists pdu = new ChoiceOfLists();
 		ArrayList<String> names = new ArrayList<String>();
 		names.add("Bill");
 		names.add("Joe");
 		pdu.setNames(names);
 		
 		String expectedHexa = "a0 0b 16 04 42 69 6c 6c 16 03 4a 6f 65";
-		testHelper.writePdu(pdu, Choice_of_lists.class, expectedHexa);
+		testHelper.writePdu(pdu, ChoiceOfLists.class, expectedHexa);
 
 		// decode
-		Choice_of_lists decodedPdu = (Choice_of_lists) testHelper.readPdu(Choice_of_lists.class, Choice_of_lists.class, expectedHexa);
+		ChoiceOfLists decodedPdu = (ChoiceOfLists) testHelper.readPdu(ChoiceOfLists.class, ChoiceOfLists.class, expectedHexa);
 		assertNotNull(decodedPdu.getNames());
 		assertEquals(pdu.getNames().size(), decodedPdu.getNames().size());
 		for(int i=0; i<pdu.getNames().size(); i++) {

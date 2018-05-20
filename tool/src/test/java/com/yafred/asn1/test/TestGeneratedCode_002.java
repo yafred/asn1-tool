@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import g_002.My_boolean;
+import g_002.MyBoolean;
 
 public class TestGeneratedCode_002 {
 	TestHelper testHelper = new TestHelper();
 
 	@Test
 	public void test_1() throws Exception {
-		My_boolean pdu = new My_boolean();
+		MyBoolean pdu = new MyBoolean();
 		pdu.setValue(Boolean.TRUE);
 		
 		String expectedHexa = "62 03 01 01 ff";
-		testHelper.writePdu(pdu, My_boolean.class, expectedHexa);
+		testHelper.writePdu(pdu, MyBoolean.class, expectedHexa);
 
 		// decode
-		My_boolean decodedPdu = (My_boolean) testHelper.readPdu(My_boolean.class, My_boolean.class, expectedHexa);
+		MyBoolean decodedPdu = (MyBoolean) testHelper.readPdu(MyBoolean.class, MyBoolean.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 }

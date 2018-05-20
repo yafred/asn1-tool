@@ -710,13 +710,13 @@ public class BERHelper {
 			output.println("switch(" +  componentGetter + ") {");
 			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
 				output.println("intValue=" + namedNumber.getNumber() + ";");
 				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
 					output.println("intValue=" + namedNumber.getNumber() + ";");
 					output.println("break;");
 				}
@@ -793,13 +793,13 @@ public class BERHelper {
 			output.println("switch(" + componentGetter + ".get(i)) {");
 			EnumeratedType enumeratedType = (EnumeratedType)elementType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
-				output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+				output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
 				output.println("intValue=" + namedNumber.getNumber() + ";");
 				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-					output.println("case " + Utils.normalize(namedNumber.getName()) + ":");
+					output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
 					output.println("intValue=" + namedNumber.getNumber() + ";");
 					output.println("break;");
 				}
@@ -860,7 +860,7 @@ public class BERHelper {
 			output.println("int intValue=reader.readInteger(componentLength);");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalize(namedNumber.getName()) + ");");
+				output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalizeConstant(namedNumber.getName()) + ");");
 				output.println("}");
 			}
 			if(enumeratedType.getAdditionalEnumeration() == null) {
@@ -871,7 +871,7 @@ public class BERHelper {
 			else {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-					output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalize(namedNumber.getName()) + ");");
+					output.println(componentSetter + componentClassName + enumSuffix + "." + Utils.normalizeConstant(namedNumber.getName()) + ");");
 					output.println("}");
 				}
 				output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
@@ -970,7 +970,7 @@ public class BERHelper {
 			output.println(javaType + " item=null;");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-				output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+				output.println("item=" + javaType + "." + Utils.normalizeConstant(namedNumber.getName()) + ";");
 				output.println("}");
 			}
 			output.println("if(item!=null){");
@@ -984,7 +984,7 @@ public class BERHelper {
 			else {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 					output.println("if(intValue ==" + namedNumber.getNumber() + "){");
-					output.println("item=" + javaType + "." + Utils.normalize(namedNumber.getName()) + ";");
+					output.println("item=" + javaType + "." + Utils.normalizeConstant(namedNumber.getName()) + ";");
 					output.println(componentGetter + ".add(item);");
 					output.println("}");
 				}

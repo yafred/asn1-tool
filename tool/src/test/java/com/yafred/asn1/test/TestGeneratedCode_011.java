@@ -5,10 +5,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import g_011.Card_type;
-import g_011.Credit_card;
+import g_011.CardType;
+import g_011.CreditCard;
 import g_011.Crooked;
-import g_011.Payment_method;
+import g_011.PaymentMethod;
 
 
 public class TestGeneratedCode_011 {
@@ -16,14 +16,14 @@ public class TestGeneratedCode_011 {
 
 	@Test
 	public void test_1() throws Exception {
-		Payment_method pdu = new Payment_method();
+		PaymentMethod pdu = new PaymentMethod();
 		pdu.setCheck("012345678901234");
 		
 		String expectedHexa = "80 0f 30 31 32 33 34 35 36 37 38 39 30 31 32 33 34";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
 		assertNotNull(decodedPdu.getCheck());
 		assertEquals(decodedPdu.getCheck(), pdu.getCheck());
 	}
@@ -46,34 +46,34 @@ public class TestGeneratedCode_011 {
 	
 	@Test
 	public void test_3() throws Exception {
-		Payment_method pdu = new Payment_method();
-		Credit_card credit_card = new Credit_card();
-		credit_card.setType(Card_type.Enum.cb);
+		PaymentMethod pdu = new PaymentMethod();
+		CreditCard credit_card = new CreditCard();
+		credit_card.setType(CardType.Enum.cb);
 		credit_card.setNumber("01234567890123456789");
-		credit_card.setExpiry_date("042018");
-		pdu.setCredit_card(credit_card);
+		credit_card.setExpiryDate("042018");
+		pdu.setCreditCard(credit_card);
 		
 		String expectedHexa = "a1 21 80 01 00 81 14 30 31 32 33 34 35 36 37 38 39 30 31 32 33 34 35 36 37 38 39 82 06 30 34 32 30 31 38";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
-		assertNotNull(decodedPdu.getCredit_card());
-		assertEquals(decodedPdu.getCredit_card().getNumber(), pdu.getCredit_card().getNumber());
-		assertEquals(decodedPdu.getCredit_card().getExpiry_date(), pdu.getCredit_card().getExpiry_date());
-		assertEquals(decodedPdu.getCredit_card().getType(), pdu.getCredit_card().getType());
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
+		assertNotNull(decodedPdu.getCreditCard());
+		assertEquals(decodedPdu.getCreditCard().getNumber(), pdu.getCreditCard().getNumber());
+		assertEquals(decodedPdu.getCreditCard().getExpiryDate(), pdu.getCreditCard().getExpiryDate());
+		assertEquals(decodedPdu.getCreditCard().getType(), pdu.getCreditCard().getType());
 	}
 		
 	@Test
 	public void test_4() throws Exception {
-		Payment_method pdu = new Payment_method();
+		PaymentMethod pdu = new PaymentMethod();
 		pdu.setCash(new Object());
 		
 		String expectedHexa = "82 00";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 		
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
 		assertNotNull(decodedPdu.getCash());
 	}
 	

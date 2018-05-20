@@ -69,7 +69,7 @@ Flight obj = new Flight();
 obj.setOrigin("Rome");
 obj.setDestination("London");
 obj.setSeats(Integer.valueOf(250));
-obj.setCrew_format(Flight.Crew_format.eight);
+obj.setCrewFormat(Flight.CrewFormat.eight);
 ```
 
 ### Use the BER encoders/decoders to serialize/deserialize your objects

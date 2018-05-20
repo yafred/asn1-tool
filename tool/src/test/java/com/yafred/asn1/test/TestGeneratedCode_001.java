@@ -5,28 +5,28 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import g_001.ColorType;
-import g_001.My_integer;
+import g_001.MyInteger;
 
 public class TestGeneratedCode_001 {
 	TestHelper testHelper = new TestHelper();
 
 	@Test
 	public void test_1() throws Exception {
-		My_integer pdu = new My_integer();
+		MyInteger pdu = new MyInteger();
 		pdu.setValue(Integer.valueOf(10));
 
 		String expectedHexa = "02 01 0a";
-		testHelper.writePdu(pdu, My_integer.class, expectedHexa);
+		testHelper.writePdu(pdu, MyInteger.class, expectedHexa);
 
 		// decode
-		My_integer decodedPdu = (My_integer) testHelper.readPdu(My_integer.class, My_integer.class, expectedHexa);
+		MyInteger decodedPdu = (MyInteger) testHelper.readPdu(MyInteger.class, MyInteger.class, expectedHexa);
 		assertEquals(decodedPdu.getValue(), pdu.getValue());
 	}
 	
 	@Test
 	public void test_2() throws Exception {
 		ColorType pdu = new ColorType();
-		pdu.setValue(ColorType.blue);
+		pdu.setValue(ColorType.navy_blue);
 
 		String expectedHexa = "02 01 02";
 		testHelper.writePdu(pdu, ColorType.class, expectedHexa);

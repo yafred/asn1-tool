@@ -9,6 +9,6 @@ ColorType ::= INTEGER
        {
           red      (0),
           white    (1),
-          blue     (2)
+          navy-blue     (2)
        }
 END

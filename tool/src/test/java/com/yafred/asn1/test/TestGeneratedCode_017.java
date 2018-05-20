@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import g_017.GpsInfo;
-import g_017.Payment_method;
+import g_017.PaymentMethod;
 import g_017.Person;
 
 
@@ -18,8 +18,8 @@ public class TestGeneratedCode_017 {
 	public void test_1() throws Exception {
 		
 		Person pdu = new Person();
-		pdu.setFirst_name("John");
-		pdu.setLast_name("Doe");
+		pdu.setFirstName("John");
+		pdu.setLastName("Doe");
 		pdu.setAge(Integer.valueOf(25));
 				
 		String expectedHexa = "30 14 a0 06 16 04 4a 6f 68 6e a1 05 16 03 44 6f 65 a2 03 02 01 19";
@@ -27,8 +27,8 @@ public class TestGeneratedCode_017 {
 
 		// decode
 		Person decodedPdu = (Person) testHelper.readPdu(Person.class, Person.class, expectedHexa);
-		assertEquals(decodedPdu.getFirst_name(), pdu.getFirst_name());		
-		assertEquals(decodedPdu.getLast_name(), pdu.getLast_name());		
+		assertEquals(decodedPdu.getFirstName(), pdu.getFirstName());		
+		assertEquals(decodedPdu.getLastName(), pdu.getLastName());		
 		assertEquals(decodedPdu.getAge(), pdu.getAge());		
 	}
 	
@@ -36,7 +36,7 @@ public class TestGeneratedCode_017 {
 	public void test_2() throws Exception {
 		
 		Person pdu = new Person();
-		pdu.setLast_name("Doe");
+		pdu.setLastName("Doe");
 		pdu.setAge(Integer.valueOf(25));
 				
 		String expectedHexa = "30 0c a1 05 16 03 44 6f 65 a2 03 02 01 19";
@@ -44,8 +44,8 @@ public class TestGeneratedCode_017 {
 
 		// decode
 		Person decodedPdu = (Person) testHelper.readPdu(Person.class, Person.class, expectedHexa);
-		assertNull(decodedPdu.getFirst_name());		
-		assertEquals(decodedPdu.getLast_name(), pdu.getLast_name());		
+		assertNull(decodedPdu.getFirstName());		
+		assertEquals(decodedPdu.getLastName(), pdu.getLastName());		
 		assertEquals(decodedPdu.getAge(), pdu.getAge());		
 	}
 	
@@ -90,52 +90,52 @@ public class TestGeneratedCode_017 {
 	
 	@Test
 	public void test_5() throws Exception {
-		Payment_method pdu = new Payment_method();
+		PaymentMethod pdu = new PaymentMethod();
 		
 		pdu.setCash(new Object());
 		
 		String expectedHexa = "a2 02 05 00";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
 		assertNotNull(decodedPdu.getCash());
 		assertNull(decodedPdu.getCheck());
-		assertNull(decodedPdu.getCredit_card());
+		assertNull(decodedPdu.getCreditCard());
 	}
 	
 	@Test
 	public void test_6() throws Exception {
-		Payment_method pdu = new Payment_method();
+		PaymentMethod pdu = new PaymentMethod();
 		
 		pdu.setCheck("1234");
 		
 		String expectedHexa = "a0 06 12 04 31 32 33 34";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
 		assertNull(decodedPdu.getCash());
 		assertNotNull(decodedPdu.getCheck());
 		assertEquals(pdu.getCheck(), decodedPdu.getCheck());
-		assertNull(decodedPdu.getCredit_card());
+		assertNull(decodedPdu.getCreditCard());
 	}
 	
 	@Test
 	public void test_7() throws Exception {
-		Payment_method pdu = new Payment_method();
+		PaymentMethod pdu = new PaymentMethod();
 		
-		pdu.setCredit_card("gnu");
+		pdu.setCreditCard("gnu");
 		
 		String expectedHexa = "a1 05 1a 03 67 6e 75";
-		testHelper.writePdu(pdu, Payment_method.class, expectedHexa);
+		testHelper.writePdu(pdu, PaymentMethod.class, expectedHexa);
 
 		// decode
-		Payment_method decodedPdu = (Payment_method) testHelper.readPdu(Payment_method.class, Payment_method.class, expectedHexa);
+		PaymentMethod decodedPdu = (PaymentMethod) testHelper.readPdu(PaymentMethod.class, PaymentMethod.class, expectedHexa);
 		assertNull(decodedPdu.getCash());
 		assertNull(decodedPdu.getCheck());
-		assertNotNull(decodedPdu.getCredit_card());
-		assertEquals(pdu.getCredit_card(), decodedPdu.getCredit_card());
+		assertNotNull(decodedPdu.getCreditCard());
+		assertEquals(pdu.getCreditCard(), decodedPdu.getCreditCard());
 	}
 }
 

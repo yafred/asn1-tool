@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import g_004.My_octet_string;
+import g_004.MyOctetString;
 
 public class TestGeneratedCode_004 {
 	TestHelper testHelper = new TestHelper();
 
 	@Test
 	public void test_1() throws Exception {
-		My_octet_string pdu = new My_octet_string();
+		MyOctetString pdu = new MyOctetString();
 		pdu.setValue(new byte[] { 10, 11, 12, 13 }); // 0x0A, 0x0B, 0x0C, 0x0D
 		
 		String expectedHexa = "42 04 0a 0b 0c 0d";
-		testHelper.writePdu(pdu, My_octet_string.class, expectedHexa);
+		testHelper.writePdu(pdu, MyOctetString.class, expectedHexa);
 
 		// decode
-		My_octet_string decodedPdu = (My_octet_string) testHelper.readPdu(My_octet_string.class, My_octet_string.class, expectedHexa);
+		MyOctetString decodedPdu = (MyOctetString) testHelper.readPdu(MyOctetString.class, MyOctetString.class, expectedHexa);
 		assertEquals(BERDumper.bytesToString(decodedPdu.getValue()), BERDumper.bytesToString(pdu.getValue()));
 	}
 }

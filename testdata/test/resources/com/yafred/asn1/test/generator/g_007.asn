@@ -4,7 +4,7 @@ BEGIN
 
 Fruit ::= ENUMERATED { banana, apple, pear, ..., lemon }
 
-Traffic-Light ::= ENUMERATED { red, green, yellow }
+Traffic-Light ::= ENUMERATED { red, nearly-red, green, yellow }
 
 
 END

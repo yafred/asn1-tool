@@ -10,7 +10,7 @@ import org.junit.Test;
 import g_021.Players;
 import g_021.Races;
 import g_021.Traffic;
-import g_021.Traffic_2;
+import g_021.Traffic2;
 
 
 
@@ -156,32 +156,32 @@ public class TestGeneratedCode_021 {
 	
 	@Test
 	public void test_5() throws Exception {
-		Traffic_2.Item item1 = new Traffic_2.Item();
+		Traffic2.Item item1 = new Traffic2.Item();
 		item1.setRequest().setId(Integer.valueOf(1));
 		item1.setRequest().setText("hello");
 		
-		Traffic_2.Item item2 = new Traffic_2.Item();
+		Traffic2.Item item2 = new Traffic2.Item();
 		item2.setRequest().setId(Integer.valueOf(2));
 		item2.setRequest().setText("world");
 
-		Traffic_2.Item item3 = new Traffic_2.Item();
+		Traffic2.Item item3 = new Traffic2.Item();
 		item3.setResponse().setId(Integer.valueOf(1));
 		item3.setResponse().setErrorMessage("ok");
 		
-		ArrayList<Traffic_2.Item> items = new ArrayList<Traffic_2.Item>();
+		ArrayList<Traffic2.Item> items = new ArrayList<Traffic2.Item>();
 		items.add(item1);
 		items.add(item2);
 		items.add(item3);
 		
-		Traffic_2 pdu = new Traffic_2();
+		Traffic2 pdu = new Traffic2();
 		pdu.setValue(items);
 
 		String expectedHexa = "31 2d a0 0e a0 0c 30 0a 02 01 01 16 05 68 65 6c 6c 6f a0 0e a0 0c 30 0a 02 01 02 16 05 77 6f 72" +
 		" 6c 64 a0 0b a1 09 30 07 02 01 01 16 02 6f 6b";
 
-		testHelper.writePdu(pdu, Traffic_2.class, expectedHexa);
+		testHelper.writePdu(pdu, Traffic2.class, expectedHexa);
 		
-		Traffic_2 decodedPdu = (Traffic_2) testHelper.readPdu(Traffic_2.class, Traffic_2.class, expectedHexa);
+		Traffic2 decodedPdu = (Traffic2) testHelper.readPdu(Traffic2.class, Traffic2.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(pdu.getValue().size(), decodedPdu.getValue().size());
 		for(int i=0; i<pdu.getValue().size(); i++) {

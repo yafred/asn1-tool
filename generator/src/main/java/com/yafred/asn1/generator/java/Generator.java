@@ -70,7 +70,7 @@ public class Generator {
 	
 	private void processModuleDefinition(ModuleDefinition moduleDefinition) throws Exception {
 		// create java package
-		packageName = Utils.normalize(moduleDefinition.getModuleIdentifier().getModuleReference()).toLowerCase();
+		packageName = Utils.normalizePackageName(moduleDefinition.getModuleIdentifier().getModuleReference()).toLowerCase();
 		packageDirectory = new File(outputDir, packageName);
 
 		if (packageDirectory.exists()) {
@@ -199,7 +199,7 @@ public class Generator {
 			output.println("public static class " + uComponentName + "{");
 		}
 		for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
-			output.println("static final public int " + Utils.normalize(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
+			output.println("static final public int " + Utils.normalizeConstant(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
 		}
 		if(createInnerClass) {
 			output.println("}");
@@ -220,12 +220,12 @@ public class Generator {
 			if(!isFirst) {
 				output.print(",");
 			}
-			output.println(Utils.normalize(namedNumber.getName()));
+			output.println(Utils.normalizeConstant(namedNumber.getName()));
 			isFirst = false;	
 		}
 		if(enumeratedType.getAdditionalEnumeration() != null) {
 			for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
-				output.println("," + Utils.normalize(namedNumber.getName()));
+				output.println("," + Utils.normalizeConstant(namedNumber.getName()));
 			}
 		}
 		output.println("}");
@@ -248,7 +248,7 @@ public class Generator {
 				output.println("public static class " + uComponentName + "{");
 			}
 			for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
-				output.println("static final public " + javaType + " " + Utils.normalize(namedNumber.getName()) + " = new "
+				output.println("static final public " + javaType + " " + Utils.normalizeConstant(namedNumber.getName()) + " = new "
 						+ javaType + "(" + namedNumber.getNumber() + ");");
 			}
 			if(createInnerClass) {

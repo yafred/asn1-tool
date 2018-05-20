@@ -19,13 +19,13 @@ public class TestGeneratedCode_014 {
 	@Test
 	public void test_1() throws Exception {
 		Person item1 = new Person();
-		item1.setLast_name("Doe");
-		item1.setFirst_name("John");
+		item1.setLastName("Doe");
+		item1.setFirstName("John");
 		item1.setAge(35);
 
 		Person item2 = new Person();
-		item2.setLast_name("Dalton");
-		item2.setFirst_name("Joe");
+		item2.setLastName("Dalton");
+		item2.setFirstName("Joe");
 		item2.setAge(30);
 		
 		ArrayList<Person> value = new ArrayList<Person>();
@@ -42,8 +42,8 @@ public class TestGeneratedCode_014 {
 		Audience decodedPdu = (Audience) testHelper.readPdu(Audience.class, Audience.class, expectedHexa);
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(decodedPdu.getValue().size(), 2);
-		assertEquals(decodedPdu.getValue().get(0).getLast_name(), pdu.getValue().get(0).getLast_name());		
-		assertEquals(decodedPdu.getValue().get(1).getFirst_name(), pdu.getValue().get(1).getFirst_name());		
+		assertEquals(decodedPdu.getValue().get(0).getLastName(), pdu.getValue().get(0).getLastName());		
+		assertEquals(decodedPdu.getValue().get(1).getFirstName(), pdu.getValue().get(1).getFirstName());		
 
 	}
 	
