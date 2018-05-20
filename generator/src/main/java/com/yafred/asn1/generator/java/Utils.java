@@ -15,7 +15,7 @@ public class Utils {
 	 * ASN.1 name to package name
 	 */
 	public static String normalizeConstant(String name) {
-		return name.replace('-', '_');
+		return name.replace('-', '_').toUpperCase();
 	}
 	
 	/**

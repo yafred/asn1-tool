@@ -33,7 +33,7 @@ public class TestGeneratedCode_008 {
 	public void test_2() throws Exception {
 		Occupation pdu = new Occupation();
 		BitSet bitSet = new BitSet();
-		bitSet.set(Occupation.clerk);
+		bitSet.set(Occupation.CLERK);
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 07 80";
@@ -48,8 +48,8 @@ public class TestGeneratedCode_008 {
 	public void test_3() throws Exception {
 		Occupation pdu = new Occupation();
 		BitSet bitSet = new BitSet();
-		bitSet.set(Occupation.artist);
-		bitSet.set(Occupation.clerk);
+		bitSet.set(Occupation.ARTIST);
+		bitSet.set(Occupation.CLERK);
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 05 a0";
@@ -64,8 +64,8 @@ public class TestGeneratedCode_008 {
 	public void test_4() throws Exception {
 		Occupation pdu = new Occupation();
 		BitSet bitSet = new BitSet();
-		bitSet.set(Occupation.editor);
-		bitSet.set(Occupation.publisher);
+		bitSet.set(Occupation.EDITOR);
+		bitSet.set(Occupation.PUBLISHER);
 		pdu.setValue(bitSet);
 
 		String expectedHexa = "03 02 04 50";

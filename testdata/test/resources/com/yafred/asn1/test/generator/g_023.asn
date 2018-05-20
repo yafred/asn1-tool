@@ -1,0 +1,16 @@
+G-023 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+
+Empty-set ::= SET {
+}
+
+Empty-sequence ::= SEQUENCE {
+}
+
+Choice-with-empty-comp ::= [0] CHOICE {
+    set SET { },
+    sequence SEQUENCE { }
+}
+
+END

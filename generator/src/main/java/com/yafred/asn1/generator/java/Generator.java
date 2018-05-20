@@ -110,7 +110,7 @@ public class Generator {
 		}
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(typeAssignment.getType(), className);
+		berHelper.switchProcessTypeAssignment(typeAssignment.getType(), className, false);
 		
 		output.println("}");
 		output.close();
@@ -196,7 +196,8 @@ public class Generator {
 		}
 		
 		if(createInnerClass) {
-			output.println("public static class " + uComponentName + "{");
+			// inner class
+			output.println("static public class " + uComponentName + "{");
 		}
 		for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
 			output.println("static final public int " + Utils.normalizeConstant(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
@@ -213,6 +214,7 @@ public class Generator {
 	
 	private void processEnumeratedType(EnumeratedType enumeratedType, String componentName, String javaType, boolean isList) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
+		// inner class
 		output.println("static public enum " + javaType + " {");
 	
 		boolean isFirst = true;
@@ -245,7 +247,8 @@ public class Generator {
 		
 		if (integerType.getNamedNumberList() != null) {
 			if(createInnerClass) {
-				output.println("public static class " + uComponentName + "{");
+				// inner class
+				output.println("static public class " + uComponentName + "{");
 			}
 			for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
 				output.println("static final public " + javaType + " " + Utils.normalizeConstant(namedNumber.getName()) + " = new "
@@ -369,13 +372,13 @@ public class Generator {
 		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return " + componentName + "; }");
 		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
 
-		// create an inner class
+		// inner class
 		output.println("static public class " + itemClassName);
 		output.println("{");
 		switchProcessTypeAssignment(typeWithComponents, itemClassName);
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(typeWithComponents, itemClassName);
+		berHelper.switchProcessTypeAssignment(typeWithComponents, itemClassName, true);
 		
 		output.println("}");		
 	}
@@ -414,7 +417,7 @@ public class Generator {
 		output.println("public " + className + " set" + className + "() { if(this." + componentName + "==null) this." + componentName + "=new " + className + "();");
 		output.println("return this." + componentName + "; }");
 
-		// create an inner class
+		// inner class
 		/*
 		 * Note: In case of multiple nesting levels, component names must be unique.
 		 * SEQUENCE {
@@ -430,7 +433,7 @@ public class Generator {
 		switchProcessTypeAssignment(type, className);
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(type, className);
+		berHelper.switchProcessTypeAssignment(type, className, true);
 		
 		output.println("}");
 	}

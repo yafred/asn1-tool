@@ -30,37 +30,39 @@ public class BERHelper {
 	}
 	
 
-	void switchProcessTypeAssignment(Type type, String className) throws Exception {
+	void switchProcessTypeAssignment(Type type, String className, boolean isInnerType) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		
         ArrayList<Tag> tagList = Utils.getTagChain(type);
 		
-		// readPdu method
-		output.println("public static " + className + " readPdu(" + BER_READER
-				+ " reader) throws Exception {");
-		writePduTagsDecode(type);
-		String lengthText = "reader.getLengthValue()";
-
-		if (tagList == null || tagList.size() == 0) { // it is an untagged CHOICE
-			lengthText = "0";
-		}
-
-		output.println(className + " ret=new " + className + "();");
-		output.println("read(ret, reader, " + lengthText + ");");
-		output.println("return ret;");
-		output.println("}");
-
-		// writePdu method
-		output.println("public static void writePdu(" + className + " pdu, "
-				+ BER_WRITER + " writer) throws Exception {");
-        String lengthDeclaration = "";
-        if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
-            lengthDeclaration = "int componentLength = ";
+        if(!isInnerType) {
+	        // readPdu method
+			output.println("public static " + className + " readPdu(" + BER_READER
+					+ " reader) throws Exception {");
+			writePduTagsDecode(type);
+			String lengthText = "reader.getLengthValue()";
+	
+			if (tagList == null || tagList.size() == 0) { // it is an untagged CHOICE
+				lengthText = "0";
+			}
+	
+			output.println(className + " ret=new " + className + "();");
+			output.println("read(ret, reader, " + lengthText + ");");
+			output.println("return ret;");
+			output.println("}");
+	
+			// writePdu method
+			output.println("public static void writePdu(" + className + " pdu, "
+					+ BER_WRITER + " writer) throws Exception {");
+	        String lengthDeclaration = "";
+	        if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
+	            lengthDeclaration = "int componentLength = ";
+	        }
+	        output.println(lengthDeclaration + "write(pdu, writer);");
+			writeTagsEncode(type);
+			output.println("writer.flush();");
+			output.println("}");
         }
-        output.println(lengthDeclaration + "write(pdu, writer);");
-		writeTagsEncode(type);
-		output.println("writer.flush();");
-		output.println("}");
 					
 		// switch
 		if (type.isTypeReference()) {
@@ -360,8 +362,6 @@ public class BERHelper {
 		Utils.addAllIfNotNull(componentList, sequenceType.getExtensionComponentList());
 		Utils.addAllIfNotNull(componentList, sequenceType.getAdditionalComponentList());
 		
-		if(componentList.size() == 0) return;
-		
 	    // write encoding code
 		output.println("public static int write(" + className + " instance," + BER_WRITER +
 	            " writer) throws Exception {");
@@ -454,8 +454,6 @@ public class BERHelper {
 		Utils.addAllIfNotNull(componentList, setType.getRootComponentList());
 		Utils.addAllIfNotNull(componentList, setType.getExtensionComponentList());
 		Utils.addAllIfNotNull(componentList, setType.getAdditionalComponentList());
-		
-		if(componentList.size() == 0) return;
 		
 	    // write encoding code
 		// Encoding section is equivalent to SEQUENCE encoding

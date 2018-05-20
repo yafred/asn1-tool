@@ -48,7 +48,7 @@ public class TestGeneratedCode_011 {
 	public void test_3() throws Exception {
 		PaymentMethod pdu = new PaymentMethod();
 		CreditCard credit_card = new CreditCard();
-		credit_card.setType(CardType.Enum.cb);
+		credit_card.setType(CardType.Enum.CB);
 		credit_card.setNumber("01234567890123456789");
 		credit_card.setExpiryDate("042018");
 		pdu.setCreditCard(credit_card);

@@ -79,12 +79,12 @@ public class TestGeneratedCode_021 {
 		Races.Item race1 = new Races.Item();
 		race1.setName("Gold");
 		race1.setDistance(Integer.valueOf(220));
-		race1.setDifficulty(Races.Item.Difficulty.high);
+		race1.setDifficulty(Races.Item.Difficulty.HIGH);
 		
 		Races.Item race2 = new Races.Item();
 		race2.setName("Baby");
 		race2.setDistance(Integer.valueOf(40));
-		race2.setDifficulty(Races.Item.Difficulty.low);
+		race2.setDifficulty(Races.Item.Difficulty.LOW);
 		
 		ArrayList<Races.Item> races = new ArrayList<Races.Item>();
 		races.add(race1);

@@ -26,11 +26,11 @@ public class TestGeneratedCode_009 {
 		pdu.setOrigin("Rome");
 		pdu.setStop1("Berlin");
 		pdu.setDestination("London");
-		pdu.setSeats(Flight.Seats.ideal);
-		pdu.setCrewFormat(Flight.CrewFormat.eight);
+		pdu.setSeats(Flight.Seats.IDEAL);
+		pdu.setCrewFormat(Flight.CrewFormat.EIGHT);
 		BitSet flags = new BitSet();
-		flags.set(Flight.Flags.high_profile);
-		flags.set(Flight.Flags.profitable);
+		flags.set(Flight.Flags.HIGH_PROFILE);
+		flags.set(Flight.Flags.PROFITABLE);
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 16 04 52 6f 6d 65 80 06 42 65 72 6c 69 6e 16 06 4c 6f 6e 64 6f 6e 02 02 00 b4 0a 01 08 03 02 04 30";
@@ -49,11 +49,11 @@ public class TestGeneratedCode_009 {
 		pdu.setOrigin("Rome");
 		pdu.setStop1("Berlin");
 		pdu.setDestination("London");
-		pdu.setSeats(FlightModern.Seats.ideal);
-		pdu.setCrewFormat(FlightModern.CrewFormat.eight);
+		pdu.setSeats(FlightModern.Seats.IDEAL);
+		pdu.setCrewFormat(FlightModern.CrewFormat.EIGHT);
 		BitSet flags = new BitSet();
-		flags.set(FlightModern.Flags.high_profile);
-		flags.set(FlightModern.Flags.profitable);
+		flags.set(FlightModern.Flags.HIGH_PROFILE);
+		flags.set(FlightModern.Flags.PROFITABLE);
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30";
@@ -98,11 +98,11 @@ public class TestGeneratedCode_009 {
 		pdu.setOrigin("Rome");
 		pdu.setStop1("Berlin");
 		pdu.setDestination("London");
-		pdu.setSeats(FlightModern.Seats.ideal);
-		pdu.setCrewFormat(FlightModern.CrewFormat.eight);
+		pdu.setSeats(FlightModern.Seats.IDEAL);
+		pdu.setCrewFormat(FlightModern.CrewFormat.EIGHT);
 		BitSet flags = new BitSet();
-		flags.set(FlightModern.Flags.high_profile);
-		flags.set(FlightModern.Flags.profitable);
+		flags.set(FlightModern.Flags.HIGH_PROFILE);
+		flags.set(FlightModern.Flags.PROFITABLE);
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 80 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30 00 00";
@@ -151,11 +151,11 @@ public class TestGeneratedCode_009 {
 		pdu.setOrigin("Rome");
 		pdu.setStop1("Berlin");
 		pdu.setDestination("London");
-		pdu.setSeats(Seats.ideal);
-		pdu.setCrewFormat(CrewFormat.Enum.eight);
+		pdu.setSeats(Seats.IDEAL);
+		pdu.setCrewFormat(CrewFormat.Enum.EIGHT);
 		BitSet flags = new BitSet();
-		flags.set(Flags.high_profile);
-		flags.set(Flags.profitable);
+		flags.set(Flags.HIGH_PROFILE);
+		flags.set(Flags.PROFITABLE);
 		pdu.setFlags(flags);
 		
 		String expectedHexa = "30 21 80 04 52 6f 6d 65 81 06 42 65 72 6c 69 6e 83 06 4c 6f 6e 64 6f 6e 84 02 00 b4 86 01 01 87 02 04 30";

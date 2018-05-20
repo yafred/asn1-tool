@@ -24,8 +24,8 @@ public class TestGeneratedCode_012 {
 	public void test_1() throws Exception {
 		MyIntegerList pdu = new MyIntegerList();
 		ArrayList<Integer> value = new ArrayList<Integer>();
-		value.add(MyIntegerList.ten);
-		value.add(MyIntegerList.twenty);
+		value.add(MyIntegerList.TEN);
+		value.add(MyIntegerList.TWENTY);
 		pdu.setValue(value);
 		
 		String expectedHexa = "30 06 02 01 0a 02 01 14";
@@ -43,8 +43,8 @@ public class TestGeneratedCode_012 {
 	public void test_2() throws Exception {
 		MyIntegerList pdu = new MyIntegerList();
 		ArrayList<Integer> value = new ArrayList<Integer>();
-		value.add(MyIntegerList.ten);
-		value.add(MyIntegerList.twenty);
+		value.add(MyIntegerList.TEN);
+		value.add(MyIntegerList.TWENTY);
 		pdu.setValue(value);
 		
 		String expectedHexa = "30 80 02 01 0a 02 01 14 00 00";
@@ -99,11 +99,11 @@ public class TestGeneratedCode_012 {
 	@Test
 	public void test_5() throws Exception {
 		BitSet item1 = new BitSet();
-		item1.set(MyBitstringList.artist);
-		item1.set(MyBitstringList.clerk);
+		item1.set(MyBitstringList.ARTIST);
+		item1.set(MyBitstringList.CLERK);
 		BitSet item2 = new BitSet();
-		item2.set(MyBitstringList.editor);
-		item2.set(MyBitstringList.publisher);
+		item2.set(MyBitstringList.EDITOR);
+		item2.set(MyBitstringList.PUBLISHER);
 		
 		ArrayList<BitSet> value = new ArrayList<BitSet>();
 		value.add(item1);
@@ -126,8 +126,8 @@ public class TestGeneratedCode_012 {
 	@Test
 	public void test_6() throws Exception {
 		ArrayList<MyEnumeratedList.Enum> value = new ArrayList<MyEnumeratedList.Enum>();
-		value.add(MyEnumeratedList.Enum.apple);
-		value.add(MyEnumeratedList.Enum.banana);
+		value.add(MyEnumeratedList.Enum.APPLE);
+		value.add(MyEnumeratedList.Enum.BANANA);
 		
 		MyEnumeratedList pdu = new MyEnumeratedList();
 		pdu.setValue(value);
@@ -146,8 +146,8 @@ public class TestGeneratedCode_012 {
 	@Test
 	public void test_7() throws Exception {
 		ArrayList<MyEnumeratedList2.Enum> value = new ArrayList<MyEnumeratedList2.Enum>();
-		value.add(MyEnumeratedList2.Enum.apple);
-		value.add(MyEnumeratedList2.Enum.banana);
+		value.add(MyEnumeratedList2.Enum.APPLE);
+		value.add(MyEnumeratedList2.Enum.BANANA);
 		
 		MyEnumeratedList2 pdu = new MyEnumeratedList2();
 		pdu.setValue(value);

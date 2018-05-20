@@ -59,7 +59,7 @@ END
 ### Generate the java code 
 
 ```
-java -jar asn1-tool.jar -f your_spec.asn -jo -jo your_ouput_folder
+java -jar asn1-tool.jar -f your_spec.asn -jo your_ouput_folder
 ```
 
 ### Integrate the java bindings in your code
@@ -69,7 +69,7 @@ Flight obj = new Flight();
 obj.setOrigin("Rome");
 obj.setDestination("London");
 obj.setSeats(Integer.valueOf(250));
-obj.setCrewFormat(Flight.CrewFormat.eight);
+obj.setCrewFormat(Flight.CrewFormat.EIGHT);
 ```
 
 ### Use the BER encoders/decoders to serialize/deserialize your objects

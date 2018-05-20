@@ -28,8 +28,8 @@ public class TestGeneratedCode_013 {
 	public void test_1() throws Exception {
 		MyIntegerList pdu = new MyIntegerList();
 		ArrayList<Integer> value = new ArrayList<Integer>();
-		value.add(MyInteger.ten);
-		value.add(MyInteger.twenty);
+		value.add(MyInteger.TEN);
+		value.add(MyInteger.TWENTY);
 		pdu.setValue(value);
 		
 		String expectedHexa = "30 0a 60 03 02 01 0a 60 03 02 01 14";
@@ -84,11 +84,11 @@ public class TestGeneratedCode_013 {
 	@Test
 	public void test_4() throws Exception {
 		BitSet item1 = new BitSet();
-		item1.set(MyBitstring.artist);
-		item1.set(MyBitstring.clerk);
+		item1.set(MyBitstring.ARTIST);
+		item1.set(MyBitstring.CLERK);
 		BitSet item2 = new BitSet();
-		item2.set(MyBitstring.editor);
-		item2.set(MyBitstring.publisher);
+		item2.set(MyBitstring.EDITOR);
+		item2.set(MyBitstring.PUBLISHER);
 		
 		ArrayList<BitSet> value = new ArrayList<BitSet>();
 		value.add(item1);
@@ -130,8 +130,8 @@ public class TestGeneratedCode_013 {
 	@Test
 	public void test_6() throws Exception {
 		ArrayList<MyEnumeration.Enum> value = new ArrayList<MyEnumeration.Enum>();
-		value.add(MyEnumeration.Enum.apple);
-		value.add(MyEnumeration.Enum.banana);
+		value.add(MyEnumeration.Enum.APPLE);
+		value.add(MyEnumeration.Enum.BANANA);
 		
 		MyEnumeratedList pdu = new MyEnumeratedList();
 		pdu.setValue(value);
@@ -150,8 +150,8 @@ public class TestGeneratedCode_013 {
 	@Test
 	public void test_7() throws Exception {
 		ArrayList<MyEnumeration2.Enum> value = new ArrayList<MyEnumeration2.Enum>();
-		value.add(MyEnumeration2.Enum.apple);
-		value.add(MyEnumeration2.Enum.banana);
+		value.add(MyEnumeration2.Enum.APPLE);
+		value.add(MyEnumeration2.Enum.BANANA);
 		
 		MyEnumeratedList2 pdu = new MyEnumeratedList2();
 		pdu.setValue(value);

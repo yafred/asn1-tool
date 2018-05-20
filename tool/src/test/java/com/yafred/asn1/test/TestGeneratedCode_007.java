@@ -14,7 +14,7 @@ public class TestGeneratedCode_007 {
 	@Test
 	public void test_1() throws Exception {
 		Fruit pdu = new Fruit();
-		pdu.setValue(Fruit.Enum.apple);
+		pdu.setValue(Fruit.Enum.APPLE);
 
 		String expectedHexa = "0a 01 01";
 		testHelper.writePdu(pdu, Fruit.class, expectedHexa);

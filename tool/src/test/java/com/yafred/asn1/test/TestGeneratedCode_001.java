@@ -26,7 +26,7 @@ public class TestGeneratedCode_001 {
 	@Test
 	public void test_2() throws Exception {
 		ColorType pdu = new ColorType();
-		pdu.setValue(ColorType.navy_blue);
+		pdu.setValue(ColorType.NAVY_BLUE);
 
 		String expectedHexa = "02 01 02";
 		testHelper.writePdu(pdu, ColorType.class, expectedHexa);

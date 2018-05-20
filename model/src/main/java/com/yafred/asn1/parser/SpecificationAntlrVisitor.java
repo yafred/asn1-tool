@@ -725,7 +725,8 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	static class SetTypeVisitor extends ASNBaseVisitor<SetType> {
 		@Override
 		public SetType visitSetType(SetTypeContext ctx) {
-			ComponentTypeLists componentTypeLists = null;
+			ComponentTypeLists componentTypeLists = new ComponentTypeLists();
+			componentTypeLists.rootComponentList = new ArrayList<Component>();
 			if(ctx.componentTypeLists() != null) {
 				componentTypeLists = ctx.componentTypeLists().accept(new ComponentTypeListsVisitor());
 			}

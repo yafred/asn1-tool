@@ -100,7 +100,7 @@ public class TestGeneratedCode_019 {
 	public void test_3() throws Exception {
 		Person pdu = new Person();
 		pdu.setName("Bill");
-		pdu.setGender(Gender.male);
+		pdu.setGender(Gender.MALE);
 		pdu.setInfo().setAge(Integer.valueOf(20));
 		pdu.setInfo().setJob("student");
 
@@ -120,7 +120,7 @@ public class TestGeneratedCode_019 {
 	@Test
 	public void test_4() throws Exception {
 		Gift pdu = new Gift();
-		pdu.setCar().setFamilyCar(FamilyCar.peugeot);
+		pdu.setCar().setFamilyCar(FamilyCar.PEUGEOT);
 
 		String expectedHexa = "a0 03 81 01 00";
 		testHelper.writePdu(pdu, Gift.class, expectedHexa);
@@ -135,7 +135,7 @@ public class TestGeneratedCode_019 {
 	@Test
 	public void test_5() throws Exception {
 		GiftAsSet pdu = new GiftAsSet();
-		pdu.setCar().setFamilyCar(GiftAsSet.Car.FamilyCar.peugeot);
+		pdu.setCar().setFamilyCar(GiftAsSet.Car.FamilyCar.PEUGEOT);
 
 		String expectedHexa = "31 05 a0 03 81 01 00";
 		testHelper.writePdu(pdu, GiftAsSet.class, expectedHexa);
