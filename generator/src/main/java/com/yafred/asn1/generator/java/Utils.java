@@ -102,7 +102,11 @@ public class Utils {
 		
 		if (type.isTypeReference()) {
 			tagList.addAll(((TypeReference) type).getFullTagList());
-			tagList.add(((TypeReference) type).getBuiltinType().getUniversalTag());
+			Type builtinType = ((TypeReference) type).getBuiltinType();
+			if(!builtinType.isChoiceType()) {
+				tagList.add(builtinType.getUniversalTag());
+			}
+			
 		} else {
 			if (type.getTagList() != null) {
 				tagList.addAll(type.getTagList());

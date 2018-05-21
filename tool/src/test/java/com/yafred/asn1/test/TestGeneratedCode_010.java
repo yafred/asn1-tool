@@ -39,6 +39,13 @@ public class TestGeneratedCode_010 {
 
 		// decode
 		ACEI decodedPdu = (ACEI) testHelper.readPdu(ACEI.class, ACEI.class, expectedHexa);
+		assertNotNull(decodedPdu.getMessage());
+		assertEquals(decodedPdu.getMessage().getMessageSequence(), pdu.getMessage().getMessageSequence());
+		assertEquals(decodedPdu.getMessage().getNelementID(), pdu.getMessage().getNelementID());
+		assertNotNull(decodedPdu.getGpsInfo());
+		assertEquals(decodedPdu.getGpsInfo().getGpsLat(), pdu.getGpsInfo().getGpsLat());
+		assertEquals(decodedPdu.getGpsInfo().getGpsLong(), pdu.getGpsInfo().getGpsLong());
+		assertEquals(BERDumper.bytesToString(decodedPdu.getSiteInfo()), BERDumper.bytesToString(pdu.getSiteInfo()));
 	}
 	
 	@Test

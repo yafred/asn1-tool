@@ -1,0 +1,23 @@
+G-024 DEFINITIONS ::= 
+BEGIN 
+
+
+DirectoryMessage ::= CHOICE {
+  telephone [0] Telephone
+}
+
+Telephone ::= CHOICE { 
+  inquiry [0] Inquiry, 
+  reply [1] Reply 
+}
+
+Inquiry	::= SEQUENCE { 
+  messageNumber [4] IMPLICIT IA5String
+}
+
+Reply ::= SEQUENCE { 
+  messageNumber [4] IMPLICIT IA5String
+}
+
+
+END

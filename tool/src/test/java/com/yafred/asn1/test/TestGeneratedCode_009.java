@@ -1,6 +1,7 @@
 package com.yafred.asn1.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.BitSet;
 
@@ -75,6 +76,7 @@ public class TestGeneratedCode_009 {
 
 		// decode
 		FlightWithOptional decodedPdu = (FlightWithOptional) testHelper.readPdu(FlightWithOptional.class, FlightWithOptional.class, expectedHexa);
+		assertNull(decodedPdu.getOrigin());
 	}
 	
 	@Test
