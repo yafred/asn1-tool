@@ -543,7 +543,7 @@ public class BERHelper {
 			elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
-		if(listOfType.getElement().getType().isTypeWithComponents()) {
+		else if(Utils.isConstructed(listOfType.getElement().getType())) {
 			elementClassName = "Item";
 			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getName());
@@ -736,7 +736,7 @@ public class BERHelper {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 			}
-			if(listOfType.getElement().getType().isTypeWithComponents()) {
+			else if(listOfType.getElement().getType().isTypeWithComponents() || listOfType.getElement().getType().isListOfType()) {
 				elementClassName = "Item";
 				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
@@ -805,7 +805,7 @@ public class BERHelper {
 			output.println("}");
 			output.println("componentLength+=writer.writeInteger(intValue);");			
 		}
-		else if(elementType.isTypeWithComponents()) {
+		else if(Utils.isConstructed(elementType)) {
 			output.println("componentLength+=" + elementClassName + ".write(" + componentGetter + ".get(i),writer);");						
 		}
 		else {
@@ -891,7 +891,7 @@ public class BERHelper {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 			}
-			if(listOfType.getElement().getType().isTypeWithComponents()) {
+			else if(listOfType.getElement().getType().isTypeWithComponents() || listOfType.getElement().getType().isListOfType()) {
 				elementClassName = "Item";
 				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
@@ -989,7 +989,7 @@ public class BERHelper {
 				output.println("// Extensible: instance.getValue() can return null if unknown enum value is decoded.");
 			}
 		}
-		else if(elementType.isTypeWithComponents()) {
+		else if(Utils.isConstructed(elementType)) {
 			output.println(javaType + " item=new " + javaType + "();");
 			output.println(javaType + ".read(item, reader, componentLength);");
 			output.println(componentGetter + ".add(item);");			

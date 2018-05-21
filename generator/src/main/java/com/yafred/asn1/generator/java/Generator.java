@@ -306,6 +306,13 @@ public class Generator {
 			}
 			processTypeWithComponentsListElement((TypeWithComponents)type, "value", elementName);			
 		}
+		else if(type.isListOfType()) {
+			String elementName = "item";
+			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+				elementName = Utils.normalize(listOfType.getElement().getName());
+			}
+			processListOfTypeListElement((ListOfType)type, "value", elementName);			
+		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
@@ -379,6 +386,27 @@ public class Generator {
 
 		// add BER methods to the POJO
 		berHelper.switchProcessTypeAssignment(typeWithComponents, itemClassName, true);
+		
+		output.println("}");		
+	}
+	
+	
+	private void processListOfTypeListElement(ListOfType listOfType, String componentName, String elementName) throws Exception {
+		String itemClassName = Utils.uNormalize(elementName);
+		String uComponentName = Utils.uNormalize(componentName);
+		
+		// create accessors
+		output.println("private java.util.ArrayList<" + itemClassName + "> " + componentName + ";");
+		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return " + componentName + "; }");
+		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+
+		// inner class
+		output.println("static public class " + itemClassName);
+		output.println("{");
+		switchProcessTypeAssignment(listOfType, itemClassName);
+
+		// add BER methods to the POJO
+		berHelper.switchProcessTypeAssignment(listOfType, itemClassName, true);
 		
 		output.println("}");		
 	}
@@ -463,8 +491,15 @@ public class Generator {
 			}
 			processTypeWithComponentsListElement((TypeWithComponents)type, componentName, elementName);			
 		}
+		else if(type.isListOfType()) {
+			String elementName = "item";
+			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+				elementName = Utils.normalize(listOfType.getElement().getName());
+			}
+			processListOfTypeListElement((ListOfType)type, componentName, elementName);			
+		}
 		else {
-			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
+			throw new Exception("Generator.processListOfTypeNamedType: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
 	}
 

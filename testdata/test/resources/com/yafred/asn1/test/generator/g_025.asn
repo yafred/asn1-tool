@@ -1,0 +1,21 @@
+G-025 DEFINITIONS ::= 
+BEGIN 
+
+
+Row ::= SEQUENCE OF IA5String
+
+Board-1 ::= SEQUENCE OF row Row
+
+Board-2 ::= SEQUENCE OF row SEQUENCE OF IA5String
+
+Board-3 ::= SET OF row SET OF IA5String
+
+Game ::= SEQUENCE {
+   board  SEQUENCE OF row SEQUENCE OF column IA5String
+}
+
+Game-2 ::= SET {
+   board  Board-3
+}
+
+END
