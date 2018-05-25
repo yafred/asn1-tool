@@ -26,9 +26,10 @@ public class TestBERReader  {
 
     @Test
     public void test_indefinite_length() {
-        BERReader reader = makeReader("80");
+        BERReader reader = makeReader("01 80 00 00");
 
         try {
+        	reader.readTag();
             reader.readLength();
         } catch (IOException e) {
             assertTrue("Test should succeed", false);
@@ -37,13 +38,24 @@ public class TestBERReader  {
 
         assertTrue("Length should be infinite form",
             reader.isIndefiniteFormLength());
+        
+        try {
+        	reader.readTag();
+        	reader.mustMatchTag(new byte[]{0});
+            reader.mustReadZeroLength();
+        } catch (Exception e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }
+        
     }
 
     @Test
     public void test_short_form_length() {
-        BERReader reader = makeReader("0f");
+        BERReader reader = makeReader("00 0f");
 
         try {
+        	reader.readTag();
             reader.readLength();
         } catch (IOException e) {
             assertTrue("Test should succeed", false);
@@ -58,9 +70,10 @@ public class TestBERReader  {
 
     @Test
     public void test_long_form_length1() {
-        BERReader reader = makeReader("81 0a");
+        BERReader reader = makeReader("00 81 0a");
 
         try {
+        	reader.readTag();
             reader.readLength();
         } catch (IOException e) {
             assertTrue("Test should succeed", false);
@@ -75,9 +88,10 @@ public class TestBERReader  {
 
     @Test
     public void test_long_form_length2() {
-        BERReader reader = makeReader("82 01 ff");
+        BERReader reader = makeReader("00 82 01 ff");
 
         try {
+        	reader.readTag();
             reader.readLength();
         } catch (IOException e) {
             assertTrue("Test should succeed", false);
@@ -178,10 +192,13 @@ public class TestBERReader  {
         
         try {
         	reader.readTag();
-        	assertTrue(reader.matchTag(new byte[] { 0x65 }));
+           	assertFalse(reader.isTagMatched());
+           	assertTrue(reader.matchTag(new byte[] { 0x65 }));
+        	assertTrue(reader.isTagMatched());
         	
         	reader.readLength();
         	assertEquals(3, reader.getLengthValue());
+           	assertTrue(reader.isTagMatched());
         	
         	reader.readTag();
         	assertTrue(reader.matchTag(new byte[] { 0x02 }));

@@ -3,8 +3,8 @@ Choices-3 DEFINITIONS ::=
 BEGIN
 
 A ::= CHOICE {
-b NULL,
-c NULL
+   b NULL,
+   c NULL
 }
 
 END

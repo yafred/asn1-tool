@@ -1,0 +1,16 @@
+-- FAIL
+Choices DEFINITIONS ::=
+BEGIN
+
+A ::= SEQUENCE { 
+
+	un INTEGER OPTIONAL,
+	deux IA5String OPTIONAL,
+	c CHOICE {
+	   trois INTEGER,   -- duplicate tag   (because 'un' is OPTIONAL)
+	   quatre IA5String   -- duplicate tag  (because 'deux' is OPTIONAL)
+	}
+
+}
+
+END

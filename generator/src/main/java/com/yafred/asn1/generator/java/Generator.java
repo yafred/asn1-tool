@@ -1,10 +1,13 @@
 package com.yafred.asn1.generator.java;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import com.google.googlejavaformat.java.Formatter;
@@ -25,6 +28,7 @@ import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
 import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
+import com.yafred.asn1.parser.Asn1SpecificationWriter;
 
 public class Generator {
 	Options options;
@@ -91,6 +95,12 @@ public class Generator {
 	
 	
 	private void processTypeAssignment(TypeAssignment typeAssignment) throws Exception {
+		// get the ASN.1 spec for this type assignment
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		Asn1SpecificationWriter asn1SpecificationWriter = new Asn1SpecificationWriter(new PrintStream(baos, true, "UTF-8"));
+		asn1SpecificationWriter.visit(typeAssignment);
+		String asn1Spec = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+		
 		// systematically create a class
 		String className = Utils.uNormalize(typeAssignment.getReference());
 
@@ -124,6 +134,9 @@ public class Generator {
 		}
 		
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".java")));
+		fileWriter.println("/*");
+		fileWriter.println(asn1Spec);
+		fileWriter.println("*/");
 		fileWriter.print(formattedSource);
 		fileWriter.close();
 	}

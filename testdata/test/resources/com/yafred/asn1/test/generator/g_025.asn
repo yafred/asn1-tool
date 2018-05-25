@@ -11,7 +11,8 @@ Board-2 ::= SEQUENCE OF row SEQUENCE OF IA5String
 Board-3 ::= SET OF row SET OF IA5String
 
 Game ::= SEQUENCE {
-   board  SEQUENCE OF row SEQUENCE OF column IA5String
+   board  SEQUENCE OF row SEQUENCE OF column IA5String,
+   info IA5String OPTIONAL
 }
 
 Game-2 ::= SET {

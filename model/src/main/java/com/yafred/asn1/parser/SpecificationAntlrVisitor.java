@@ -67,6 +67,7 @@ import com.yafred.asn1.grammar.ASNParser.Value_HSTRINGContext;
 import com.yafred.asn1.grammar.ASNParser.Value_IntegerContext;
 import com.yafred.asn1.grammar.ASNParser.Value_NULLContext;
 import com.yafred.asn1.grammar.ASNParser.Value_NamedValueListContext;
+import com.yafred.asn1.grammar.ASNParser.Value_ObjectIdentifierContext;
 import com.yafred.asn1.grammar.ASNParser.Value_ValueListContext;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.BMPStringType;
@@ -1024,6 +1025,11 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			}
 			return new ValueListValue(valueList);
 		}	
+		
+		@Override
+		public Value visitValue_ObjectIdentifier(Value_ObjectIdentifierContext ctx) {
+			return new NullValue(); // for now
+		}
 	}
 }
 

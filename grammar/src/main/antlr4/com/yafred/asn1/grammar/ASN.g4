@@ -383,17 +383,18 @@ valueAssignment:
 
 /* For values, we can only recognize patterns. Validation can only be done in context */
 value:
-    CSTRING                                                   # value_CSTRING
-    | BSTRING                                                 # value_BSTRING  
-    | HSTRING                                                 # value_HSTRING    
-    | LCURLY RCURLY                                           # value_EmptyList    
-    | (TRUE_LITERAL | FALSE_LITERAL)                          # value_BOOLEAN
-    | LCASE_ID COLON value                                    # value_Choice    
-    | LCURLY namedValue ( COMMA namedValue )* RCURLY          # value_NamedValueList
-    | LCURLY value ( COMMA value )* RCURLY                    # value_ValueList
-    | MINUS? ( NUMBER | NUMBER_WITH_DECIMALS )                # value_Integer 
-    | NULL_LITERAL                                            # value_NULL
-    | valueReference                                          # value_ReferencedValue
+    CSTRING                                                    # value_CSTRING
+    | BSTRING                                                  # value_BSTRING  
+    | HSTRING                                                  # value_HSTRING    
+    | LCURLY RCURLY                                            # value_EmptyList    
+    | (TRUE_LITERAL | FALSE_LITERAL)                           # value_BOOLEAN
+    | LCASE_ID COLON value                                     # value_Choice    
+    | LCURLY namedValue ( COMMA namedValue )* RCURLY           # value_NamedValueList
+    | LCURLY objIdComponents  objIdComponents* RCURLY          # value_ObjectIdentifier
+    | LCURLY value ( COMMA value )* RCURLY                     # value_ValueList
+    | MINUS? ( NUMBER | NUMBER_WITH_DECIMALS )                 # value_Integer 
+    | NULL_LITERAL                                             # value_NULL
+    | valueReference                                           # value_ReferencedValue
 ;
 
 namedValue:
@@ -404,6 +405,13 @@ valueReference:
     LCASE_ID                          // valuereference                      
     | ( UCASE_ID DOT LCASE_ID )       // modulereference.valuereference                       
 ;
+
+objIdComponents:
+    LCASE_ID
+    | NUMBER
+    | LCASE_ID LPAREN NUMBER RPAREN
+;
+
 
 /*--------------------- Constraints -------------------------------------------------*/
 

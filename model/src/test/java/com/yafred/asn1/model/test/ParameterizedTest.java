@@ -104,7 +104,7 @@ public class ParameterizedTest {
         
         new Asn1SpecificationWriter(System.out).visit(specification);
 
-        if(resourceName.matches((".*(/should-fail/).*"))) {
+        if(resourceName.matches((".*(/should_fail/).*"))) {
         	System.out.println("SHOULD FAIL\n\n\n");
         	assert(hasErrors);
         }

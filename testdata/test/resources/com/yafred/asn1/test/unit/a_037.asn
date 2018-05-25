@@ -1,0 +1,15 @@
+Choices DEFINITIONS ::=
+BEGIN
+
+A ::= SEQUENCE {
+
+	un INTEGER,
+	deux IA5String,
+	c CHOICE {
+	   trois INTEGER,   -- OK  (because 'un' is NOT optional)
+	   quatre IA5String   -- OK  (because 'deux' is NOT optional)
+	}
+
+}
+
+END

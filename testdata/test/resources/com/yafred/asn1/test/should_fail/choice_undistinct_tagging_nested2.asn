@@ -1,0 +1,16 @@
+-- FAIL
+Choices DEFINITIONS ::=
+BEGIN
+
+A ::= SET {
+
+	un INTEGER,
+	deux IA5String,
+	c CHOICE {
+	   trois INTEGER,  -- duplicate tag
+	   quatre IA5String  -- duplicate tag
+	}
+
+}
+
+END

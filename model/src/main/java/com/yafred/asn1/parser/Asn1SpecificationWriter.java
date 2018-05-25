@@ -177,7 +177,7 @@ public class Asn1SpecificationWriter {
 		out.print(" FROM " + symbolsFromModule.getModuleReference().getName());
 	}
 	
-	private void visit(TypeAssignment typeAssignment) {
+	public void visit(TypeAssignment typeAssignment) {
 		out.print(typeAssignment.getReference() + " ::= ");
 		if(typeAssignment.getType() != null) {
 			visitType(typeAssignment.getType());

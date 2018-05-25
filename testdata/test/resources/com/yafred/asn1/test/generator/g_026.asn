@@ -1,0 +1,61 @@
+G-026 DEFINITIONS EXPLICIT TAGS ::=
+BEGIN
+   
+   EXPORTS ALL;
+   IMPORTS;
+   
+   Request ::= CHOICE { -- untagged CHOICE type assignement
+      num INTEGER,
+      text IA5String
+   }
+   
+   Response ::= CHOICE { -- untagged CHOICE type assignement
+      error VisibleString,
+      info UTF8String
+   }
+   
+   Message ::= CHOICE { -- untagged CHOICE type assignement
+      request Request,  -- untagged CHOICE component
+      response Response  -- untagged CHOICE component
+   }
+   
+   Message-in-sequence ::= SEQUENCE {
+     info [0] IA5String,
+     request CHOICE {    -- untagged CHOICE component
+        num INTEGER,
+        text IA5String
+     },
+     response CHOICE {   -- untagged CHOICE component
+        error VisibleString,
+        info UTF8String
+     }
+   }
+   
+   Message-in-sequence-with-optional ::= SEQUENCE {
+     info [0] IA5String OPTIONAL,
+     request CHOICE {    -- untagged CHOICE component
+        num INTEGER,
+        text IA5String
+     } OPTIONAL,
+     response CHOICE {   -- untagged CHOICE component
+        error VisibleString,
+        info UTF8String
+     }
+   }
+   
+   Message-in-set ::= SEQUENCE {
+     info [0] IA5String OPTIONAL,
+     request CHOICE {    -- untagged CHOICE component
+        num INTEGER,
+        text IA5String
+     },
+     response CHOICE {   -- untagged CHOICE component
+        error VisibleString,
+        info UTF8String
+     }
+   }
+   
+   Message-list ::= SEQUENCE OF Message  -- untagged CHOICE list element
+   
+END
+

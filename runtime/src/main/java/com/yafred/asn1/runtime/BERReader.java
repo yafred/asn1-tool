@@ -11,7 +11,6 @@ public class BERReader {
             (byte) 0x04, (byte) 0x02, (byte) 0x01
         };
     private java.io.InputStream in = null;
-    private boolean readingUntaggedChoice = false;
 
     /**
      * Length
@@ -25,7 +24,8 @@ public class BERReader {
      */
     private int tagNumBytes;
     private byte[] tagBuffer = new byte[10];
-
+    private boolean tagMatched = true;
+    
     /**
      * Trace
      */
@@ -74,19 +74,20 @@ public class BERReader {
 		                ", actual: " + tagBuffer[i]);
 			}
 		}
+    	this.tagMatched = true;
     }
     
     public boolean matchTag(byte[]tag)  {
-    	boolean ret = true;
+    	tagMatched = true;
     	if(tagNumBytes == tag.length) {
     		for(int i=0; i<tag.length; i++) {
     			if(tag[i] != tagBuffer[i]) {
-    				ret = false;
+    				tagMatched = false;
     				break;
     			}
     		}
     	}
-    	return ret;
+     	return tagMatched;
     }
 
     /**
@@ -94,6 +95,7 @@ public class BERReader {
      * @throws IOException
      */
     public void readTag() throws IOException {
+     	
         boolean isLastByte = false;
         tagNumBytes = 1;
 
@@ -112,7 +114,10 @@ public class BERReader {
                 isLastByte = true;
             }
         }
-    }
+        
+        // switch toggle (will be set again when length is read ... meaning that tag has been matched)
+        tagMatched = false;   
+     }
 
     /**
      *
@@ -133,10 +138,21 @@ public class BERReader {
         return ret;
     }
 
+    public void mustReadZeroLength() throws Exception {
+    	readLength();
+    	if(getLengthLength() != 1 || getLengthValue() != 0) {
+    		throw new Exception("Expecting 0 length here");
+    	}
+    }
+   
+    
     /**
      * @throws IOException
      */
     public void readLength() throws IOException {
+     	// if we read a length, this means that preceding tag has been recognized
+    	tagMatched = true;
+    	
         lengthLength = 0; // length of length
         lengthValue = 0; // value of length
         isIndefiniteFormLength = false;
@@ -406,14 +422,6 @@ public class BERReader {
         }
     }
 
-    public boolean isReadingUntaggedChoice() {
-        return readingUntaggedChoice;
-    }
-
-    public void setReadingUntaggedChoice(boolean readingUntaggedChoice) {
-        this.readingUntaggedChoice = readingUntaggedChoice;
-    }
-
     public boolean isIndefiniteFormLength() {
         return isIndefiniteFormLength;
     }
@@ -425,4 +433,13 @@ public class BERReader {
     public int getLengthValue() {
         return lengthValue;
     }
+
+    /*
+     * False when a tag has just been read
+     * True when a length has been read or a match method has been successful
+     */
+	public boolean isTagMatched() {
+		return tagMatched;
+	}
+
 }

@@ -46,9 +46,15 @@ public class BERHelper {
 				lengthText = "0";
 			}
 	
-			output.println(className + " ret=new " + className + "();");
-			output.println("read(ret, reader, " + lengthText + ");");
-			output.println("return ret;");
+			if(!type.isTypeReference()) {
+				output.println("return read(reader, " + lengthText + ");");
+			}
+			else {
+				// we have to 'cast'
+				output.println(className + " ret = new " + className + "();");
+				output.println("ret.setValue(read(reader, " + lengthText + ").getValue());");			
+				output.println("return ret;");			
+			}
 			output.println("}");
 	
 			// writePdu method
@@ -70,9 +76,11 @@ public class BERHelper {
 		} 
 		else if (!type.isTypeWithComponents() && !type.isListOfType()) {
 	        // read method
-			output.println("public static void read(" + className + " instance," + BER_READER +
+			output.println("public static " + className + " read(" + BER_READER +
 	            " reader, int componentLength) throws Exception {");
+			output.println(className + " instance=new " + className + "();");
 			switchDecodeComponent(type, "value", className);
+			output.println("return instance;");
 			output.println("}");
 
 			// write method
@@ -151,14 +159,17 @@ public class BERHelper {
 	}
 
 
-	private void writeSequenceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
+	/*
+	 * Returns false if there is no tag (untagged CHOICE)
+	 */
+	private boolean writeSequenceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
 		
 		if(tagList == null) {
 			tagList = new ArrayList<Tag>();
 		}
 		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE
-			return;
+			return false;
 		}
 		
 		if(automaticTag != null) {
@@ -192,12 +203,11 @@ public class BERHelper {
 				if(namedType.isOptional()) {
 					// we could test if this is a potential end
 					output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
-					output.println("reader.readTag();");
-					output.println("reader.mustMatchTag(new byte[]{0});");
-					output.println("return;");
+					output.println("reader.mustReadZeroLength();");
+					output.println("return instance;");
 					output.println("}");
-					output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-					output.println("if(matchedPrevious){");
+					output.println("reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+					output.println("if(reader.isTagMatched()){");
 					output.println("reader.readLength();");
 					output.println("if(length!=-1) length-=reader.getLengthLength();");
 					output.println("}");
@@ -210,7 +220,7 @@ public class BERHelper {
 			}
 			else {
 				if(namedType.isOptional()) {
-					output.println("if(matchedPrevious){");
+					output.println("if(reader.isTagMatched()){");
 				}
 				output.println("reader.readTag();");
 				output.println("if(length!=-1) length-=reader.getTagLength();");
@@ -222,17 +232,21 @@ public class BERHelper {
 				}
 			}
 		}
+		
+		return true;
 	}
 
-	
-	private void writeSetOrChoiceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
+	/*
+	 * Returns false if there is no tag (untagged CHOICE)
+	 */
+	private boolean writeSetOrChoiceTagsDecode(NamedType namedType, Tag automaticTag) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(namedType.getType());
 
 		if(tagList == null) {
 			tagList = new ArrayList<Tag>();
 		}
 		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE
-			return;
+			return false;
 		}
 		
 		if(automaticTag != null) {
@@ -263,14 +277,14 @@ public class BERHelper {
 			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
-				output.println("matchedPrevious= reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
-				output.println("if(matchedPrevious){");
+				output.println("reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("if(reader.isTagMatched()){");
 				output.println("reader.readLength();");
 				output.println("if(length!=-1) length-=reader.getLengthLength();");
 				output.println("}");
 			}
 			else {
-				output.println("if(matchedPrevious){");
+				output.println("if(reader.isTagMatched()){");
 				output.println("reader.readTag();");
 				output.println("if(length!=-1) length-=reader.getTagLength();");
 				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
@@ -279,13 +293,15 @@ public class BERHelper {
 				output.println("}");
 			}
 		}
+		
+		return true;
 	}
 
 	
-	private void writeElementTagsDecode(Type type) throws Exception {
+	private boolean writeElementTagsDecode(Type type) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
 		if (tagList == null || tagList.size() == 0) { // it is a untagged CHOICE
-			return;
+			return false;
 		}
 
 		for (int iTag = 0; iTag < tagList.size(); iTag++) {
@@ -309,8 +325,7 @@ public class BERHelper {
 			if(iTag == 0) {
 				// we could test if this is a potential end
 				output.println("if(listLength==-1 && reader.matchTag(new byte[]{0})) {");
-				output.println("reader.readTag();");
-				output.println("reader.mustMatchTag(new byte[]{0});");
+				output.println("reader.mustReadZeroLength();");
 				output.println("break;");
 				output.println("}");
 				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
@@ -325,6 +340,7 @@ public class BERHelper {
 				output.println("if(listLength!=-1) listLength-=reader.getLengthLength();");
 			}
 		}
+		return true;
 	}
 
 	
@@ -392,14 +408,14 @@ public class BERHelper {
 		output.println("}");
 
         // write decoding code
-		output.println("public static void read(" + className + " instance, " + BER_READER +
+		output.println("public static " + className + " read(" + BER_READER +
 	            " reader, int length) throws Exception {");
-		output.println("boolean matchedPrevious=true;");
+		output.println(className + " instance=new " + className + "();");
 		output.println("int componentLength=0;");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
-			output.println("if(length==0) return;"); 			
+			output.println("if(length==0) return instance;"); 			
 			if(componentIndex != 0) {
-				output.println("if(matchedPrevious){");
+				output.println("if(reader.isTagMatched()){");
 			}
 			output.println("reader.readTag();");
 			output.println("if(length!=-1) length-=reader.getTagLength();");
@@ -420,31 +436,40 @@ public class BERHelper {
 			if(sequenceType.isAutomaticTaggingSelected()) {
 				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
-			writeSequenceTagsDecode(namedType, automaticTag);
 			
-			if(namedType.isOptional()) {
-				output.println("if(matchedPrevious){");
-			}
-			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
-			output.println("if(length!=-1) length-=componentLength;");
-			if(namedType.isOptional()) {
-				output.println("}");
+			boolean hasTags = writeSequenceTagsDecode(namedType, automaticTag);
+			if(hasTags) {
+				if(namedType.isOptional()) {
+					output.println("if(reader.isTagMatched()){");
+				}
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+				output.println("if(length!=-1) length-=componentLength;");
+				if(namedType.isOptional()) {
+					output.println("}");
+				}
 			}
 			else {
-				output.println("matchedPrevious=true;");			
-			}
+				output.println("// component is an untagged CHOICE (DOES NOT WORK YET)");	
+				output.println("reader.readLength();");
+				output.println("if(length!=-1) length-=reader.getLengthLength();");
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);				
+				String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+				output.println("if(" + componentGetter + "!=null) {");				
+				output.println("if(length!=-1) length-=componentLength;");
+				output.println("}");
+			}	
 		}
 		
 		output.println("if(length==-1) {");
 		output.println("reader.readTag();");
 		output.println("reader.mustMatchTag(new byte[]{0});");
-		output.println("reader.readTag();");
-		output.println("reader.mustMatchTag(new byte[]{0});");
+		output.println("reader.mustReadZeroLength();");
 		output.println("}");
 
 		output.println("else if(length!=0) throw new Exception(\"length should be 0, not \" + length);"); 
-		output.println("return;");
+		output.println("return instance;");
 		output.println("}");
 	}
 
@@ -487,20 +512,19 @@ public class BERHelper {
 
         // write decoding code
 		// decoding is different, we cannot rely on the order of components
-		output.println("public static void read(" + className + " instance," + BER_READER +
+		output.println("public static " + className + " read(" + BER_READER +
 	            " reader, int length) throws Exception {");
 
+		output.println(className + " instance=new " + className + "();");
 		output.println("while(length==-1||length>0){");
 
-		output.println("boolean matchedPrevious=false;");
 		output.println("int componentLength=0;");
 
 		output.println("reader.readTag();");
 		output.println("if(length!=-1) length-=reader.getTagLength();");
 		output.println("if(length==-1 && reader.matchTag(new byte[]{0})) {");
-		output.println("reader.readTag();");
-		output.println("reader.mustMatchTag(new byte[]{0});");
-		output.println("return;");
+		output.println("reader.mustReadZeroLength();");
+		output.println("return instance;");
 		output.println("}");
 
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
@@ -518,20 +542,28 @@ public class BERHelper {
 				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 			
-			writeSetOrChoiceTagsDecode(namedType, automaticTag);
-			output.println("if(matchedPrevious){");
-			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
-			output.println("if(length!=-1) length-=componentLength;");
-			output.println("continue;");
-			output.println("}");
+			boolean hasTags = writeSetOrChoiceTagsDecode(namedType, automaticTag);
+			if(hasTags) {
+				output.println("if(reader.isTagMatched()){");
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+				output.println("if(length!=-1) length-=componentLength;");
+				output.println("continue;");
+				output.println("}");
+			}
+			else {
+				output.println("// component is an untagged CHOICE (DOES NOT WORK YET)");
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);				
+			}
+
 			output.println();
 		}	
 		
 		output.println("}");
 		output.println("if(length!=-1 && length!=0) throw new Exception(\"length should be 0, not \" + length);"); 
 
-		output.println("return;");
+		output.println("return instance;");
 		output.println("}");
 	}
 
@@ -584,19 +616,24 @@ public class BERHelper {
 				}
 			}
 		}
-		output.println("public static void read(" + className + " instance," + BER_READER +
+		output.println("public static " + className + " read(" + BER_READER +
 	            " reader, int listLength) throws Exception {");
+		output.println(className + " instance=new " + className + "();");
 		output.println("instance.setValue(new java.util.ArrayList<" + javaType + ">());");
 		output.println("while(listLength > 0 || listLength==-1) {");
 		output.println("reader.readTag();");
 		output.println("if(listLength!=-1) listLength-=reader.getTagLength();");
-		writeElementTagsDecode(listOfType.getElement().getType());
+		boolean hasTags = writeElementTagsDecode(listOfType.getElement().getType());
+		if(!hasTags) {
+			output.println("// list element is an untagged CHOICE (DOES NOT WORK YET)");	
+		}
 		output.println("int componentLength=reader.getLengthValue();");
 		
 		switchDecodeListElement(elementType, elementClassName, "value", javaType);
 		
 		output.println("if(listLength!=-1) listLength-=componentLength;");
 		output.println("}");
+		output.println("return instance;");
 		output.println("}");
 	}
 	
@@ -635,11 +672,11 @@ public class BERHelper {
 		output.println("}");
 
         // write decoding code
-		output.println("public static void read(" + className + " instance," + BER_READER +
+		output.println("public static " + className + " read(" + BER_READER +
 	            " reader, int length) throws Exception {");
-		output.println("boolean matchedPrevious=false;");
+		output.println(className + " instance=new " + className + "();");
 		output.println("int componentLength=0;");
-		output.println("reader.readTag();");
+		output.println("if(reader.isTagMatched()) reader.readTag();");
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
@@ -655,16 +692,26 @@ public class BERHelper {
 				automaticTag = new Tag(Integer.valueOf(componentIndex), null, null);
 			}
 
-			writeSetOrChoiceTagsDecode(namedType, automaticTag);
-			output.println("if(matchedPrevious){");
-			output.println("componentLength=reader.getLengthValue();");
-			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
-			output.println("if(length!=-1) length-=componentLength;");
-			output.println("return;");
-			output.println("}");
+			boolean hasTags = writeSetOrChoiceTagsDecode(namedType, automaticTag);
+			if(hasTags) {
+				output.println("if(reader.isTagMatched()){");
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+				output.println("if(length!=-1) length-=componentLength;");
+				output.println("return instance;");
+				output.println("}");
+			}
+			else {
+				output.println("// component is an untagged CHOICE (DOES NOT WORK YET)");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);	
+				String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+				output.println("if(" + componentGetter + "!=null) return instance;");				
+			}
+
 			output.println();
 		}
 		
+		output.println("return null;");
 		output.println("}");
 	}
 	
@@ -876,12 +923,10 @@ public class BERHelper {
 			}
 		}
 		else if(type.isTypeReference()) {
-			output.println(componentSetter + "new " + componentClassName + "());");
-			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
+			output.println(componentSetter + componentClassName + ".read(reader, componentLength));");		
 		}
 		else if(type.isTypeWithComponents()) {
-			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");
-			output.println(Utils.uNormalize(componentName) + ".read(" + componentGetter + ",reader, componentLength);");		
+			output.println(componentSetter + Utils.uNormalize(componentName) + ".read(reader, componentLength));");		
 		}
 		else if(type.isListOfType()) {
 			ListOfType listOfType = (ListOfType)type;
@@ -990,9 +1035,7 @@ public class BERHelper {
 			}
 		}
 		else if(Utils.isConstructed(elementType)) {
-			output.println(javaType + " item=new " + javaType + "();");
-			output.println(javaType + ".read(item, reader, componentLength);");
-			output.println(componentGetter + ".add(item);");			
+			output.println(componentGetter + ".add(" + javaType + ".read(reader, componentLength));");			
 		}
 
 	}
