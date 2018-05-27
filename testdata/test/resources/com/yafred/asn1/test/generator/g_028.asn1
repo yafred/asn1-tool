@@ -1,0 +1,32 @@
+ 
+G-028 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+My-sequence ::= SEQUENCE {  
+   one INTEGER,
+   two IA5String
+}
+
+My-sub-sequence ::= My-sequence
+
+
+
+My-set ::= SET { 
+   one INTEGER,
+   two IA5String 
+}
+
+My-sub-set ::= My-set
+
+
+
+My-choice ::= CHOICE {  
+   one INTEGER,
+   two IA5String
+}
+
+My-sub-choice ::= My-choice
+
+
+
+END
