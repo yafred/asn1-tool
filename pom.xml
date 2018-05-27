@@ -15,6 +15,7 @@
          <module>model</module>
          <module>runtime</module>
          <module>generator</module>
+         <module>generator-test</module>
          <module>tool</module>
     </modules>
 
