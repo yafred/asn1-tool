@@ -43,7 +43,7 @@ BEGIN
      }
    }
    
-   Message-in-set ::= SEQUENCE {
+   Message-in-set ::= SET {
      info [0] IA5String OPTIONAL,
      request CHOICE {    -- untagged CHOICE component
         num INTEGER,

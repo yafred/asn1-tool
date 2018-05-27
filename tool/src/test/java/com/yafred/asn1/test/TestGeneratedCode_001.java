@@ -20,7 +20,7 @@ public class TestGeneratedCode_001 {
 
 		// decode
 		MyInteger decodedPdu = (MyInteger) testHelper.readPdu(MyInteger.class, MyInteger.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -33,6 +33,6 @@ public class TestGeneratedCode_001 {
 
 		// decode
 		ColorType decodedPdu = (ColorType) testHelper.readPdu(ColorType.class, ColorType.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 }

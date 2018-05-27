@@ -8,19 +8,19 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import g_026.Message;
-import g_026.MessageInSequence;
-import g_026.MessageInSequenceWithOptional;
-import g_026.MessageInSet;
-import g_026.MessageList;
-import g_026.Request;
+import g_027.Message;
+import g_027.MessageInSequence;
+import g_027.MessageInSequenceWithOptional;
+import g_027.MessageInSet;
+import g_027.MessageList;
+import g_027.Request;
 
 
 
 
 
 
-public class TestGeneratedCode_026 {
+public class TestGeneratedCode_027 {
 	TestHelper testHelper = new TestHelper();
  
 	
@@ -30,7 +30,7 @@ public class TestGeneratedCode_026 {
 		Request pdu = new Request();
 		pdu.setText("Hello");
 		
-		String expectedHexa = "16 05 48 65 6c 6c 6f";
+		String expectedHexa = "81 05 48 65 6c 6c 6f";
 		
 		testHelper.writePdu(pdu, Request.class, expectedHexa);
 
@@ -48,7 +48,7 @@ public class TestGeneratedCode_026 {
 		Message pdu = new Message();
 		pdu.setRequest().setText("Hello");
 		
-		String expectedHexa = "16 05 48 65 6c 6c 6f";
+		String expectedHexa = "a0 07 81 05 48 65 6c 6c 6f";
 		
 		testHelper.writePdu(pdu, Message.class, expectedHexa);
 
@@ -69,7 +69,7 @@ public class TestGeneratedCode_026 {
 		pdu.setRequest().setNum(Integer.valueOf(10));
 		pdu.setResponse().setError("Hello");
 		
-		String expectedHexa = "30 12 a0 06 16 04 69 6e 66 6f 02 01 0a 1a 05 48 65 6c 6c 6f";
+		String expectedHexa = "30 14 80 04 69 6e 66 6f a1 03 80 01 0a a2 07 80 05 48 65 6c 6c 6f";
 		
 		testHelper.writePdu(pdu, MessageInSequence.class, expectedHexa);
 
@@ -91,7 +91,7 @@ public class TestGeneratedCode_026 {
 		pdu.setInfo("info");
 		pdu.setResponse().setError("Hello");
 		
-		String expectedHexa = "30 0f a0 06 16 04 69 6e 66 6f 1a 05 48 65 6c 6c 6f";
+		String expectedHexa = "30 0f 80 04 69 6e 66 6f a2 07 80 05 48 65 6c 6c 6f";
 		
 		testHelper.writePdu(pdu, MessageInSequenceWithOptional.class, expectedHexa);
 
@@ -113,7 +113,7 @@ public class TestGeneratedCode_026 {
 		pdu.setRequest().setNum(Integer.valueOf(10));
 		pdu.setResponse().setError("Hello");
 		
-		String expectedHexa = "31 12 a0 06 16 04 69 6e 66 6f 02 01 0a 1a 05 48 65 6c 6c 6f";
+		String expectedHexa = "30 14 80 04 69 6e 66 6f a1 03 80 01 0a a2 07 80 05 48 65 6c 6c 6f";
 		
 		testHelper.writePdu(pdu, MessageInSet.class, expectedHexa);
 
@@ -145,7 +145,7 @@ public class TestGeneratedCode_026 {
 		
 		pdu.setValue(list);
 		
-		String expectedHexa = "30 09 02 01 0a 1a 04 6e 6f 6e 65";
+		String expectedHexa = "30 0d a0 03 80 01 0a a1 06 80 04 6e 6f 6e 65";
 		
 		testHelper.writePdu(pdu, MessageList.class, expectedHexa);
 

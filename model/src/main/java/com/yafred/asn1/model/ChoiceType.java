@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 public class ChoiceType extends TypeWithComponents {
+	private ArrayList<NamedType> alternativeListIncludingNested = null ; 
 
     public ChoiceType(ArrayList<Component> rootAlternativeList,
     		ArrayList<Component> additionalAlternativeList) {
@@ -25,6 +26,14 @@ public class ChoiceType extends TypeWithComponents {
 	
 	public void setAdditionalAlternativeList(ArrayList<Component> additionalAlternativeList) {
 		setExtensionComponentList(additionalAlternativeList);
+	}
+
+	public ArrayList<NamedType> getAlternativeListIncludingNested() {
+		return alternativeListIncludingNested;
+	}
+
+	public void setAlternativeListIncludingNested(ArrayList<NamedType> alternativeListIncludingNested) {
+		this.alternativeListIncludingNested = alternativeListIncludingNested;
 	}
 
 	@Override

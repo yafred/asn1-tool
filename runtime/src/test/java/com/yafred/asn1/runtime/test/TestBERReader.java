@@ -245,6 +245,33 @@ public class TestBERReader  {
         }  	
     }
     
+    public void test_long_tag_no_match() {
+    	String hexaString = "5f 81 48 01 19";
+        BERReader reader = makeReader(hexaString);
+        
+        try {
+        	reader.readTag();
+        	boolean fails = false;
+        	try {
+         	reader.matchTag(new byte[] { (byte)0x5f, (byte)0x81 } );
+        	}
+        	catch(Exception e) {
+        		fails = true;
+        	}
+        	assertTrue(fails);
+        	
+        	reader.readLength();
+        	assertEquals(1, reader.getLengthValue());
+        	
+        	Integer intValue = reader.readInteger(1);
+        	assertEquals(25, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }    
+    
+    
     @Test
     /*
     Module DEFINITIONS IMPLICIT TAGS  ::= 
@@ -535,5 +562,25 @@ public class TestBERReader  {
 		}
 
 		assertTrue("Test should fail", hasFailed);
+	}
+	
+	@Test
+	public void test_look_ahead_tag() throws Exception {
+		String hexaString = "5f 64 01 19";
+		BERReader reader = makeReader(hexaString);
+
+		reader.readTag();
+		assertTrue(reader.lookAheadTag(new byte[][] { new byte[] { (byte) 0x02 }, new byte[] { (byte) 0x5f, (byte) 0x64 } }));
+		assertFalse(reader.isTagMatched());
+
+	}
+	
+	@Test
+	public void test_look_ahead_tag_fails() throws Exception {
+		String hexaString = "5f 64 01 19";
+		BERReader reader = makeReader(hexaString);
+
+		reader.readTag();
+		assertFalse(reader.lookAheadTag(new byte[][] { new byte[] { (byte) 0x02 }, new byte[] { (byte) 0x2f, (byte) 0x64 } }));
 	}
 }

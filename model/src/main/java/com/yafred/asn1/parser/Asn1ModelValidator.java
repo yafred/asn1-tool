@@ -912,11 +912,12 @@ public class Asn1ModelValidator {
 		visitTypeWithComponents(choiceType, moduleDefinition);
 		
 		if(!choiceType.isAutomaticTaggingSelected()) {
-			ArrayList<NamedType> previousNamedTypeList = new ArrayList<NamedType>();
-			visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
+			ArrayList<NamedType> alternativeListIncludingNested = new ArrayList<NamedType>();
+			visitChoiceAlternative(choiceType.getRootAlternativeList(), alternativeListIncludingNested, moduleDefinition);
 			if(choiceType.getAdditionalAlternativeList() != null) {
-				visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+				visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), alternativeListIncludingNested, moduleDefinition);
 			}
+			choiceType.setAlternativeListIncludingNested(alternativeListIncludingNested);
 		}
 	}
 	
@@ -924,7 +925,7 @@ public class Asn1ModelValidator {
 	 * Search for duplicate tags in a ChoiceType
 	 * Follow untagged choices, selection types and untagged type references.
 	 */
-	void visitChoiceAlternative(ArrayList<Component>alternativeList, ArrayList<NamedType> previousNamedTypeList, ModuleDefinition moduleDefinition) {
+	void visitChoiceAlternative(ArrayList<Component>alternativeList, ArrayList<NamedType> alternativeListIncludingNested, ModuleDefinition moduleDefinition) {
 		for(Component component : alternativeList) {
 			NamedType namedType = (NamedType)component; // always the case for choice alternative
 			if(namedType.getType().isTypeReference()) {
@@ -940,14 +941,14 @@ public class Asn1ModelValidator {
 			}
 			if(tag != null) {
 				int errorsBefore = errorList.size();
-				for(NamedType previousNamedType : previousNamedTypeList) {
+				for(NamedType previousNamedType : alternativeListIncludingNested) {
 					Tag previousTag = previousNamedType.getType().getFirstTag();
 						if(tag != null && tag.equals(previousTag)) {
 						errorList.add(namedType.getTokenLocation() + ": tag of '" + namedType.getName() + "' is the same as tag of '" + previousNamedType.getName() + "' " + previousNamedType.getTokenLocation()); 					
 					}
 				}
 				if(errorsBefore == errorList.size()) {
-					previousNamedTypeList.add(namedType);
+					alternativeListIncludingNested.add(namedType);
 				}
 			}
 			else { // it is either an untagged choice or a reference
@@ -960,9 +961,9 @@ public class Asn1ModelValidator {
 				else {
 					choiceType = (ChoiceType)namedType.getType();
 				}
-				visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
+				visitChoiceAlternative(choiceType.getRootAlternativeList(), alternativeListIncludingNested, moduleDefinition);
 				if(choiceType.getAdditionalAlternativeList() != null) {
-					visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+					visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), alternativeListIncludingNested, moduleDefinition);
 				}
 			}
 		}

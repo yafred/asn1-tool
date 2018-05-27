@@ -26,7 +26,7 @@ public class TestGeneratedCode_008 {
 
 		// decode
 		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -41,7 +41,7 @@ public class TestGeneratedCode_008 {
 
 		// decode
 		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -57,7 +57,7 @@ public class TestGeneratedCode_008 {
 
 		// decode
 		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -73,6 +73,6 @@ public class TestGeneratedCode_008 {
 
 		// decode
 		Occupation decodedPdu = (Occupation) testHelper.readPdu(Occupation.class, Occupation.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 }

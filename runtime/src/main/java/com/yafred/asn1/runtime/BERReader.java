@@ -77,9 +77,32 @@ public class BERReader {
     	this.tagMatched = true;
     }
     
+    
+    public boolean lookAheadTag(byte[][]tags) {
+    	boolean foundMatch = false;
+    	
+    	for(int k=0; k<tags.length && !foundMatch; k++) {
+    		byte[]tag = tags[k];
+    		foundMatch = false;
+        	if(tagNumBytes == tag.length) {
+        		foundMatch = true;
+        		for(int i=0; i<tag.length; i++) {
+        			if(tag[i] != tagBuffer[i]) {
+        				foundMatch = false;
+        				break;
+        			}
+        		}
+        	}
+    	}
+    	
+    	return foundMatch;
+    }
+    
+    
     public boolean matchTag(byte[]tag)  {
-    	tagMatched = true;
+    	tagMatched = false;
     	if(tagNumBytes == tag.length) {
+        	tagMatched = true;
     		for(int i=0; i<tag.length; i++) {
     			if(tag[i] != tagBuffer[i]) {
     				tagMatched = false;
@@ -440,6 +463,10 @@ public class BERReader {
      */
 	public boolean isTagMatched() {
 		return tagMatched;
+	}
+	
+	public void setTagMatched(boolean tagMatched) {
+		this.tagMatched = tagMatched;
 	}
 
 }

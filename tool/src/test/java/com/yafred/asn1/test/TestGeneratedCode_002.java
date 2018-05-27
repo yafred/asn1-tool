@@ -19,6 +19,6 @@ public class TestGeneratedCode_002 {
 
 		// decode
 		MyBoolean decodedPdu = (MyBoolean) testHelper.readPdu(MyBoolean.class, MyBoolean.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 }

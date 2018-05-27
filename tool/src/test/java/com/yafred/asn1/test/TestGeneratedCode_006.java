@@ -27,7 +27,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type1 decodedPdu = (Type1) testHelper.readPdu(Type1.class, Type1.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -40,7 +40,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type2 decodedPdu = (Type2) testHelper.readPdu(Type2.class, Type2.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type3 decodedPdu = (Type3) testHelper.readPdu(Type3.class, Type3.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 
 /*	Following are transformed (see X690 201508 8.26) */
@@ -67,7 +67,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type4 decodedPdu = (Type4) testHelper.readPdu(Type4.class, Type4.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -80,7 +80,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type5 decodedPdu = (Type5) testHelper.readPdu(Type5.class, Type5.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type6 decodedPdu = (Type6) testHelper.readPdu(Type6.class, Type6.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 	
 	@Test
@@ -106,6 +106,6 @@ public class TestGeneratedCode_006 {
 		
 		// decode
 		Type7 decodedPdu = (Type7) testHelper.readPdu(Type7.class, Type7.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 }

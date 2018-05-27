@@ -21,6 +21,6 @@ public class TestGeneratedCode_007 {
 
 		// decode
 		Fruit decodedPdu = (Fruit) testHelper.readPdu(Fruit.class, Fruit.class, expectedHexa);
-		assertEquals(decodedPdu.getValue(), pdu.getValue());
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
 	}
 }
