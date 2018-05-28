@@ -4,7 +4,7 @@ BEGIN
 
 My-sequence ::= SEQUENCE {  
    one INTEGER,
-   two IA5String
+   final IA5String
 }
 
 My-sub-sequence ::= My-sequence
@@ -13,7 +13,7 @@ My-sub-sequence ::= My-sequence
 
 My-set ::= SET { 
    one INTEGER,
-   two IA5String 
+   const IA5String
 }
 
 My-sub-set ::= My-set
@@ -27,6 +27,12 @@ My-choice ::= CHOICE {
 
 My-sub-choice ::= My-choice
 
+
+Multiple-enum ::= SEQUENCE {
+   number ENUMERATED { one, two },
+   letter ENUMERATED { a, b, c }
+
+}
 
 
 END

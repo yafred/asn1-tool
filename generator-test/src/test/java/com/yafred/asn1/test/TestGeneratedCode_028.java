@@ -27,7 +27,7 @@ public class TestGeneratedCode_028 {
 		
 		MySubSequence pdu = new MySubSequence();
 		pdu.setOne(Integer.valueOf(1));
-		pdu.setTwo("deux");
+		pdu.setFinal("deux");
 		
 		String expectedHexa = "30 09 80 01 01 81 04 64 65 75 78";
 		
@@ -36,7 +36,7 @@ public class TestGeneratedCode_028 {
 		MySubSequence decodedPdu = (MySubSequence) testHelper.readPdu(MySubSequence.class, MySubSequence.class, expectedHexa);
 		
 		assertEquals(pdu.getOne(), decodedPdu.getOne());
-		assertEquals(pdu.getTwo(), decodedPdu.getTwo());
+		assertEquals(pdu.getFinal(), decodedPdu.getFinal());
 	}
 	
 	
@@ -45,7 +45,7 @@ public class TestGeneratedCode_028 {
 		
 		MySubSet pdu = new MySubSet();
 		pdu.setOne(Integer.valueOf(1));
-		pdu.setTwo("deux");
+		pdu.setConst("deux");
 		
 		String expectedHexa = "31 09 80 01 01 81 04 64 65 75 78";
 		
@@ -54,7 +54,7 @@ public class TestGeneratedCode_028 {
 		MySubSet decodedPdu = (MySubSet) testHelper.readPdu(MySubSet.class, MySubSet.class, expectedHexa);
 		
 		assertEquals(pdu.getOne(), decodedPdu.getOne());
-		assertEquals(pdu.getTwo(), decodedPdu.getTwo());
+		assertEquals(pdu.getConst(), decodedPdu.getConst());
 	}
 	
 	

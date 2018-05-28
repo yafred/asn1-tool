@@ -195,9 +195,9 @@ public class Generator {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
 
-		output.println("private " + javaType + " " + componentName + ";");
-		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private " + javaType + " _" + componentName + ";");
+		output.println("public " + javaType + " get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(" + javaType + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 	}
 	
 	
@@ -219,9 +219,9 @@ public class Generator {
 			output.println("}");
 		}
 
-		output.println("private " + javaType + " " + componentName + ";");
-		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private " + javaType + " _" + componentName + ";");
+		output.println("public " + javaType + " get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(" + javaType + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 	}
 	
 	
@@ -248,9 +248,9 @@ public class Generator {
 		if(isList) {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
-		output.println("private " + javaType + " " + componentName + ";");
-		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private " + javaType + " _" + componentName + ";");
+		output.println("public " + javaType + " get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(" + javaType + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 	}
 	
 	
@@ -275,9 +275,9 @@ public class Generator {
 		if(isList) {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
-		output.println("private " + javaType + " " + componentName + ";");
-		output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private " + javaType + " _" + componentName + ";");
+		output.println("public " + javaType + " get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(" + javaType + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 	}
 		
 		
@@ -371,14 +371,14 @@ public class Generator {
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
-			output.println("private java.util.ArrayList<" + javaType + ".Enum> " + componentName + ";");
-			output.println("public java.util.ArrayList<" + javaType + ".Enum> get" + uComponentName + "() { return " + componentName + "; }");
-			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + ".Enum> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+			output.println("private java.util.ArrayList<" + javaType + ".Enum> _" + componentName + ";");
+			output.println("public java.util.ArrayList<" + javaType + ".Enum> get" + uComponentName + "() { return _" + componentName + "; }");
+			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + ".Enum> _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 		}
 		else {
-			output.println("private java.util.ArrayList<" + javaType + "> " + componentName + ";");
-			output.println("public java.util.ArrayList<" + javaType + "> get" + uComponentName + "() { return " + componentName + "; }");
-			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+			output.println("private java.util.ArrayList<" + javaType + "> _" + componentName + ";");
+			output.println("public java.util.ArrayList<" + javaType + "> get" + uComponentName + "() { return _" + componentName + "; }");
+			output.println("public void set" + uComponentName + "(java.util.ArrayList<" + javaType + "> _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 		}
 	}
 	
@@ -388,9 +388,9 @@ public class Generator {
 		String uComponentName = Utils.uNormalize(componentName);
 		
 		// create accessors
-		output.println("private java.util.ArrayList<" + itemClassName + "> " + componentName + ";");
-		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private java.util.ArrayList<" + itemClassName + "> _" + componentName + ";");
+		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 
 		// inner class
 		output.println("static public class " + itemClassName);
@@ -409,9 +409,9 @@ public class Generator {
 		String uComponentName = Utils.uNormalize(componentName);
 		
 		// create accessors
-		output.println("private java.util.ArrayList<" + itemClassName + "> " + componentName + ";");
-		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return " + componentName + "; }");
-		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+		output.println("private java.util.ArrayList<" + itemClassName + "> _" + componentName + ";");
+		output.println("public java.util.ArrayList<" + itemClassName + ">  get" + uComponentName +"() { return _" + componentName + "; }");
+		output.println("public void set" + uComponentName + "(java.util.ArrayList<" + itemClassName + "> _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 
 		// inner class
 		output.println("static public class " + itemClassName);
@@ -432,17 +432,17 @@ public class Generator {
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
-			output.println("private " + javaType + ".Enum " + componentName + ";");
-			output.println("public " + javaType + ".Enum get" + uComponentName +"() { return this." + componentName + "; }");
-			output.println("public void set" + uComponentName + "(" + javaType + ".Enum " + componentName + ") { this." + componentName + " = " + componentName + ";}");			
+			output.println("private " + javaType + ".Enum _" + componentName + ";");
+			output.println("public " + javaType + ".Enum get" + uComponentName +"() { return this._" + componentName + "; }");
+			output.println("public void set" + uComponentName + "(" + javaType + ".Enum _" + componentName + ") { this._" + componentName + " =  _" + componentName + ";}");			
 		}
 		else {
-			output.println("private " + javaType + " " + componentName + ";");
-			output.println("public " + javaType + " get" + uComponentName +"() { return " + componentName + "; }");
-			output.println("public void set" + uComponentName + "(" + javaType + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
+			output.println("private " + javaType + " _" + componentName + ";");
+			output.println("public " + javaType + " get" + uComponentName +"() { return _" + componentName + "; }");
+			output.println("public void set" + uComponentName + "(" + javaType + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
 			if(Utils.isConstructed(typeReference.getBuiltinType())) {
-				output.println("public " + javaType + " set" + uComponentName + "() { if(this." + componentName + "==null) this." + componentName + "=new " + javaType + "();");
-				output.println("return this." + componentName + "; }");
+				output.println("public " + javaType + " set" + uComponentName + "() { if(this._" + componentName + "==null) this._" + componentName + "=new " + javaType + "();");
+				output.println("return this._" + componentName + "; }");
 			}
 		}
 	}
@@ -452,11 +452,11 @@ public class Generator {
 		String className = Utils.uNormalize(componentName);
 		
 		// create accessors
-		output.println("private " + className + " " + componentName + ";");
-		output.println("public " + className + " get" + className +"() { return " + componentName + "; }");
-		output.println("public void set" + className + "(" + className + " " + componentName + ") { this." + componentName + " = " + componentName + "; }");
-		output.println("public " + className + " set" + className + "() { if(this." + componentName + "==null) this." + componentName + "=new " + className + "();");
-		output.println("return this." + componentName + "; }");
+		output.println("private " + className + " _" + componentName + ";");
+		output.println("public " + className + " get" + className +"() { return _" + componentName + "; }");
+		output.println("public void set" + className + "(" + className + " _" + componentName + ") { this._" + componentName + " = _" + componentName + "; }");
+		output.println("public " + className + " set" + className + "() { if(this._" + componentName + "==null) this._" + componentName + "=new " + className + "();");
+		output.println("return this._" + componentName + "; }");
 
 		// inner class
 		/*

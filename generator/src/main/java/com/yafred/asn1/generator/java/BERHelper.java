@@ -1036,6 +1036,7 @@ public class BERHelper {
 			if(type.isTypeReference() || componentName.equals("value")) {
 				enumSuffix = ".Enum";
 			}
+			output.println("{");
 			output.println("int intValue=reader.readInteger(componentLength);");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("if(intValue ==" + namedNumber.getNumber() + "){");
@@ -1055,6 +1056,7 @@ public class BERHelper {
 				}
 				output.println("// Extensible: this.getValue() can return null if unknown enum value is decoded.");
 			}
+			output.println("}");
 		}
 		else if(type.isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");		
