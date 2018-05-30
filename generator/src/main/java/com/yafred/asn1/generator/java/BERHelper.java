@@ -25,7 +25,7 @@ public class BERHelper {
 	final static private String BER_WRITER = "com.yafred.asn1.runtime.BERWriter";
 
 	
-	public BERHelper(Generator generator) {
+	BERHelper(Generator generator) {
 		this.generator = generator;
 	}
 	
@@ -485,7 +485,7 @@ public class BERHelper {
 	}
 	
 	
-	void processSequenceTypeAssignment(SequenceType sequenceType, String className) throws Exception {
+	private void processSequenceTypeAssignment(SequenceType sequenceType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
 		Utils.addAllIfNotNull(componentList, sequenceType.getRootComponentList());
 		Utils.addAllIfNotNull(componentList, sequenceType.getExtensionComponentList());
@@ -598,7 +598,7 @@ public class BERHelper {
 	}
 
 	
-	void processSetTypeAssignment(SetType setType, String className) throws Exception {
+	private void processSetTypeAssignment(SetType setType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
 		Utils.addAllIfNotNull(componentList, setType.getRootComponentList());
 		Utils.addAllIfNotNull(componentList, setType.getExtensionComponentList());
@@ -699,7 +699,7 @@ public class BERHelper {
 	}
 
 	
-	void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
+	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
@@ -771,7 +771,7 @@ public class BERHelper {
 	}
 	
 	
-	void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
+	private void processChoiceTypeAssignment(ChoiceType choiceType, String className) throws Exception {
 		ArrayList<Component> componentList = new ArrayList<Component>();
 		Utils.addAllIfNotNull(componentList, choiceType.getRootAlternativeList());
 		Utils.addAllIfNotNull(componentList, choiceType.getAdditionalAlternativeList());
@@ -850,7 +850,7 @@ public class BERHelper {
 	}
 	
 	
-	void switchEncodeComponent(Type type, String componentName, String componentClassName) throws Exception {
+	private void switchEncodeComponent(Type type, String componentName, String componentClassName) throws Exception {
 		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
@@ -940,7 +940,7 @@ public class BERHelper {
 	}
 	
 	
-	void switchEncodeListElement(Type elementType, String elementClassName, String componentName) throws Exception {
+	private void switchEncodeListElement(Type elementType, String elementClassName, String componentName) throws Exception {
 		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 
 		if(elementType.isRestrictedCharacterStringType()) {
@@ -996,7 +996,7 @@ public class BERHelper {
 	}
 		
 	
-	void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
+	private void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
 		
 		Type builtinType = type;
 		if(type.isTypeReference()) {
@@ -1118,7 +1118,7 @@ public class BERHelper {
 	}
 	
 	
-	void switchDecodeListElement(Type elementType, String elementClassName, String componentName, String javaType) throws Exception {
+	private void switchDecodeListElement(Type elementType, String elementClassName, String componentName, String javaType) throws Exception {
 		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
 
 		if(elementType.isRestrictedCharacterStringType()) {

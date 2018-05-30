@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.EnumeratedType;
 import com.yafred.asn1.model.IntegerType;
@@ -21,8 +20,6 @@ import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.SequenceType;
-import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
@@ -152,35 +149,14 @@ public class Generator {
 		else if (type.isEnumeratedType()) {
 			processEnumeratedType((EnumeratedType)type, "value", "Enum", false);
 		}		
-		else if (type.isNullType()) {
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType() || type.isRestrictedCharacterStringType()) {
 			processBasicType(type, "value", false);	
 		}
-		else  if (type.isBooleanType()) {
-			processBasicType(type, "value", false);	
-		}
-		else  if (type.isOctetStringType()) {
-			processBasicType(type, "value", false);	
-		}	
-		else  if (type.isObjectIdentifierType()) {
-			processBasicType(type, "value", false);	
-		}	
-		else  if (type.isRelativeOIDType()) {
-			processBasicType(type, "value", false);	
-		}	
-		else  if (type.isRestrictedCharacterStringType()) {
-			processBasicType(type, "value", false);	
-		}	
-		else if (type.isSequenceType()) {
-			processTypeWithComponentsAssignment((SequenceType)type, className);
-		}
-		else if (type.isSetType()) {
-			processTypeWithComponentsAssignment((SetType)type, className);
+		else if (type.isTypeWithComponents()) {
+			processTypeWithComponentsAssignment((TypeWithComponents)type, className);
 		}
 		else if (type.isListOfType()) {
 			processListOfTypeAssignment((ListOfType)type, className);
-		}
-		else if (type.isChoiceType()) {
-			processTypeWithComponentsAssignment((ChoiceType)type, className);
 		}
 		else {
 			throw new Exception("Generator.switchProcessTypeAssignment: Code generation not supported for Type " + type.getName());
@@ -300,17 +276,14 @@ public class Generator {
 		if(type.isIntegerType()) {
 			processIntegerType((IntegerType)listOfType.getElement().getType(), "value", true, false);
 		}
-		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
-			processBasicType(type, "value", true);		
-		}
 		else if(type.isBitStringType()) {
 			processBitStringType((BitStringType)type, "value", true, false);
 		}
 		else if(type.isEnumeratedType()) {
 			processEnumeratedType((EnumeratedType)type, "value", "Enum", true);
 		}
-		else if(type.isTypeReference()) {
-			processTypeReferenceListElement((TypeReference)type, "value");
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
+			processBasicType(type, "value", true);		
 		}
 		else if(type.isTypeWithComponents()) {
 			String elementName = "item";
@@ -326,6 +299,9 @@ public class Generator {
 			}
 			processListOfTypeListElement((ListOfType)type, "value", elementName);			
 		}
+		else if(type.isTypeReference()) {
+			processTypeReferenceListElement((TypeReference)type, "value");
+		}
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
@@ -339,24 +315,24 @@ public class Generator {
 		if (type.isIntegerType()) {
 			processIntegerType((IntegerType)type, componentName, false, true);
 		} 
-		else if (type.isEnumeratedType()) {
-			processEnumeratedType((EnumeratedType)type, componentName, uComponentName, false);
-		}
 		else if (type.isBitStringType()) {
 			processBitStringType((BitStringType)type, componentName, false, true);
+		}
+		else if (type.isEnumeratedType()) {
+			processEnumeratedType((EnumeratedType)type, componentName, uComponentName, false);
 		}
 		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			processBasicType(type, componentName, false);
 		}
-		else if (type.isTypeReference()) {
-			processTypeReferenceNamedType((TypeReference)type, componentName, uComponentName);
-		}	
 		else if (type.isTypeWithComponents()) {
 			processTypeWithComponentsNamedType((TypeWithComponents)type, componentName);
 		}		
 		else if (type.isListOfType()) {
 			processListOfTypeNamedType((ListOfType)type, componentName);
 		}		
+		else if (type.isTypeReference()) {
+			processTypeReferenceNamedType((TypeReference)type, componentName, uComponentName);
+		}	
 		else 
 			throw new Exception("Generator.switchProcessNamedType: Code generation not supported for component '" + componentName + "' of Type " + type.getName());
 	}
@@ -485,18 +461,15 @@ public class Generator {
 		if(type.isIntegerType()) {
 			processIntegerType((IntegerType)listOfType.getElement().getType(), componentName, true, false);
 		}
-		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
-			processBasicType(type, componentName, true);		
-		}
 		else if(type.isBitStringType()) {
 			processBitStringType((BitStringType)type, componentName, true, false);
 		}
 		else if(type.isEnumeratedType()) {
 			processEnumeratedType((EnumeratedType)type, componentName, "Enum", true);
 		}
-		else  if (type.isTypeReference()) {
-			processTypeReferenceListElement((TypeReference)type, componentName);
-		}	
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
+			processBasicType(type, componentName, true);		
+		}
 		else if(type.isTypeWithComponents()) {
 			String elementName = "item";
 			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
@@ -511,6 +484,9 @@ public class Generator {
 			}
 			processListOfTypeListElement((ListOfType)type, componentName, elementName);			
 		}
+		else  if (type.isTypeReference()) {
+			processTypeReferenceListElement((TypeReference)type, componentName);
+		}	
 		else {
 			throw new Exception("Generator.processListOfTypeNamedType: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
