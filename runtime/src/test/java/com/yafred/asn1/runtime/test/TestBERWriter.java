@@ -93,6 +93,25 @@ public class TestBERWriter  {
 		assertEquals("03 00 20 08", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
 	
+	@Test
+	public void test_length_short() {
+		
+		BERWriter writer = new BERWriter();	
+		
+		writer.writeLength(100); // short form: 0 to 127
+		
+		assertEquals("64", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+	
+	@Test
+	public void test_length_long() {
+		
+		BERWriter writer = new BERWriter();	
+		
+		writer.writeLength(201); // long form: > 127
+		
+		assertEquals("81 c9", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
 	
 	@Test
 	public void test_increase() {
