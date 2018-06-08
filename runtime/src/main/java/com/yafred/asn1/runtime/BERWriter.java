@@ -184,6 +184,9 @@ public class BERWriter {
         return writeOctetString(bytes);
     }
 
+    /**
+ 	 * a 32bit int provides for a maximum length of 2147483647 (> 2G)
+     */
     public int writeLength(int value) {
         if (value < 0) {
             throw new RuntimeException("negative length");
