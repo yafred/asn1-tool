@@ -115,6 +115,10 @@ public class BERWriter {
         return nBytes;
     }
 
+    /*
+     * BitSet is not the best way to hold a bitstring
+     * We have to scan all the bits of the BitSet
+     */
     public int writeBitString(BitSet value) {
         // find last true bit
         int significantBitNumber = value.length();

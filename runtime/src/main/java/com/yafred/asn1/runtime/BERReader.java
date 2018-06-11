@@ -38,7 +38,6 @@ public class BERReader {
      */
     int lengthLength;
     int lengthValue;
-    boolean isIndefiniteFormLength;
 
     /**
      * Tag
@@ -199,14 +198,12 @@ public class BERReader {
     	
         lengthLength = 0; // length of length
         lengthValue = 0; // value of length
-        isIndefiniteFormLength = false;
 
         int aByte = readChar();
 
         if (aByte == 0x80) {
             lengthLength = 1;
             lengthValue = -1;
-            isIndefiniteFormLength = true;
         } else {
             if (aByte > 0x7f) { // long form
 
@@ -464,10 +461,6 @@ public class BERReader {
                 System.arraycopy(old, 0, traceBuffer, 0, old.length);
             }
         }
-    }
-
-    public boolean isIndefiniteFormLength() {
-        return isIndefiniteFormLength;
     }
 
     public int getLengthLength() {

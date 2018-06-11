@@ -57,8 +57,8 @@ public class TestBERReader  {
             e.printStackTrace();
         }
 
-        assertTrue("Length should be infinite form",
-            reader.isIndefiniteFormLength());
+        assertEquals(-1,
+            reader.getLengthValue());
         
         try {
         	reader.readTag();
@@ -83,8 +83,6 @@ public class TestBERReader  {
             e.printStackTrace();
         }
 
-        assertTrue("Length should NOT be infinite form",
-            !reader.isIndefiniteFormLength());
         assertEquals(reader.getLengthLength(), 1);
         assertEquals(reader.getLengthValue(), 15);
     }
@@ -101,8 +99,6 @@ public class TestBERReader  {
             e.printStackTrace();
         }
 
-        assertTrue("Length should NOT be indefinite form",
-            !reader.isIndefiniteFormLength());
         assertEquals(reader.getLengthLength(), 2);
         assertEquals(reader.getLengthValue(), 10);
     }
@@ -119,8 +115,6 @@ public class TestBERReader  {
             e.printStackTrace();
         }
 
-        assertTrue("Length should NOT be infinite form",
-            !reader.isIndefiniteFormLength());
         assertEquals(reader.getLengthLength(), 3);
         assertEquals(reader.getLengthValue(), 511);
     }
