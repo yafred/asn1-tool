@@ -91,11 +91,11 @@ public class BERWriter {
                 nBytes = 4;
             }
         } else {
-            if (intValue > 0xffffff80) {
+            if (intValue >= 0xffffff80) {
                 nBytes = 1;
-            } else if (intValue > 0xffff8000) {
+            } else if (intValue >= 0xffff8000) {
                 nBytes = 2;
-            } else if (intValue > 0xff800000) {
+            } else if (intValue >= 0xff800000) {
                 nBytes = 3;
             } else {
                 nBytes = 4;

@@ -598,4 +598,74 @@ public class TestBERReader  {
 		reader.readTag();
 		assertFalse(reader.lookAheadTag(new byte[][] { new byte[] { (byte) 0x02 }, new byte[] { (byte) 0x2f, (byte) 0x64 } }));
 	}
+	
+    @Test
+    public void test_integer1() {
+    	String hexaString = "80";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	Integer intValue = reader.readInteger(1);
+        	assertEquals(-128, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+    
+    @Test
+    public void test_integer2() {
+    	String hexaString = "7f";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	Integer intValue = reader.readInteger(1);
+        	assertEquals(127, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+    
+    @Test
+    public void test_integer3() {
+    	String hexaString = "e7";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	Integer intValue = reader.readInteger(1);
+        	assertEquals(-25, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+
+    @Test
+    public void test_integer4() {
+    	String hexaString = "01 7d 78 40";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	Integer intValue = reader.readInteger(4);
+        	assertEquals(25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+    
+    @Test
+    public void test_integer5() {
+    	String hexaString = "fe 82 87 c0";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	Integer intValue = reader.readInteger(4);
+        	assertEquals(-25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
 }

@@ -39,7 +39,8 @@ public class TestBERWriter  {
     public void test_byte() {
 		
 		BERWriter writer = new BERWriter();
-		writer.writeByte((byte)0xab);
+		int nBytes = writer.writeByte((byte)0xab);
+		assertEquals(1, nBytes);
 		
 		assertEquals("ab", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -48,7 +49,8 @@ public class TestBERWriter  {
     public void test_boolean() {
 		
 		BERWriter writer = new BERWriter();
-		writer.writeBoolean(Boolean.TRUE);
+		int nBytes = writer.writeBoolean(Boolean.TRUE);
+		assertEquals(1, nBytes);
 		
 		assertEquals("ff", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -57,7 +59,8 @@ public class TestBERWriter  {
     public void test_boolean2() {
 		
 		BERWriter writer = new BERWriter();
-		writer.writeBoolean(Boolean.FALSE);
+		int nBytes = writer.writeBoolean(Boolean.FALSE);
+		assertEquals(1, nBytes);
 		
 		assertEquals("00", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -66,7 +69,8 @@ public class TestBERWriter  {
     public void test_restricted_character_string() {
 		
 		BERWriter writer = new BERWriter();
-		writer.writeRestrictedCharacterString("Rome");
+		int nBytes = writer.writeRestrictedCharacterString("Rome");
+		assertEquals(4, nBytes);
 		
 		assertEquals("52 6f 6d 65", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -75,16 +79,38 @@ public class TestBERWriter  {
 	public void test_1b_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(10));
+		int nBytes = writer.writeInteger(Integer.valueOf(10));
+		assertEquals(1, nBytes);
 		
 		assertEquals("0a", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+	
+	@Test
+	public void test_1b_integer2() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(Integer.valueOf(127));
+		assertEquals(1, nBytes);
+		
+		assertEquals("7f", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+	
+	@Test
+	public void test_1b_integer3() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(Integer.valueOf(-128));
+		assertEquals(1, nBytes);
+		
+		assertEquals("80", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
 	
 	@Test
 	public void test_2b_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(500));
+		int nBytes = writer.writeInteger(Integer.valueOf(500));
+		assertEquals(2, nBytes);
 		
 		assertEquals("01 f4", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -93,7 +119,8 @@ public class TestBERWriter  {
 	public void test_3b_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(500000));
+		int nBytes = writer.writeInteger(Integer.valueOf(500000));
+		assertEquals(3, nBytes);
 		
 		assertEquals("07 a1 20", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -102,16 +129,38 @@ public class TestBERWriter  {
 	public void test_4b_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(80000000));
+		int nBytes = writer.writeInteger(Integer.valueOf(80000000));
+		assertEquals(4, nBytes);
 		
 		assertEquals("04 c4 b4 00", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+	
+	@Test
+	public void test_4b_integer2() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(Integer.valueOf(25000000));
+		assertEquals(4, nBytes);
+		
+		assertEquals("01 7d 78 40", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+	
+	@Test
+	public void test_4b_integer3() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(Integer.valueOf(-25000000));
+		assertEquals(4, nBytes);
+		
+		assertEquals("fe 82 87 c0", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
 	
 	@Test
 	public void test_1b_negative_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(-10));
+		int nBytes = writer.writeInteger(Integer.valueOf(-10));
+		assertEquals(1, nBytes);
 		
 		assertEquals("f6", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -120,7 +169,8 @@ public class TestBERWriter  {
 	public void test_2b_negative_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(-500));
+		int nBytes = writer.writeInteger(Integer.valueOf(-500));
+		assertEquals(2, nBytes);
 		
 		assertEquals("fe 0c", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -129,7 +179,8 @@ public class TestBERWriter  {
 	public void test_3b_negative_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(-500000));
+		int nBytes = writer.writeInteger(Integer.valueOf(-500000));
+		assertEquals(3, nBytes);
 		
 		assertEquals("f8 5e e0", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -138,7 +189,8 @@ public class TestBERWriter  {
 	public void test_4b_negative_integer() {
 		
 		BERWriter writer = new BERWriter();	
-		writer.writeInteger(Integer.valueOf(-80000000));
+		int nBytes = writer.writeInteger(Integer.valueOf(-80000000));
+		assertEquals(4, nBytes);
 		
 		assertEquals("fb 3b 4c 00", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -151,7 +203,8 @@ public class TestBERWriter  {
 		BitSet bitSet = new BitSet();
 		bitSet.set(10);
 		bitSet.set(20);
-		writer.writeBitString(bitSet);
+		int nBytes = writer.writeBitString(bitSet);
+		assertEquals(4, nBytes);
 		
 		assertEquals("03 00 20 08", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -161,7 +214,8 @@ public class TestBERWriter  {
 		
 		BERWriter writer = new BERWriter();	
 		
-		writer.writeLength(100); // short form: 0 to 127
+		int nBytes = writer.writeLength(100); // short form: 0 to 127
+		assertEquals(1, nBytes);
 		
 		assertEquals("64", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -171,7 +225,8 @@ public class TestBERWriter  {
 		
 		BERWriter writer = new BERWriter();	
 		
-		writer.writeLength(201); // long form: > 127
+		int nBytes = writer.writeLength(201); // long form: > 127
+		assertEquals(2, nBytes);
 		
 		assertEquals("81 c9", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -181,7 +236,8 @@ public class TestBERWriter  {
 		
 		BERWriter writer = new BERWriter();	
 		
-		writer.writeLength(500); // long form: > 127
+		int nBytes = writer.writeLength(500); // long form: > 127
+		assertEquals(3, nBytes);
 		
 		assertEquals("82 01 f4", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -191,7 +247,8 @@ public class TestBERWriter  {
 		
 		BERWriter writer = new BERWriter();	
 		
-		writer.writeLength(500000); // long form: > 127
+		int nBytes = writer.writeLength(500000); // long form: > 127
+		assertEquals(4, nBytes);
 		
 		assertEquals("83 07 a1 20", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
@@ -201,7 +258,8 @@ public class TestBERWriter  {
 		
 		BERWriter writer = new BERWriter();	
 		
-		writer.writeLength(80000000); // long form: > 127
+		int nBytes = writer.writeLength(80000000); // long form: > 127
+		assertEquals(5, nBytes);
 		
 		assertEquals("84 04 c4 b4 00", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
