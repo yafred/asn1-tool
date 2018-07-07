@@ -106,8 +106,11 @@ public class ParameterizedTest {
        	
        	assertEquals(0, asn1ModelValidator.getErrorList().size());
        	
-       	String outputPath = System.getProperty("buildDirectory") + File.separator + "generated-test-sources";
-       	
+       	// create output dir
+       	String outputPath = System.getProperty("buildDirectory") + File.separator + "generator-output" + File.separator + "java";
+       	File outputPathFile = new File(outputPath);
+       	outputPathFile.mkdirs();
+        	
        	// generate code
        	Generator generator = new Generator();
        	Options options = new Options();
