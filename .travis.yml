@@ -13,7 +13,9 @@ after_success:
   - git clone https://{$GH_TOKEN}@github.com/yafred/asn1-go-test.git
   - cp -r generator/target/generator-output/go/* asn1-go-test/
   - cd asn1-go-test
+  - ls
   - git add .
+  - git status
   - git commit -m "update generated files"
   - git push
 
