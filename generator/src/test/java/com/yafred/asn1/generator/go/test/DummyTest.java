@@ -20,7 +20,7 @@ public class DummyTest {
 		
 		fileWriter.println("package dummy\r\n" + 
 				"\r\n" + 
-				"// Hello returns hello\r\n" + 
+				"// Hello returns string hello\r\n" + 
 				"func Hello() string {\r\n" + 
 				"	return \"hello\"\r\n" + 
 				"}");
