@@ -10,7 +10,12 @@ after_success:
   - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies-without-google-java-format.jar asn1-tool.jar
   - mv runtime/target/runtime-1.0-SNAPSHOT.jar asn1-runtime.jar
   - mvn clean jacoco:prepare-agent test jacoco:report coveralls:report
-  
+  - git clone https://{$GH_TOKEN}@github.com/yafred/asn1-go-test.git
+  - cp -r generator/target/generator-output/go/* asn1-go-test/
+  - cd asn1-go-test
+  - git add .
+  - git commit -m "update generated files"
+  - git push
 
 deploy:
   provider: releases
