@@ -10,6 +10,7 @@ after_success:
   - mv tool/target/tool-1.0-SNAPSHOT-jar-with-dependencies-without-google-java-format.jar asn1-tool.jar
   - mv runtime/target/runtime-1.0-SNAPSHOT.jar asn1-runtime.jar
   - mvn clean jacoco:prepare-agent test jacoco:report coveralls:report
+  
 
 deploy:
   provider: releases
