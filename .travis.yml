@@ -12,18 +12,6 @@ after_success:
   - mv runtime/target/runtime-1.0-SNAPSHOT.jar asn1-runtime.jar
   - # Generate coverage report
   - mvn clean jacoco:prepare-agent test jacoco:report coveralls:report
-  - # Push generated Go code to trigger test
-  - git clone https://github.com/yafred/asn1-go-test.git
-  - cp -r generator/target/generator-output/go/* asn1-go-test/
-  - cd asn1-go-test
-  - git remote
-  - git config user.email ${EMAIL}
-  - git config user.name ${USER}
-  - git add .
-  - git status
-  - git commit -m "update generated files"
-  - git push https://{$GH_TOKEN}@github.com/yafred/asn1-go-test.git master > /dev/null 2>&1
-
 
 deploy:
   provider: releases
