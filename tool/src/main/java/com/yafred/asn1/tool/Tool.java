@@ -82,7 +82,7 @@ public class Tool {
 	    CommandLine line = parser.parse( options, args );
 
       	if(!line.hasOption("f")) {
-      		String version = "";
+      		String version = "No version (probably not built from a git checkout)";
 
 	       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
 	       			version = gitProperties.getProperty("git.tags");
