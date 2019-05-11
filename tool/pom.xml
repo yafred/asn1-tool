@@ -61,6 +61,7 @@
                         <always>false</always>
                         <dirty>-dirty</dirty>
                     </gitDescribe>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                 </configuration>
             </plugin>
             <plugin>
