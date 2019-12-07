@@ -51,7 +51,7 @@ public class BERHelper {
 	}
 	
 
-	void switchProcessTypeAssignment(Type type, String className, boolean isInnerType) throws Exception {
+	void processType(Type type, String className, boolean isInnerType) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		
         ArrayList<Tag> tagList = Utils.getTagChain(type);
@@ -120,7 +120,7 @@ public class BERHelper {
 			processChoiceTypeAssignment((ChoiceType)type, className);
 		}
 		else {
-			throw new Exception("BERHelp.switchProcessTypeAssignment: Code generation not supported for Type " + type.getName());
+			throw new Exception("BERHelp.processType: Code generation not supported for Type " + type.getName());
 		}
 	}
 	

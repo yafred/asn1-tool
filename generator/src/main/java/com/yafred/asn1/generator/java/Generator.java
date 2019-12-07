@@ -138,7 +138,7 @@ public class Generator {
 		}
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(typeAssignment.getType(), className, false);
+		berHelper.processType(typeAssignment.getType(), className, false);
 		
 		output.println("}");
 		output.close();
@@ -395,7 +395,7 @@ public class Generator {
 		switchProcessTypeAssignment(typeWithComponents, itemClassName);
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(typeWithComponents, itemClassName, true);
+		berHelper.processType(typeWithComponents, itemClassName, true);
 		
 		output.println("}");		
 	}
@@ -416,7 +416,7 @@ public class Generator {
 		switchProcessTypeAssignment(listOfType, itemClassName);
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(listOfType, itemClassName, true);
+		berHelper.processType(listOfType, itemClassName, true);
 		
 		output.println("}");		
 	}
@@ -471,7 +471,7 @@ public class Generator {
 		switchProcessTypeAssignment(type, className);
 
 		// add BER methods to the POJO
-		berHelper.switchProcessTypeAssignment(type, className, true);
+		berHelper.processType(type, className, true);
 		
 		output.println("}");
 	}
