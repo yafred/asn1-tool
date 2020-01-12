@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2019 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2020 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,10 @@
  ******************************************************************************/
 package com.yafred.asn1.runtime;
 
-import java.io.*;
-
-import java.util.*;
-
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.BitSet;
 
 public class BERReader {
     private static byte[] bitMask = new byte[] {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2019 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2020 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -525,7 +525,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -563,7 +563,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
@@ -639,7 +639,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -679,7 +679,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(setType.isAutomaticTaggingSelected()) {
@@ -724,7 +724,7 @@ public class BERHelper {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
-			elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
+			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
 		else if(Utils.isConstructed(listOfType.getElement().getType())) {
@@ -809,7 +809,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -836,7 +836,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.uNormalize(typeReference.getName());
+				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
@@ -875,7 +875,7 @@ public class BERHelper {
 		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
-			referencedClassName = Utils.uNormalize(((TypeReference) builtinType).getName());
+			referencedClassName = Utils.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
 			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		
@@ -925,7 +925,7 @@ public class BERHelper {
 			output.println("componentLength=writer.writeInteger(intValue);");			
 		}
 		else if(type.isTypeReference()) {
-			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer);");		
+			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer); /* TypeReference */");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println("componentLength=" + Utils.uNormalize(componentName) + ".write(" + componentGetter + ",writer);");		
@@ -1081,7 +1081,7 @@ public class BERHelper {
 		}
 		else if(type.isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");		
-			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
+			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength); /* TypeReference */");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");		

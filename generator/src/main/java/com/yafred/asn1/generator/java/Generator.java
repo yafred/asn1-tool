@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2019 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2020 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,10 +55,12 @@ public class Generator {
 	File packageDirectory;
 	PrintWriter output;
 	BERHelper berHelper;
+	ASNValueHelper asnValueHelper;
 	
 	
 	public Generator() {
 		berHelper = new BERHelper(this);
+		asnValueHelper = new ASNValueHelper(this);
 	}
 	
 	
@@ -128,7 +130,7 @@ public class Generator {
 		output.println("package " + options.getPackagePrefix() + packageName + ";");
 
 		if (typeAssignment.getType().isTypeReference()) {
-			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getName());
+			String parentClassName = Utils.normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
 			output.println("public class " + className + " extends " + parentClassName);
 			output.println("{");
 		} else {
@@ -137,9 +139,9 @@ public class Generator {
 			switchProcessTypeAssignment(typeAssignment.getType(), className);
 		}
 
-		// add BER methods to the POJO
-		berHelper.processType(typeAssignment.getType(), className, false);
-		
+		// add encoding and decoding methods to the POJO
+		this.addEncodingMethods(typeAssignment.getType(), className, false);
+
 		output.println("}");
 		output.close();
 		
@@ -362,7 +364,7 @@ public class Generator {
 	private void processTypeReferenceListElement(TypeReference typeReference, String componentName) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
 
-		String javaType = Utils.uNormalize(typeReference.getName());
+		String javaType = Utils.normalizeJavaType(typeReference, options.getPackagePrefix());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
 			javaType = Utils.mapToJava(typeReference.getBuiltinType());
 		}
@@ -394,8 +396,8 @@ public class Generator {
 		output.println("{");
 		switchProcessTypeAssignment(typeWithComponents, itemClassName);
 
-		// add BER methods to the POJO
-		berHelper.processType(typeWithComponents, itemClassName, true);
+		// add encoding and decoding methods to the POJO
+		this.addEncodingMethods(typeWithComponents, itemClassName, true);
 		
 		output.println("}");		
 	}
@@ -415,15 +417,15 @@ public class Generator {
 		output.println("{");
 		switchProcessTypeAssignment(listOfType, itemClassName);
 
-		// add BER methods to the POJO
-		berHelper.processType(listOfType, itemClassName, true);
+		// add encoding and decoding methods to the POJO
+		this.addEncodingMethods(listOfType, itemClassName, true);
 		
 		output.println("}");		
 	}
 	
 	
 	private void processTypeReferenceNamedType(TypeReference typeReference, String componentName, String uComponentName) throws Exception {
-		String javaType = Utils.uNormalize(typeReference.getName());
+		String javaType = Utils.normalizeJavaType(typeReference, options.getPackagePrefix());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
 			javaType = Utils.mapToJava(typeReference.getBuiltinType());
 		}
@@ -470,8 +472,8 @@ public class Generator {
 		output.println("{");
 		switchProcessTypeAssignment(type, className);
 
-		// add BER methods to the POJO
-		berHelper.processType(type, className, true);
+		// add encoding and decoding methods to the POJO
+		this.addEncodingMethods(type, className, true);
 		
 		output.println("}");
 	}
@@ -511,6 +513,14 @@ public class Generator {
 		else {
 			throw new Exception("Generator.processListOfTypeNamedType: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
+	}
+	
+	
+	private void addEncodingMethods(Type type, String className, boolean isInnerType) throws Exception {
+		// add BER methods to the POJO
+		berHelper.processType(type, className, isInnerType);
+		// add ASN value methods to the POJO
+		asnValueHelper.processType(type, className, isInnerType);		
 	}
 
 }

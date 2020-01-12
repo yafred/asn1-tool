@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2019 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2020 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,20 @@ public class Utils {
 		String retName = new String(temp);
 
 		return normalize(retName);
+	}
+	
+	/**
+	 * Adds package name to java type if from another ASN.1 module
+	 */
+	public static String normalizeJavaType(TypeReference typeReference, String packagePrefix) {
+		
+		String javaType = uNormalize(typeReference.getReferencedTypeName());
+		
+		if(typeReference.getReferencedModuleName() != null && !typeReference.getReferencedModuleName().equals("")) {
+			javaType = packagePrefix + normalizePackageName(typeReference.getReferencedModuleName().toLowerCase()) + "." + javaType;
+		}
+		
+		return javaType;
 	}
 	
 	public static String mapToJava(Type type) throws Exception {

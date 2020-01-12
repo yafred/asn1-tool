@@ -72,18 +72,37 @@ obj.setSeats(Integer.valueOf(250));
 obj.setCrewFormat(Flight.CrewFormat.EIGHT);
 ```
 
-### Use the BER encoders/decoders to serialize/deserialize your objects
+### Use the BER encoders/decoders to serialize/deserialize your objects (binary)
 
 ```
 // encode a Flight
 ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
-BERWriter writer = new BERWriter(bufferOut);
-Flight.writePdu(obj, writer);
+BERWriter berWriter = new BERWriter(bufferOut);
+Flight.writePdu(obj, berWriter);
 
 byte[] berEncoded = bufferOut.toByteArray(); 
 
 // decode a Flight
 ByteArrayInputStream input = new ByteArrayInputStream(berEncoded);
-BERReader reader = new BERReader(input);
-obj = Flight.readPdu(reader);
+BERReader berReader = new BERReader(input);
+Flight obj = Flight.readPdu(berReader);
 ```
+
+### Use the ASN decoders to deserialize your objects (text)
+
+```
+// encode a Flight (Not implemented yet)
+
+// decode a Flight
+String asnValue = "{" + 
+		"  origin \"Rome\"," + 
+		"  destination \"London\"," + 
+		"  seats ideal," + 
+		"  crew-format eight" + 
+		"}";
+
+InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
+ASNValueReader asnValueReader = new ASNValueReader(inputStream);
+Flight obj = Flight.readPdu(asnValueReader);
+```
+

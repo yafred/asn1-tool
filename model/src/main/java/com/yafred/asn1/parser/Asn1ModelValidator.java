@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2019 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2020 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -330,6 +330,7 @@ public class Asn1ModelValidator {
 						for(String symbol : symbolsFromModule.getSymbolList()) {
 							if(symbol.equals(referencedTypeName)) {
 								referencedTypeAssignment = (TypeAssignment)assignmentMap.get(symbolsFromModule.getModuleReference().getName() + "." + referencedTypeName);
+								typeReference.setReferencedModuleName(symbolsFromModule.getModuleReference().getName());
 								break;
 							}
 						}
