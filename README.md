@@ -97,7 +97,7 @@ Flight obj = Flight.readPdu(berReader);
 String asnValue = "{" + 
 		"  origin \"Rome\"," + 
 		"  destination \"London\"," + 
-		"  seats ideal," + 
+		"  seats 250," + 
 		"  crew-format eight" + 
 		"}";
 
