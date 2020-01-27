@@ -12,7 +12,7 @@ after_success:
   - # Prepare files for deploy stage
   - mv tool/target/tool-1.0-SNAPSHOT-compiler-with-beautifier.jar asn1-compiler-with-google-java-format.jar
   - mv tool/target/tool-1.0-SNAPSHOT-compiler-without-beautifier.jar asn1-compiler.jar
-  - mv runtime/target/tool-1.0-SNAPSHOT-converter.jar asn1-converter.jar
+  - mv tool/target/tool-1.0-SNAPSHOT-converter.jar asn1-converter.jar
   - mv runtime/target/runtime-1.0-SNAPSHOT.jar asn1-runtime.jar
   - # Generate coverage report
   - mvn clean jacoco:prepare-agent test jacoco:report coveralls:report
