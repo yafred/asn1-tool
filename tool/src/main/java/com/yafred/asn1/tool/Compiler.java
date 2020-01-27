@@ -42,18 +42,18 @@ import com.yafred.asn1.parser.Asn1ModelValidator;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 
-public class Tool {
+public class Compiler {
 	private Specification model;
 	
 	public static void main(String[] args) throws Exception {
-		new Tool().process(args);
+		new Compiler().process(args);
 	}
 	
 	
 	void process(String[] args) throws Exception {
 		Properties gitProperties = new Properties();
 		try {
-			gitProperties.load(Tool.class.getClassLoader().getResourceAsStream("com/yafred/asn1/tool/git.properties"));
+			gitProperties.load(Compiler.class.getClassLoader().getResourceAsStream("com/yafred/asn1/tool/git.properties"));
 		}
 		catch(Exception e) {
 		}
@@ -81,7 +81,7 @@ public class Tool {
 	    // parse the command line arguments
 	    CommandLine line = parser.parse( options, args );
 
-      	if(!line.hasOption("f")) {
+      	if(line.getOptions().length == 0) {
       		String version = "No version (probably not built from a git checkout)";
 
 	       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
@@ -95,7 +95,7 @@ public class Tool {
 		    String header = "";
 	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
 	    	HelpFormatter formatter = new HelpFormatter();
-	    	formatter.printHelp( "java -jar asn1-tool.jar", header, options, footer, true );
+	    	formatter.printHelp( "java -jar asn1-compiler.jar", header, options, footer, true );
 	    	System.exit(0);
 	    }
 	    

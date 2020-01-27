@@ -25,11 +25,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_001.ColorType;
 import g_001.MyInteger;
@@ -38,6 +41,7 @@ public class TestGeneratedCode_001 {
 
 	@Test
 	public void test_1() throws Exception {
+		// Following code should be generic in a TestHelper
 		MyInteger pdu = new MyInteger();
 		pdu.setValue(Integer.valueOf(10));
 
@@ -47,7 +51,13 @@ public class TestGeneratedCode_001 {
 
 		MyInteger decodedPdu = MyInteger.readPdu(asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyInteger.writePdu(decodedPdu, asnValueWriter);
+		
+		// assertEquals(asnValue, stringWriter.toString());  // needs some additional code
 	}
 	
 	@Test

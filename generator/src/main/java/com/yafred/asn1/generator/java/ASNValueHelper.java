@@ -68,7 +68,7 @@ public class ASNValueHelper {
 			// writePdu method
 			output.println("public static void writePdu(" + className + " pdu, "
 					+ ASN_VALUE_WRITER + " writer) throws Exception {");
-			output.println("throw new Exception(\"Sorry, not implemented yet \");");
+			output.println("write(pdu, writer);");
 			output.println("}");
         }
         
@@ -88,7 +88,6 @@ public class ASNValueHelper {
 			output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
 			switchEncodeComponent(type, "value", className);
-			output.println("throw new Exception(\"Sorry, not implemented yet \");");
 			output.println("}");
 
 		}

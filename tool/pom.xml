@@ -70,16 +70,16 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>full-assembly</id>
+                        <id>compiler-with-beautifier</id>
 				        <configuration>
 				            <archive>
 				                <manifest>
-				                    <mainClass>com.yafred.asn1.tool.Tool</mainClass>
+				                    <mainClass>com.yafred.asn1.tool.Compiler</mainClass>
 				                </manifest>
 				            </archive>
-				            <descriptorRefs>
-				                <descriptorRef>jar-with-dependencies</descriptorRef>
-				            </descriptorRefs>
+				            <descriptors>
+				                <descriptor>resources/compiler-with-beautifier.xml</descriptor>
+				            </descriptors>
 				        </configuration>
                         <phase>package</phase>
                         <goals>
@@ -87,15 +87,32 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>without-beautifier</id>
+                        <id>compiler-without-beautifier</id>
 				        <configuration>
 				            <archive>
 				                <manifest>
-				                    <mainClass>com.yafred.asn1.tool.Tool</mainClass>
+				                    <mainClass>com.yafred.asn1.tool.Compiler</mainClass>
 				                </manifest>
 				            </archive>
 				            <descriptors>
-				                <descriptor>resources/jar-with-dependencies-without-google-java-format.xml</descriptor>
+				                <descriptor>resources/compiler-without-beautifier.xml</descriptor>
+				            </descriptors>
+				        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>converter</id>
+				        <configuration>
+				            <archive>
+				                <manifest>
+				                    <mainClass>com.yafred.asn1.tool.Converter</mainClass>
+				                </manifest>
+				            </archive>
+				            <descriptors>
+				                <descriptor>resources/converter.xml</descriptor>
 				            </descriptors>
 				        </configuration>
                         <phase>package</phase>
@@ -128,7 +145,6 @@
 		    <groupId>com.yafred.asn1</groupId>
 		    <artifactId>runtime</artifactId>
 		    <version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
 		<dependency>
