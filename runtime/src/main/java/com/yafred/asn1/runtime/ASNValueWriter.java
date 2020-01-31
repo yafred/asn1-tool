@@ -115,7 +115,7 @@ public class ASNValueWriter {
     public void writeOctetString(byte[] value) {
         indentValue();
         writer.print("'" + bytesToString(value) + "'H");
-        writer.print("  -- \"" + new String(value) + "\"");
+        //writer.print("  -- \"" + new String(value) + "\"");
         writer.println();
     }
 

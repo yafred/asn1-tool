@@ -25,11 +25,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_002.MyBoolean;
 
@@ -44,10 +47,15 @@ public class TestGeneratedCode_002 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	MyBoolean decodedPdu = new MyBoolean();
-    	MyBoolean.read(decodedPdu, asnValueReader);
+    	MyBoolean decodedPdu = MyBoolean.readPdu(asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyBoolean.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 
 }

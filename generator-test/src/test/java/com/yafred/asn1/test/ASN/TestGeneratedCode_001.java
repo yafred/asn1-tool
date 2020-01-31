@@ -57,7 +57,7 @@ public class TestGeneratedCode_001 {
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 		MyInteger.writePdu(decodedPdu, asnValueWriter);
 		
-		// assertEquals(asnValue, stringWriter.toString());  // needs some additional code
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
@@ -69,10 +69,15 @@ public class TestGeneratedCode_001 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	ColorType decodedPdu = new ColorType();
-    	ColorType.read(decodedPdu, asnValueReader);
+    	ColorType decodedPdu = ColorType.readPdu(asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		ColorType.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
@@ -84,9 +89,14 @@ public class TestGeneratedCode_001 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	ColorType decodedPdu = new ColorType();
-    	ColorType.read(decodedPdu, asnValueReader);
+    	ColorType decodedPdu = ColorType.readPdu(asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		ColorType.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 }

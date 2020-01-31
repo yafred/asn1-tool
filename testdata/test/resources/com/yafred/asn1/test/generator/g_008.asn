@@ -11,4 +11,14 @@ Occupation  ::=  BIT STRING
               multi-pass (4)
           }
 
+Occupation2  ::=  BIT STRING
+         {
+              clerk      (0),
+              editor     (1),
+              artist     (2),
+              publisher  (3),
+              multi-pass (4)
+         }
+
+
 END

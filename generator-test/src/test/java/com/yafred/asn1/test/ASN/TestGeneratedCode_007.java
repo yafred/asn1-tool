@@ -25,11 +25,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_007.Fruit;
 import g_007.TrafficLight;
@@ -43,10 +46,15 @@ public class TestGeneratedCode_007 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	Fruit decodedPdu = new Fruit();
-    	Fruit.read(decodedPdu, asnValueReader);
+    	Fruit decodedPdu = Fruit.readPdu(asnValueReader);
 		
-		assertEquals(Fruit.Enum.APPLE, decodedPdu.getValue());		
+		assertEquals(Fruit.Enum.APPLE, decodedPdu.getValue());	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Fruit.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	

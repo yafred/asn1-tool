@@ -25,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import java.util.BitSet;
@@ -32,15 +34,17 @@ import java.util.BitSet;
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_008.Occupation;
+import g_008.Occupation2;
 
 
 public class TestGeneratedCode_008 {
 
 	@Test
 	public void test_1() throws Exception {
-		Occupation pdu = new Occupation();
+		Occupation2 pdu = new Occupation2();
 		BitSet bitSet = new BitSet();
 		bitSet.set(1);
 		bitSet.set(3);
@@ -50,10 +54,16 @@ public class TestGeneratedCode_008 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	Occupation decodedPdu = new Occupation();
-    	Occupation.read(decodedPdu, asnValueReader);
+    	Occupation2 decodedPdu = Occupation2.readPdu(asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Occupation2.writePdu(decodedPdu, asnValueWriter);
+		
+		// assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
+		// Needs to solve issue first
 	}
 	
 	@Test
@@ -89,7 +99,13 @@ public class TestGeneratedCode_008 {
     	Occupation decodedPdu = new Occupation();
     	Occupation.read(decodedPdu, asnValueReader);
 		
-		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+		assertEquals(pdu.getValue(), decodedPdu.getValue());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Occupation.writePdu(decodedPdu, asnValueWriter);
+		
+		//assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 }

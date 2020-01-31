@@ -133,7 +133,6 @@ public class ASNValueHelper {
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
-		output.println("throw new Exception(\"Sorry, not implemented yet \");");
 		output.println("}");
 
         // write decoding code
@@ -196,7 +195,6 @@ public class ASNValueHelper {
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
-		output.println("throw new Exception(\"Sorry, not implemented yet \");");
 		output.println("}");
 
         // write decoding code
@@ -256,7 +254,6 @@ public class ASNValueHelper {
 
 		output.println("}");
 		output.println("}");
-		output.println("throw new Exception(\"Sorry, not implemented yet \");");
 		output.println("}");
 		
         // write decoding code
@@ -311,7 +308,6 @@ public class ASNValueHelper {
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
-		output.println("throw new Exception(\"Sorry, not implemented yet \");");
 		output.println("}");
 
         // write decoding code
@@ -358,7 +354,23 @@ public class ASNValueHelper {
 			output.println("writer.writeRestrictedCharacterString(" +  componentGetter + ");");			
 		}
 		else if(builtinType.isIntegerType()) {
-			output.println("writer.writeInteger(" +  componentGetter + ");");			
+			IntegerType integerType = (IntegerType)builtinType;
+			if (integerType.getNamedNumberList() != null) {
+				output.println("{");
+				output.println("switch(" +  componentGetter + ") {");
+				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
+					output.println("case " + namedNumber.getNumber() + ":");
+					output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");
+					output.println("break;");
+				}
+				output.println("default:");
+				output.println("writer.writeInteger(" +  componentGetter + ");");
+				output.println("}");
+				output.println("}");
+			}
+			else {
+				output.println("writer.writeInteger(" +  componentGetter + ");");	
+			}		
 		}
 		else if(builtinType.isBooleanType()) {
 			output.println("writer.writeBoolean(" +  componentGetter + ");");			
@@ -376,26 +388,24 @@ public class ASNValueHelper {
 			output.println("writer.writeRelativeOID(" +  componentGetter + ");");			
 		}
 		else if(builtinType.isNullType()) {
-			// do nothing
+			output.println("writer.writeNull();");
 		}
 		else if(builtinType.isEnumeratedType()) {
-			output.println("int intValue=-1;");
 			output.println("switch(" +  componentGetter + ") {");
 			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
-				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");
 				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 					output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
-					output.println("intValue=" + namedNumber.getNumber() + ";");
+					output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");
 					output.println("break;");
 				}
 			}
 			output.println("}");
-			output.println("writer.writeInteger(intValue);");			
 		}
 		else if(type.isTypeReference()) {
 			output.println(referencedClassName + ".write(" + componentGetter + ",writer); /* TypeReference */");		

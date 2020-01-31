@@ -25,11 +25,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_006.Type1;
 import g_006.Type2;
@@ -46,10 +49,16 @@ public class TestGeneratedCode_006 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	Type1 decodedPdu = new Type1();
-    	Type1.read(decodedPdu, asnValueReader);
+    	Type1 decodedPdu = Type1.readPdu(asnValueReader);
 		
-		assertEquals("12:00:00", decodedPdu.getValue());		
+		assertEquals("12:00:00", decodedPdu.getValue());	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Type1.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
+
 	}
 
 	@Test

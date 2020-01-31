@@ -21,15 +21,19 @@
  ******************************************************************************/
 package com.yafred.asn1.test.ASN;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_003.MyNull;
 
@@ -42,10 +46,15 @@ public class TestGeneratedCode_003 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	MyNull decodedPdu = new MyNull();
-    	MyNull.read(decodedPdu, asnValueReader);
+    	MyNull decodedPdu = MyNull.readPdu(asnValueReader);
 		
 		assertNotNull(decodedPdu);		
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyNull.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 
 }
