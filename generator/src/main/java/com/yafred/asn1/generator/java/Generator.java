@@ -30,6 +30,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
@@ -105,16 +107,34 @@ public class Generator {
 			packageDirectory.mkdir();
 		}
 
+		Map<String, String> typeMap = new HashMap<String, String>();
+		
 		// process each type assignment
 		for (Assignment assignment : moduleDefinition.getAssignmentList()) {
 			if (assignment.isTypeAssignment()) {
-				processTypeAssignment((TypeAssignment) assignment);
+				processTypeAssignment((TypeAssignment) assignment, typeMap);
 			}
 		}
+		
+		// Create a map file (ASN.1 references > Java classes)
+		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputDir, "asn1-java.map")));
+		fileWriter.println("[");
+		boolean isFirst = true;
+		for (Map.Entry<String, String> entry : typeMap.entrySet()) {
+			if(isFirst) {
+				isFirst = false;
+			}
+			else {
+				fileWriter.println(",");
+			}
+		    fileWriter.println("{ \"" + entry.getKey() + "\" : \"" + entry.getValue() + "\" }");
+		}
+		fileWriter.println("]");
+		fileWriter.close();
 	}
 	
 	
-	private void processTypeAssignment(TypeAssignment typeAssignment) throws Exception {
+	private void processTypeAssignment(TypeAssignment typeAssignment, Map<String, String> typeMap) throws Exception {
 		// get the ASN.1 spec for this type assignment
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Asn1SpecificationWriter asn1SpecificationWriter = new Asn1SpecificationWriter(new PrintStream(baos, true, "UTF-8"));
@@ -128,6 +148,8 @@ public class Generator {
 		output = new PrintWriter(stringWriter);
 
 		output.println("package " + options.getPackagePrefix() + packageName + ";");
+		
+		typeMap.putIfAbsent(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
