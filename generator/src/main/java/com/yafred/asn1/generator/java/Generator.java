@@ -29,9 +29,12 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
@@ -107,7 +110,7 @@ public class Generator {
 			packageDirectory.mkdir();
 		}
 
-		Map<String, String> typeMap = new HashMap<String, String>();
+		List<Map.Entry<String,String>> typeMap = new ArrayList<Map.Entry<String,String>>();
 		
 		// process each type assignment
 		for (Assignment assignment : moduleDefinition.getAssignmentList()) {
@@ -120,21 +123,21 @@ public class Generator {
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputDir, "asn1-java.map")));
 		fileWriter.println("[");
 		boolean isFirst = true;
-		for (Map.Entry<String, String> entry : typeMap.entrySet()) {
+		for (Entry<String, String> entry : typeMap) {
 			if(isFirst) {
 				isFirst = false;
 			}
 			else {
 				fileWriter.println(",");
 			}
-		    fileWriter.println("{ \"" + entry.getKey() + "\" : \"" + entry.getValue() + "\" }");
+		    fileWriter.println("{ \"asn1\": \"" + entry.getKey() + "\", \"java\": \"" + entry.getValue() + "\" }");
 		}
 		fileWriter.println("]");
 		fileWriter.close();
 	}
 	
 	
-	private void processTypeAssignment(TypeAssignment typeAssignment, Map<String, String> typeMap) throws Exception {
+	private void processTypeAssignment(TypeAssignment typeAssignment, List<Map.Entry<String,String>> typeMap) throws Exception {
 		// get the ASN.1 spec for this type assignment
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Asn1SpecificationWriter asn1SpecificationWriter = new Asn1SpecificationWriter(new PrintStream(baos, true, "UTF-8"));
@@ -149,7 +152,8 @@ public class Generator {
 
 		output.println("package " + options.getPackagePrefix() + packageName + ";");
 		
-		typeMap.putIfAbsent(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
+		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
+		typeMap.add(entry);
 
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
