@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -156,12 +157,17 @@ public class Converter {
 				System.exit(1);				
 			}
 			
+			
+    		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    	    String utf8 = StandardCharsets.UTF_8.name();
+    	    PrintStream printStream = new PrintStream(byteArrayOutputStream, true, utf8);
+
 			switch (line.getOptionValue(OPTION_OUTPUT_ENCODING)) {
 			case "ASN":
-				writeASN(pdu, System.out);
+				writeASN(pdu, printStream);
 				break;
 			case "BER":
-				writeBER(pdu, System.out);
+				writeBER(pdu, printStream);
 				break;
 			default:
 				System.err.println("Valid option -" + OPTION_OUTPUT_ENCODING + " is required. (--"
@@ -169,6 +175,8 @@ public class Converter {
 						+ options.getOption(OPTION_OUTPUT_ENCODING).getDescription() + ")");
 				System.exit(1);				
 			}	
+			
+			System.out.println(byteArrayOutputStream.toString(utf8));
     
 		} catch (Exception e) {
     		e.printStackTrace();

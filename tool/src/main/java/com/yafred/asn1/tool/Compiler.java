@@ -21,6 +21,9 @@
  ******************************************************************************/
 package com.yafred.asn1.tool;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.antlr.v4.runtime.CharStream;
@@ -101,7 +104,11 @@ public class Compiler {
 	    
     	validate(line.getOptionValue("f"));
     	if(line.hasOption("p")) {
-    		new Asn1SpecificationWriter(System.out).visit(model);
+    		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    	    String utf8 = StandardCharsets.UTF_8.name();
+    	    PrintStream printStream = new PrintStream(byteArrayOutputStream, true, utf8);
+    		new Asn1SpecificationWriter(printStream).visit(model);
+    		System.out.println(byteArrayOutputStream.toString(utf8));
     	}
     	
     	if(line.hasOption("jo")) {
