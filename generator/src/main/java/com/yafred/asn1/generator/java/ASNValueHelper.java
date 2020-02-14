@@ -118,7 +118,8 @@ public class ASNValueHelper {
 	    // write encoding code
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
-		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
+		output.println("writer.beginSequence();");
+		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
@@ -130,9 +131,11 @@ public class ASNValueHelper {
 				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
+			output.println("writer.writeComponent(\"" + namedType.getName() + "\");");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
+		output.println("writer.endSequence();");
 		output.println("}");
 
         // write decoding code

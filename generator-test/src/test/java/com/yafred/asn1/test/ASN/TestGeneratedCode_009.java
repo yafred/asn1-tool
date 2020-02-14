@@ -25,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import java.util.BitSet;
@@ -32,15 +34,14 @@ import java.util.BitSet;
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_009.Flight;
 import g_009.CrewFormat;
 import g_009.Flags;
 import g_009.Seats;
-import g_009.FlightModern;
 import g_009.FlightWithOptional;
 import g_009.FlightWithRefs;
-import g_009.FlightWithoutOptional;
 
 
 
@@ -70,6 +71,11 @@ public class TestGeneratedCode_009 {
 		assertEquals(Flight.Seats.IDEAL, decodedPdu.getSeats());
 		assertEquals(Flight.CrewFormat.EIGHT, decodedPdu.getCrewFormat());
 
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Flight.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
@@ -94,6 +100,11 @@ public class TestGeneratedCode_009 {
 		assertEquals(Flight.Seats.IDEAL, decodedPdu.getSeats());
 		assertEquals(Flight.CrewFormat.EIGHT, decodedPdu.getCrewFormat());
 
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Flight.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
@@ -184,6 +195,12 @@ public class TestGeneratedCode_009 {
 		assertEquals(pdu.getDestination(), decodedPdu.getDestination());
 		assertEquals(pdu.getSeats(), decodedPdu.getSeats());
 		assertEquals(pdu.getCrewFormat(), decodedPdu.getCrewFormat());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		FlightWithRefs.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
@@ -217,6 +234,6 @@ public class TestGeneratedCode_009 {
 		assertEquals(pdu.getOrigin(), decodedPdu.getOrigin());
 		assertEquals(pdu.getDestination(), decodedPdu.getDestination());
 		assertEquals(pdu.getSeats(), decodedPdu.getSeats());
-		assertEquals(pdu.getCrewFormat(), decodedPdu.getCrewFormat());
+		assertEquals(pdu.getCrewFormat(), decodedPdu.getCrewFormat());		
 	}
 }
