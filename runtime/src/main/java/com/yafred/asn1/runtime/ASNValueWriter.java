@@ -24,8 +24,14 @@ package com.yafred.asn1.runtime;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 public class ASNValueWriter {
+    static byte[] bitMask = new byte[] {
+            (byte) 0x80, (byte) 0x40, (byte) 0x20, (byte) 0x10, (byte) 0x08, (byte) 0x04,
+            (byte) 0x02, (byte) 0x01
+        };
+
     private PrintWriter writer;
     private ArrayList<Sequence> sequences = new ArrayList<Sequence>();
     private boolean isWaitingForChoiceValue = false;
@@ -124,12 +130,33 @@ public class ASNValueWriter {
         StringBuffer buffer = new StringBuffer();
         buffer.append("'");
 
-        for (int i = 0; i < size; i++) {
-            buffer.append(value.get(i) ? "1" : "0");
+        if(size < 16) { // if bitset is small (this could be configured)
+	        for (int i = 0; i < size; i++) {
+	            buffer.append(value.get(i) ? "1" : "0");
+	        }
+	
+	        buffer.append("'B");
         }
-
-        buffer.append("'B");
+        else {
+        	buffer.append(bytesToString(bitSetToBytes(value)));
+	        buffer.append("'H");       	
+        }
         writer.println(buffer.toString());
+    }
+    
+    public void writeBitString(List<String> bitList) {
+    	boolean isFirst = true;
+    	writer.print("{ ");
+    	for(String bit : bitList) {
+    		if(isFirst) {
+    			isFirst = false;
+    		}
+    		else {
+    			writer.print(", ");
+    		}
+    		writer.print(bit);
+    	}
+    	writer.println(" }");
     }
     
     public void writeObjectIdentifier(long[] value) {
@@ -214,6 +241,51 @@ public class ASNValueWriter {
         }
 
         return text;
+    }
+    
+    /*
+     * BitSet is not the best way to hold a bitstring
+     * We have to scan all the bits of the BitSet
+     */
+    private static byte[] bitSetToBytes(BitSet value) {
+        // find last true bit
+        int significantBitNumber = value.length();
+
+        // count number of bytes
+        int nBytes = 0;
+        int nPadding = 0; // bit string is left aligned 
+
+        if (significantBitNumber == 0) {
+            nBytes = 0;
+        } else {
+            nBytes = significantBitNumber / 8;
+            nPadding = significantBitNumber % 8;
+
+            if (nPadding != 0) {
+                nBytes += 1;
+            }
+        }
+
+        // convert bitset to byte[]
+        byte[] buffer = new byte[nBytes];
+
+        int currentIndex = 0;
+        int maskId = 0;
+
+        for (int i = 0; i < significantBitNumber; i++) {
+            if (value.get(i)) {
+                buffer[currentIndex] |= bitMask[maskId];
+            }
+
+            if (maskId == 7) {
+                currentIndex++;
+                maskId = 0;
+            } else {
+                maskId++;
+            }
+        }
+
+        return buffer;
     }
 
     private class Sequence {

@@ -37,44 +37,49 @@ import com.yafred.asn1.runtime.ASNValueReader;
 import com.yafred.asn1.runtime.ASNValueWriter;
 
 import g_008.Occupation;
-import g_008.Occupation2;
 
 
 public class TestGeneratedCode_008 {
 
 	@Test
 	public void test_1() throws Exception {
-		Occupation2 pdu = new Occupation2();
+		Occupation pdu = new Occupation();
 		BitSet bitSet = new BitSet();
 		bitSet.set(1);
 		bitSet.set(3);
+		bitSet.set(5);
 		pdu.setValue(bitSet);
 
-		String asnValue = "'0101'B";
+		String asnValue = "'010101'B";
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
-    	Occupation2 decodedPdu = Occupation2.readPdu(asnValueReader);
+    	Occupation decodedPdu = Occupation.readPdu(asnValueReader);
 		
 		assertEquals(pdu.getValue(), decodedPdu.getValue());
 		
 		StringWriter stringWriter = new StringWriter(100);
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
-		Occupation2.writePdu(decodedPdu, asnValueWriter);
+		Occupation.writePdu(decodedPdu, asnValueWriter);
 		
-		// assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
-		// Needs to solve issue first
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	@Test
 	public void test_2() throws Exception {
 		Occupation pdu = new Occupation();
 		BitSet bitSet = new BitSet();
-		bitSet.set(1);
-		bitSet.set(3);
-		pdu.setValue(bitSet);
+		bitSet.set(0);
+		bitSet.set(2);
+		bitSet.set(7);
+		bitSet.set(8);
+		bitSet.set(10);
+		bitSet.set(14);
+		bitSet.set(15);
+		bitSet.set(16); 
+		pdu.setValue(bitSet); // '1010 0001 1010 0011 1'B
 
-		String asnValue = "'5'H";
+		String asnValue = "'a1a380'H";
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
@@ -82,6 +87,12 @@ public class TestGeneratedCode_008 {
     	Occupation.read(decodedPdu, asnValueReader);
 		
 		assertEquals(pdu.getValue(), decodedPdu.getValue());		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Occupation.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  	
 	}
 	
 	@Test
@@ -92,7 +103,7 @@ public class TestGeneratedCode_008 {
 		bitSet.set(3);
 		pdu.setValue(bitSet);
 
-		String asnValue = "{ editor, publisher  }";
+		String asnValue = "{editor,publisher}";
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 
@@ -105,7 +116,7 @@ public class TestGeneratedCode_008 {
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 		Occupation.writePdu(decodedPdu, asnValueWriter);
 		
-		//assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
+		assertEquals(asnValue, stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 }

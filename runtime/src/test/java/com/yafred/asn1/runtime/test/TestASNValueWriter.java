@@ -21,6 +21,49 @@
  ******************************************************************************/
 package com.yafred.asn1.runtime.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.BitSet;
+
+import org.junit.Test;
+
+import com.yafred.asn1.runtime.ASNValueWriter;
+
 public class TestASNValueWriter  {
+	
+	@Test
+	public void test_bitset() throws Exception {
+		
+		BitSet value = new BitSet();
+		value.set(0);
+		value.set(2);
+		value.set(7);
+		value.set(8);
+		value.set(10);
+		value.set(14);
+		value.set(15);
+		value.set(16); 
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+
+		asnValueWriter.writeBitString(value);
+	}
+
+	@Test
+	public void test_bitset_namedBits() throws Exception {
+		
+		ArrayList<String> value = new ArrayList<String>();
+		value.add("one");
+		value.add("two");
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+
+		asnValueWriter.writeBitString(value);		
+	}
 
 }

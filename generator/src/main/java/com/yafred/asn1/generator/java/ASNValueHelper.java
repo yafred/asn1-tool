@@ -376,7 +376,29 @@ public class ASNValueHelper {
 			output.println("writer.writeBoolean(" +  componentGetter + ");");			
 		}	
 		else if(builtinType.isBitStringType()) {
-			output.println("writer.writeBitString(" +  componentGetter + ");");			
+			BitStringType bitStringType = (BitStringType)builtinType;
+			if(bitStringType.getNamedBitList() != null) {
+				output.println("java.util.ArrayList<String> bitList = new java.util.ArrayList<String>();");
+				output.println("int significantBitNumber=" +  componentGetter + ".length();");	
+				output.println("for (int i = 0; i < significantBitNumber; i++) {");	
+				output.println("if(" + componentGetter + ".get(i)) {");
+				output.println("switch(i) {");
+				for (NamedNumber namedNumber : bitStringType.getNamedBitList()) {
+					output.println("case " + namedNumber.getNumber() + ":");
+					output.println("bitList.add(\"" + namedNumber.getName() + "\");");
+					output.println("break;");
+				}
+				output.println("default: // not in the list, give up");
+				output.println("writer.writeBitString(" +  componentGetter + ");");	
+				output.println("return;");
+				output.println("}");
+				output.println("}");
+				output.println("}");
+				output.println("writer.writeBitString(bitList);");						
+			}
+			else {
+				output.println("writer.writeBitString(" +  componentGetter + ");");		
+			}
 		}
 		else if(builtinType.isOctetStringType()) {
 			output.println("writer.writeOctetString(" +  componentGetter + ");");			
