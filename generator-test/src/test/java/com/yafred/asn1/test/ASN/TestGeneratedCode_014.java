@@ -23,22 +23,20 @@ package com.yafred.asn1.test.ASN;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Arrays;
+import g_012.MyIntegerList;
 
 import org.junit.Test;
 
 import g_014.Audience;
-import g_014.Person;
 
 
 
@@ -62,13 +60,18 @@ public class TestGeneratedCode_014 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	Audience decodedPdu = new Audience();
-    	Audience.read(decodedPdu, asnValueReader);
+    	Audience decodedPdu = Audience.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertEquals("Doe", decodedPdu.getValue().get(0).getLastName());		
 		assertEquals("Joe", decodedPdu.getValue().get(1).getFirstName());		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Audience.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+","")); 
 	}
 	
 	@Test
@@ -78,11 +81,16 @@ public class TestGeneratedCode_014 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	Audience decodedPdu = new Audience();
-    	Audience.read(decodedPdu, asnValueReader);
+    	Audience decodedPdu = Audience.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(0, decodedPdu.getValue().size());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		Audience.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+","")); 		
 	}
 
 }

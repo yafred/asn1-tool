@@ -182,8 +182,8 @@ public class ASNValueHelper {
 		// Encoding section is equivalent to SEQUENCE encoding
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
-		output.println("int length=0;");
-		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
+		output.println("writer.beginSequence();");
+		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
@@ -195,9 +195,11 @@ public class ASNValueHelper {
 				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
+			output.println("writer.writeComponent(\"" + namedType.getName() + "\");");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
+		output.println("writer.endSequence();");
 		output.println("}");
 
         // write decoding code
@@ -494,7 +496,33 @@ public class ASNValueHelper {
 			output.println("writer.writeBoolean(" + componentGetter + ".get(i));");			
 		}
 		else if(elementType.isBitStringType()) {
-			output.println("writer.writeBitString(" + componentGetter + ".get(i));");			
+			BitStringType bitStringType = (BitStringType)elementType;
+			if(bitStringType.getNamedBitList() != null) {
+				output.println("java.util.ArrayList<String> bitList = new java.util.ArrayList<String>();");
+				output.println("int significantBitNumber=" +  componentGetter + ".get(i).length();");	
+				output.println("for (int k = 0; k < significantBitNumber; k++) {");	
+				output.println("if(" + componentGetter + ".get(i).get(k)) {");
+				output.println("switch(k) {");
+				for (NamedNumber namedNumber : bitStringType.getNamedBitList()) {
+					output.println("case " + namedNumber.getNumber() + ":");
+					output.println("bitList.add(\"" + namedNumber.getName() + "\");");
+					output.println("break;");
+				}
+				output.println("default: // not in the list, give up");
+				output.println("bitList = null; // give up");	
+				output.println("break;");
+				output.println("}");
+				output.println("}");
+				output.println("}");
+				output.println("if(bitList != null) {");
+				output.println("writer.writeBitString(bitList);");						
+				output.println("} else {");
+				output.println("writer.writeBitString(" +  componentGetter + ".get(i));");		
+				output.println("}");
+			}
+			else {
+				output.println("writer.writeBitString(" +  componentGetter + ".get(i));");		
+			}
 		}
 		else if(elementType.isOctetStringType()) {
 			output.println("writer.writeOctetString(" + componentGetter + ".get(i));");			
@@ -509,23 +537,21 @@ public class ASNValueHelper {
 			// do nothing
 		}
 		else if(elementType.isEnumeratedType()) {
-			output.println("int intValue=-1;");
 			output.println("switch(" + componentGetter + ".get(i)) {");
 			EnumeratedType enumeratedType = (EnumeratedType)elementType;
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {
 				output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
-				output.println("intValue=" + namedNumber.getNumber() + ";");
+				output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");
 				output.println("break;");
 			}
 			if(enumeratedType.getAdditionalEnumeration() != null) {
 				for(NamedNumber namedNumber : enumeratedType.getAdditionalEnumeration()) {
 					output.println("case " + Utils.normalizeConstant(namedNumber.getName()) + ":");
-					output.println("intValue=" + namedNumber.getNumber() + ";");
+					output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");
 					output.println("break;");
 				}
 			}
 			output.println("}");
-			output.println("writer.writeInteger(intValue);");			
 		}
 		else if(Utils.isConstructed(elementType)) {
 			output.println(elementClassName + ".write(" + componentGetter + ".get(i),writer);");						

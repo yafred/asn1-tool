@@ -27,19 +27,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
-import java.util.ArrayList;
-import java.util.BitSet;
+import g_015.MyEnumeratedList;
+
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import g_016.ACEI;
-import g_016.GpsInfo;
-import g_016.MessageFields;
 
 
 
@@ -66,6 +67,25 @@ public class TestGeneratedCode_016 {
 				"  siteInfo '0C0D'H,\r\n" + 
 				"  nlementID 12444\r\n" + 
 				"}";
+		
+		String expectedAsnValue = "{\r\n" + 
+				"  message \r\n" + 
+				"  {\r\n" + 
+				"    messageSequence 1,\r\n" + 
+				"    bsId 1234,\r\n" + 
+				"    neID 5555,\r\n" + 
+				"    nelementID 6666\r\n" + 
+				"  },\r\n" + 
+				"  neRegNumber '0a0b'H,\r\n" + 
+				"  gpsInfo \r\n" + 
+				"  {\r\n" + 
+				"    gpsLat -100,\r\n" + 
+				"    gpsLong 190,\r\n" + 
+				"    gpsAlt 200\r\n" + 
+				"  },\r\n" + 
+				"  siteInfo '0c0d'H,\r\n" + 
+				"  nlementID 12444\r\n" + 
+				"}";
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
@@ -76,6 +96,12 @@ public class TestGeneratedCode_016 {
 		assertNotNull(decodedPdu.getMessage().getMessageSequence());
 		assertEquals(Integer.valueOf(1), decodedPdu.getMessage().getMessageSequence());
 		assertTrue(Arrays.equals(new byte[] { 0x0a, 0x0b }, decodedPdu.getNeRegNumber()));
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		ACEI.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
@@ -98,6 +124,26 @@ public class TestGeneratedCode_016 {
 				"  siteInfo '0C0D'H," + 
 				"  nlementID 12444" + 
 				"}";
+		
+		String expectedAsnValue = "{\r\n" + 
+				"  message \r\n" + 
+				"  {\r\n" + 
+				"    messageSequence 1,\r\n" + 
+				"    bsId 1234,\r\n" + 
+				"    neID 5555,\r\n" + 
+				"    nelementID 6666\r\n" + 
+				"  },\r\n" + 
+				"  neRegNumber '0a0b'H,\r\n" + 
+				"  gpsInfo \r\n" + 
+				"  {\r\n" + 
+				"    gpsLat -100,\r\n" + 
+				"    gpsLong 190,\r\n" + 
+				"    gpsAlt 200\r\n" + 
+				"  },\r\n" + 
+				"  siteInfo '0c0d'H,\r\n" + 
+				"  nlementID 12444\r\n" + 
+				"}";
+
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
@@ -108,6 +154,12 @@ public class TestGeneratedCode_016 {
 		assertNotNull(decodedPdu.getMessage().getMessageSequence());
 		assertEquals(Integer.valueOf(1), decodedPdu.getMessage().getMessageSequence());
 		assertTrue(Arrays.equals(new byte[] { 0x0a, 0x0b }, decodedPdu.getNeRegNumber()));
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		ACEI.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
@@ -136,6 +188,11 @@ public class TestGeneratedCode_016 {
 		assertEquals(Integer.valueOf(6), decodedPdu.getMessage().getMessageSequence());
 		assertTrue(Arrays.equals(new byte[] { 0x65 }, decodedPdu.getSiteInfo()));
 
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		ACEI.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 
 }

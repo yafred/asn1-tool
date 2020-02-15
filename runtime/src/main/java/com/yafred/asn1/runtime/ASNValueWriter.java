@@ -126,6 +126,8 @@ public class ASNValueWriter {
     }
 
     public void writeBitString(BitSet value) {
+    	indentValue();
+    	
         int size = value.length();
         StringBuffer buffer = new StringBuffer();
         buffer.append("'");
@@ -145,6 +147,8 @@ public class ASNValueWriter {
     }
     
     public void writeBitString(List<String> bitList) {
+    	indentValue();
+    	
     	boolean isFirst = true;
     	writer.print("{ ");
     	for(String bit : bitList) {

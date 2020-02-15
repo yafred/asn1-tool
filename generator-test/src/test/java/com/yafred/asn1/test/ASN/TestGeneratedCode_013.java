@@ -27,11 +27,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Arrays;
 
@@ -40,12 +42,9 @@ import org.junit.Test;
 import g_013.MyEnumeratedList;
 import g_013.MyEnumeratedList2;
 import g_013.MyEnumeration;
-import g_013.MyEnumeration2;
-import g_013.MyBooleanList;
 import g_013.MyBitstring;
 import g_013.MyBitstringList;
 import g_013.MyOctetStringList;
-import g_013.MyInteger;
 import g_013.MyIntegerList;
 import g_013.MyStringList;
 
@@ -63,14 +62,19 @@ public class TestGeneratedCode_013 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyIntegerList decodedPdu = new MyIntegerList();
-    	MyIntegerList.read(decodedPdu, asnValueReader);
+    	MyIntegerList decodedPdu = MyIntegerList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(3, decodedPdu.getValue().size());
 		assertEquals(Integer.valueOf(1), decodedPdu.getValue().get(0));		
 		assertEquals(Integer.valueOf(10), decodedPdu.getValue().get(1));		
-		assertEquals(Integer.valueOf(20), decodedPdu.getValue().get(2));		
+		assertEquals(Integer.valueOf(20), decodedPdu.getValue().get(2));
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyIntegerList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
@@ -83,32 +87,42 @@ public class TestGeneratedCode_013 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyStringList decodedPdu = new MyStringList();
-    	MyStringList.read(decodedPdu, asnValueReader);
+    	MyStringList decodedPdu = MyStringList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertEquals("one", decodedPdu.getValue().get(0));		
 		assertEquals("two", decodedPdu.getValue().get(1));		
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyStringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
 	public void test_3() throws Exception {
 		String asnValue = "{\r\n" + 
-				"  '0A0B'H,\r\n" + 
+				"  '0a0b'H,\r\n" + 
 				"  '0102'H\r\n" + 
 				"}";
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyOctetStringList decodedPdu = new MyOctetStringList();
-    	MyOctetStringList.read(decodedPdu, asnValueReader);
+    	MyOctetStringList decodedPdu = MyOctetStringList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(new byte[] { 0x0a, 0x0b }, decodedPdu.getValue().get(0)));		
 		assertTrue(Arrays.equals(new byte[] { 0x01, 0x02 }, decodedPdu.getValue().get(1)));		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyOctetStringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
@@ -116,25 +130,32 @@ public class TestGeneratedCode_013 {
 		BitSet item1 = new BitSet();
 		item1.set(MyBitstring.ARTIST);
 		item1.set(MyBitstring.CLERK);
+		item1.set(4);
 		BitSet item2 = new BitSet();
 		item2.set(MyBitstring.EDITOR);
 		item2.set(MyBitstring.PUBLISHER);
+		item2.set(4);
 
 		String asnValue = "{\r\n" + 
-				"  '101'B,\r\n" + 
-				"  '0101'B \r\n" + 
+				"  '10101'B,\r\n" + 
+				"  '01011'B \r\n" + 
 				"}";
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyBitstringList decodedPdu = new MyBitstringList();
-    	MyBitstringList.read(decodedPdu, asnValueReader);
+    	MyBitstringList decodedPdu = MyBitstringList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(item1.toByteArray(), decodedPdu.getValue().get(0).toByteArray()));		
 		assertTrue(Arrays.equals(item2.toByteArray(), decodedPdu.getValue().get(1).toByteArray()));		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyBitstringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}	
 
 	@Test
@@ -154,13 +175,18 @@ public class TestGeneratedCode_013 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyBitstringList decodedPdu = new MyBitstringList();
-    	MyBitstringList.read(decodedPdu, asnValueReader);
+    	MyBitstringList decodedPdu = MyBitstringList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(item1.toByteArray(), decodedPdu.getValue().get(0).toByteArray()));		
 		assertTrue(Arrays.equals(item2.toByteArray(), decodedPdu.getValue().get(1).toByteArray()));		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyBitstringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test
@@ -174,13 +200,18 @@ public class TestGeneratedCode_013 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyEnumeratedList decodedPdu = new MyEnumeratedList();
-    	MyEnumeratedList.read(decodedPdu, asnValueReader);
+    	MyEnumeratedList decodedPdu = MyEnumeratedList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertEquals(MyEnumeration.Enum.APPLE, decodedPdu.getValue().get(0));	
 		assertEquals(MyEnumeration.Enum.BANANA, decodedPdu.getValue().get(1));				
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyEnumeratedList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 
 	@Test

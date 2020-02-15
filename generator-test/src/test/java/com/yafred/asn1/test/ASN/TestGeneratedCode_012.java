@@ -74,7 +74,6 @@ public class TestGeneratedCode_012 {
 		MyIntegerList.writePdu(decodedPdu, asnValueWriter);
 		
 		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
-
 	}
 	
 	
@@ -95,13 +94,19 @@ public class TestGeneratedCode_012 {
 		assertEquals(2, decodedPdu.getValue().size());
 		assertEquals("one", decodedPdu.getValue().get(0));		
 		assertEquals("two", decodedPdu.getValue().get(1));		
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyStringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 	
 	@Test
 	public void test_3() throws Exception {
 		String asnValue = "{\r\n" + 
-				"  '0A0B'H,\r\n" + 
+				"  '0a0b'H,\r\n" + 
 				"  '0102'H\r\n" + 
 				"}";
 				
@@ -115,6 +120,12 @@ public class TestGeneratedCode_012 {
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(new byte[] { 0x0a, 0x0b }, decodedPdu.getValue().get(0)));		
 		assertTrue(Arrays.equals(new byte[] { 0x01, 0x02 }, decodedPdu.getValue().get(1)));		
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyOctetStringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 
 	
@@ -123,13 +134,15 @@ public class TestGeneratedCode_012 {
 		BitSet item1 = new BitSet();
 		item1.set(MyBitstringList.ARTIST);
 		item1.set(MyBitstringList.CLERK);
+		item1.set(4);
 		BitSet item2 = new BitSet();
 		item2.set(MyBitstringList.EDITOR);
 		item2.set(MyBitstringList.PUBLISHER);
+		item2.set(4);
 
 		String asnValue = "{\r\n" + 
-				"  '101'B,\r\n" + 
-				"  '0101'B \r\n" + 
+				"  '10101'B,\r\n" + 
+				"  '01011'B \r\n" + 
 				"}";
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
@@ -141,7 +154,13 @@ public class TestGeneratedCode_012 {
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(item1.toByteArray(), decodedPdu.getValue().get(0).toByteArray()));		
-		assertTrue(Arrays.equals(item2.toByteArray(), decodedPdu.getValue().get(1).toByteArray()));		
+		assertTrue(Arrays.equals(item2.toByteArray(), decodedPdu.getValue().get(1).toByteArray()));	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyBitstringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+","")); 
 	}	
 	
 	
@@ -169,6 +188,12 @@ public class TestGeneratedCode_012 {
 		assertEquals(2, decodedPdu.getValue().size());
 		assertTrue(Arrays.equals(item1.toByteArray(), decodedPdu.getValue().get(0).toByteArray()));		
 		assertTrue(Arrays.equals(item2.toByteArray(), decodedPdu.getValue().get(1).toByteArray()));		
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyBitstringList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+","")); 
 	}
 	
 	@Test
@@ -188,7 +213,13 @@ public class TestGeneratedCode_012 {
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(2, decodedPdu.getValue().size());
 		assertEquals(MyEnumeratedList.Enum.APPLE, decodedPdu.getValue().get(0));	
-		assertEquals(MyEnumeratedList.Enum.BANANA, decodedPdu.getValue().get(1));				
+		assertEquals(MyEnumeratedList.Enum.BANANA, decodedPdu.getValue().get(1));
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyEnumeratedList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+","")); 
 	}
 	
 	@Test
