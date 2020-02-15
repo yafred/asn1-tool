@@ -115,7 +115,7 @@ public class ParameterizedTest {
        	Generator generator = new Generator();
        	Options options = new Options();
        	options.setOutputPath(outputPath);
-       	options.setBeautify(true);
+       	options.setBeautify(false);
        	generator.setOptions(options);
        	generator.processSpecification(specification);	
        	

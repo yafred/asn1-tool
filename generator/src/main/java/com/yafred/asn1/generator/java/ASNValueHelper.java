@@ -250,13 +250,15 @@ public class ASNValueHelper {
 	    // write encoding code
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
+		output.println("writer.beginArray();");
 		output.println("if(instance.getValue() != null) {");
-		output.println("for(int i=instance.getValue().size()-1; i>=0; i--) {");
+		output.println("for(int i=0; i<instance.getValue().size(); i++) {");
 		
 		switchEncodeListElement(elementType, elementClassName, "value");
 
 		output.println("}");
 		output.println("}");
+		output.println("writer.endArray();");
 		output.println("}");
 		
         // write decoding code
@@ -296,7 +298,7 @@ public class ASNValueHelper {
 	    // write encoding code
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
-		for(int componentIndex = componentList.size()-1; componentIndex >= 0; componentIndex--) {
+		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
@@ -308,6 +310,7 @@ public class ASNValueHelper {
 				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
+			output.println("writer.writeSelection(\"" + namedType.getName() + "\");");
 			switchEncodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("}");
 		}
@@ -471,7 +474,21 @@ public class ASNValueHelper {
 			output.println("writer.writeRestrictedCharacterString(" + componentGetter + ".get(i));");			
 		}
 		else if(elementType.isIntegerType()) {
-			output.println("writer.writeInteger(" + componentGetter + ".get(i));");			
+			IntegerType integerType = (IntegerType)elementType;
+			if (integerType.getNamedNumberList() != null) {
+				output.println("switch(" + componentGetter + ".get(i)) {");
+				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
+					output.println("case " + namedNumber.getNumber() + ":");
+					output.println("writer.writeIdentifier(\"" +  namedNumber.getName() + "\");");		
+					output.println("break;");
+				}
+				output.println("default:");
+				output.println("writer.writeInteger(" + componentGetter + ".get(i));");			
+				output.println("}");
+			}
+			else {
+				output.println("writer.writeInteger(" + componentGetter + ".get(i));");			
+			}
 		}
 		else if(elementType.isBooleanType()) {
 			output.println("writer.writeBoolean(" + componentGetter + ".get(i));");			

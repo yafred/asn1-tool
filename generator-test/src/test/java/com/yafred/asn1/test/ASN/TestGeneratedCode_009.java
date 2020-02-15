@@ -63,8 +63,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	Flight decodedPdu = new Flight();
-    	Flight.read(decodedPdu, asnValueReader);
+    	Flight decodedPdu = Flight.readPdu(asnValueReader);
 
     	assertEquals("Rome", decodedPdu.getOrigin());
 		assertEquals("London", decodedPdu.getDestination());
@@ -92,8 +91,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	Flight decodedPdu = new Flight();
-    	Flight.read(decodedPdu, asnValueReader);
+    	Flight decodedPdu = Flight.readPdu(asnValueReader);
 
     	assertEquals("Rome", decodedPdu.getOrigin());
 		assertEquals("London", decodedPdu.getDestination());
@@ -140,8 +138,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	FlightWithOptional decodedPdu = new FlightWithOptional();
-    	FlightWithOptional.read(decodedPdu, asnValueReader);
+    	FlightWithOptional decodedPdu = FlightWithOptional.readPdu(asnValueReader);
 	}
 
 	@Test
@@ -188,8 +185,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	FlightWithRefs decodedPdu = new FlightWithRefs();
-    	FlightWithRefs.read(decodedPdu, asnValueReader);
+    	FlightWithRefs decodedPdu = FlightWithRefs.readPdu(asnValueReader);
     	
 		assertEquals(pdu.getOrigin(), decodedPdu.getOrigin());
 		assertEquals(pdu.getDestination(), decodedPdu.getDestination());
@@ -228,8 +224,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	FlightWithRefs decodedPdu = new FlightWithRefs();
-    	FlightWithRefs.read(decodedPdu, asnValueReader);
+    	FlightWithRefs decodedPdu = FlightWithRefs.readPdu(asnValueReader);
     	
 		assertEquals(pdu.getOrigin(), decodedPdu.getOrigin());
 		assertEquals(pdu.getDestination(), decodedPdu.getDestination());

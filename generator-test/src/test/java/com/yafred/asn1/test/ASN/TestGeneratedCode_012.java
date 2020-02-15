@@ -27,18 +27,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Arrays;
 
 import org.junit.Test;
 
 import g_012.MyBitstringList;
-import g_012.MyBooleanList;
 import g_012.MyEnumeratedList;
 import g_012.MyEnumeratedList2;
 import g_012.MyIntegerList;
@@ -60,14 +61,20 @@ public class TestGeneratedCode_012 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	MyIntegerList decodedPdu = new MyIntegerList();
-    	MyIntegerList.read(decodedPdu, asnValueReader);
+    	MyIntegerList decodedPdu = MyIntegerList.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getValue());
 		assertEquals(3, decodedPdu.getValue().size());
 		assertEquals(Integer.valueOf(1), decodedPdu.getValue().get(0));		
 		assertEquals(Integer.valueOf(10), decodedPdu.getValue().get(1));		
-		assertEquals(Integer.valueOf(20), decodedPdu.getValue().get(2));		
+		assertEquals(Integer.valueOf(20), decodedPdu.getValue().get(2));	
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		MyIntegerList.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
+
 	}
 	
 	

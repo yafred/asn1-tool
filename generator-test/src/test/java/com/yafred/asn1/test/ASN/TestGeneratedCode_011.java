@@ -26,17 +26,15 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-
-import java.util.BitSet;
 
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;
+import com.yafred.asn1.runtime.ASNValueWriter;
 
-import g_011.CardType;
-import g_011.CreditCard;
-import g_011.Crooked;
 import g_011.PaymentMethod;
 
 
@@ -51,11 +49,16 @@ public class TestGeneratedCode_011 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	PaymentMethod decodedPdu = new PaymentMethod();
-    	PaymentMethod.read(decodedPdu, asnValueReader);
+    	PaymentMethod decodedPdu = PaymentMethod.readPdu(asnValueReader);
 
 		assertNotNull(decodedPdu.getCheck());
 		assertEquals("012345678901234", decodedPdu.getCheck());
+		
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+		PaymentMethod.writePdu(decodedPdu, asnValueWriter);
+		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  
 	}
 	
 }
