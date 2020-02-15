@@ -3,6 +3,10 @@
 [![Build Status](https://travis-ci.org/yafred/asn1-tool.svg?branch=master)](https://travis-ci.org/yafred/asn1-tool)
 [![Coverage Status](https://coveralls.io/repos/github/yafred/asn1-tool/badge.svg?branch=master)](https://coveralls.io/github/yafred/asn1-tool?branch=master)
 
+## Quick start
+
+Use the web interface to validate and compile your specification, as well as converting data (ASN value to/from BER): it's [here](https://github.com/yafred/asn1-playground)
+
 ## Using the compiler
   
 The compiler generates Java classes and encoding/decoding method from an ASN.1 specification.  
