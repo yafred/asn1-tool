@@ -34,8 +34,6 @@ import java.nio.charset.StandardCharsets;
 import com.yafred.asn1.runtime.ASNValueReader;
 import com.yafred.asn1.runtime.ASNValueWriter;
 
-import g_015.MyEnumeratedList;
-
 import java.util.Arrays;
 
 import org.junit.Test;
