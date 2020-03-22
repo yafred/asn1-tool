@@ -457,11 +457,13 @@ public class ASNValueHelper {
 					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
 				}
 			}
+			output.println("writer.beginArray();");
 			output.println("if(" + componentGetter + " != null) {");
-			output.println("for(int i=" + componentGetter + ".size()-1; i>=0; i--) {");
+			output.println("for(int i=0;i<" + componentGetter + ".size(); i++) {");
 			switchEncodeListElement(elementType, elementClassName, componentName);
 			output.println("}");
 			output.println("}");
+			output.println("writer.endArray();");
 		}
 		else {
 			throw new Exception("ASNValueHelper.switchEncodeComponent: Code generation not supported for Type " + type.getName());
@@ -704,8 +706,12 @@ public class ASNValueHelper {
 			}
 			output.println(componentSetter + "new java.util.ArrayList<" + javaType + ">());");
 			
+			output.println("reader.readToken(); // read '{'");		
+			output.println("if(\"}\".equals(reader.lookAhead())) { // empty list");
+			output.println("reader.readToken(); return;}");
+			output.println("do {");
 			switchDecodeListElement(elementType, elementClassName, componentName, javaType);
-			
+			output.println("} while(\",\".equals(reader.readToken()));");
 		}
 		else {
 			throw new Exception("ASNValueHelp.switchDecodeComponent: Code generation not supported for Type " + type.getName());
