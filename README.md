@@ -120,7 +120,7 @@ BERReader berReader = new BERReader(input);
 Flight obj = Flight.readPdu(berReader);
 ```
 
-### Use the ASN decoders to deserialize your objects (text)
+### Use the ASN decoders to serialize/deserialize your objects (text)
 
 ```
 String asnValue = "{" + 
