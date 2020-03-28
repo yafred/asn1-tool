@@ -99,6 +99,23 @@ BERWriter berWriter = new BERWriter(bufferOut);
 Flight.writePdu(obj, berWriter);
 
 byte[] berEncoded = bufferOut.toByteArray(); 
+/*
+23 bytes: 30 15 80 04 52 6f 6d 65 81 06 4c 6f 6e 64 6f 6e 82 02 00 fa 83 01 01
+T: 30 (CONSTRUCTED_UNIVERSAL_16)
+L: 21
+ T: 80 (PRIMITIVE_CONTEXT_0)
+ L: 4
+ V: 52 6f 6d 65
+ T: 81 (PRIMITIVE_CONTEXT_1)
+ L: 6
+ V: 4c 6f 6e 64 6f 6e
+ T: 82 (PRIMITIVE_CONTEXT_2)
+ L: 2
+ V: 00 fa
+ T: 83 (PRIMITIVE_CONTEXT_3)
+ L: 1
+ V: 01
+*/
 
 // decode a Flight
 ByteArrayInputStream input = new ByteArrayInputStream(berEncoded);
@@ -109,9 +126,6 @@ Flight obj = Flight.readPdu(berReader);
 ### Use the ASN decoders to deserialize your objects (text)
 
 ```
-// encode a Flight (Not implemented yet)
-
-// decode a Flight
 String asnValue = "{" + 
 		"  origin \"Rome\"," + 
 		"  destination \"London\"," + 
@@ -119,8 +133,14 @@ String asnValue = "{" +
 		"  crew-format eight" + 
 		"}";
 
+// decode a Flight ASN value
 InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
 ASNValueReader asnValueReader = new ASNValueReader(inputStream);
 Flight obj = Flight.readPdu(asnValueReader);
+
+// encode a Flight ASN value
+StringWriter stringWriter = new StringWriter(100);
+ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+Flight.writePdu(obj, asnValueWriter);
 ```
 
