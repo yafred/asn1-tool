@@ -5,7 +5,7 @@
 
 ## Quick start
 
-Use the web interface to validate and compile your specification, as well as converting data (ASN value to/from BER): it's [here](https://github.com/yafred/asn1-playground)
+Use a web interface to validate and compile your specification, convert data (ASN value to/from BER) and download generated Java code: it's [here](https://github.com/yafred/asn1-playground)
 
 ## Using the compiler
   
