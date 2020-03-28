@@ -139,5 +139,14 @@ Flight obj = Flight.readPdu(asnValueReader);
 StringWriter stringWriter = new StringWriter(100);
 ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 Flight.writePdu(obj, asnValueWriter);
+System.out.println(asnValueWriter.toString());
+/*
+{
+  origin "Rome"
+, destination "London"
+, seats 250
+, crew-format eight
+}
+*/
 ```
 
