@@ -120,28 +120,28 @@ public class TestGeneratedCode_025 {
 	}
 	
 	
-	// @Test
+	@Test
 	public void test_3() throws Exception {
 		String asnValue = "{\r\n" + 
 				"  board \r\n" + 
 				"  {\r\n" + 
 				"    {\r\n" + 
-				"      column \"X\",\r\n" + 
-				"      column \"0\",\r\n" + 
-				"      column \"-\"\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"0\",\r\n" + 
+				"      \"-\"\r\n" + 
 				"    },\r\n" + 
 				"    {\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"-\"\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\"\r\n" + 
 				"    },\r\n" + 
 				"    {\r\n" + 
-				"      column \"X\",\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"0\"\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"0\"\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
-				"}\r\n" + 
+				", info \"coucou\" }\r\n" + 
 				"";
 		
 		String expectedAsnValue = asnValue;
@@ -160,25 +160,25 @@ public class TestGeneratedCode_025 {
 	}
 	
 	
-	// @Test
+	@Test
 	public void test_4() throws Exception {
 		String asnValue = "{\r\n" + 
 				"  board \r\n" + 
 				"  {\r\n" + 
 				"    {\r\n" + 
-				"      column \"X\",\r\n" + 
-				"      column \"0\",\r\n" + 
-				"      column \"-\"\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"0\",\r\n" + 
+				"      \"-\"\r\n" + 
 				"    },\r\n" + 
 				"    {\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"-\"\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\"\r\n" + 
 				"    },\r\n" + 
 				"    {\r\n" + 
-				"      column \"X\",\r\n" + 
-				"      column \"-\",\r\n" + 
-				"      column \"0\"\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"0\"\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
 				"}\r\n" + 

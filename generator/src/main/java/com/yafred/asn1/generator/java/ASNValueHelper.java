@@ -160,7 +160,9 @@ public class ASNValueHelper {
 			output.println("if(componentName == null) componentName = reader.readIdentifier();");
 			output.println("if(componentName.equals(\"" + namedType.getName() + "\")) {");			
 			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
-			output.println("reader.readToken(); // read ',' or '}'");
+			output.println("if(\"}\".equals(reader.readToken())) { // read ',' or '}'");
+			output.println("return;");
+			output.println("}");
 			output.println("componentName = null;");
 			output.println("}");
 			if(!namedType.isOptional()) {
