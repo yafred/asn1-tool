@@ -104,8 +104,23 @@ public class TestGeneratedCode_025 {
 				"  }\r\n" + 
 				"}";
 		
-		String expectedAsnValue = asnValue;
-
+		String expectedAsnValue =  "{\r\n" + 
+				"row {\r\n" + 
+				"    \"X\",\r\n" + 
+				"    \"0\",\r\n" + 
+				"    \"-\"\r\n" + 
+				"  },\r\n" + 
+				"row {\r\n" + 
+				"    \"-\",\r\n" + 
+				"    \"-\",\r\n" + 
+				"    \"-\"\r\n" + 
+				"  },\r\n" + 
+				"row {\r\n" + 
+				"    \"X\",\r\n" + 
+				"    \"-\",\r\n" + 
+				"    \"0\"\r\n" + 
+				"  }\r\n" + 
+				"}";
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
@@ -144,7 +159,27 @@ public class TestGeneratedCode_025 {
 				", info \"coucou\" }\r\n" + 
 				"";
 		
-		String expectedAsnValue = asnValue;
+		String expectedAsnValue = "{\r\n" + 
+				"  board \r\n" + 
+				"  {\r\n" + 
+				"  row  {\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"0\",\r\n" + 
+				"      \"-\"\r\n" + 
+				"    },\r\n" + 
+				"  row  {\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\"\r\n" + 
+				"    },\r\n" + 
+				"  row  {\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"0\"\r\n" + 
+				"    }\r\n" + 
+				"  }\r\n" + 
+				", info \"coucou\" }\r\n" + 
+				"";
 
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
@@ -184,7 +219,27 @@ public class TestGeneratedCode_025 {
 				"}\r\n" + 
 				"";
 		
-		String expectedAsnValue = asnValue;
+		String expectedAsnValue = "{\r\n" + 
+				"  board \r\n" + 
+				"  {\r\n" + 
+				"  row  {\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"0\",\r\n" + 
+				"      \"-\"\r\n" + 
+				"    },\r\n" + 
+				"  row  {\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"-\"\r\n" + 
+				"    },\r\n" + 
+				"  row  {\r\n" + 
+				"      \"X\",\r\n" + 
+				"      \"-\",\r\n" + 
+				"      \"0\"\r\n" + 
+				"    }\r\n" + 
+				"  }\r\n" + 
+				"}\r\n" + 
+				"";
 
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));

@@ -40,9 +40,9 @@ public class ASNValueWriter {
         this.writer = writer;
     }
     
-    public void beginArray() {
+    public void beginArray(String elementName) {
         indentValue();
-        sequences.add(new Sequence(sequences.size() + 1, true));
+        sequences.add(new Sequence(sequences.size() + 1, true, elementName));
         writer.println("{");
     }
 
@@ -207,6 +207,9 @@ public class ASNValueWriter {
                     writer.print(",");
                     writer.print(sequence.getIndent().substring(1));
                 }
+                if(!sequence.getElementName().equals("")) {
+                	writer.print(sequence.getElementName() + " ");
+                }
 
                 sequence.setEmpty(false);
             }
@@ -295,7 +298,18 @@ public class ASNValueWriter {
     private class Sequence {
         private boolean isArray = false;
         private boolean isEmpty = true;
-        private String indent = "";
+        private String elementName = "";
+
+		private String indent = "";
+
+        public Sequence(int rank, boolean isArray, String elementName) {
+            for (int i = 0; i < rank; i++) {
+                indent += "  ";
+            }
+
+            this.isArray = isArray;
+            this.elementName = elementName;
+        }
 
         public Sequence(int rank, boolean isArray) {
             for (int i = 0; i < rank; i++) {
@@ -320,5 +334,10 @@ public class ASNValueWriter {
         public boolean isArray() {
             return isArray;
         }
+        
+        public String getElementName() {
+			return elementName;
+		}
+
     }
 }

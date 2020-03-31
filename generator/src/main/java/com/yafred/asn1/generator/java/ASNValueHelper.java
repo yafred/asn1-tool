@@ -240,6 +240,7 @@ public class ASNValueHelper {
 	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
+		String elementName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
 			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
@@ -248,13 +249,14 @@ public class ASNValueHelper {
 			elementClassName = "Item";
 			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+				elementName = listOfType.getElement().getName();
 			}
 		}		
 		
 	    // write encoding code
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
-		output.println("writer.beginArray();");
+		output.println("writer.beginArray(\"" + elementName + "\");");
 		output.println("if(instance.getValue() != null) {");
 		output.println("for(int i=0; i<instance.getValue().size(); i++) {");
 		
@@ -449,6 +451,7 @@ public class ASNValueHelper {
 			ListOfType listOfType = (ListOfType)type;
 			Type elementType = listOfType.getElement().getType();
 			String elementClassName = "";
+			String elementName = "";
 			if(listOfType.getElement().getType().isTypeReference()) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
 				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
@@ -457,9 +460,10 @@ public class ASNValueHelper {
 				elementClassName = "Item";
 				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+					elementName = listOfType.getElement().getName();
 				}
 			}
-			output.println("writer.beginArray();");
+			output.println("writer.beginArray(\"" + elementName + "\");");
 			output.println("if(" + componentGetter + " != null) {");
 			output.println("for(int i=0;i<" + componentGetter + ".size(); i++) {");
 			switchEncodeListElement(elementType, elementClassName, componentName);

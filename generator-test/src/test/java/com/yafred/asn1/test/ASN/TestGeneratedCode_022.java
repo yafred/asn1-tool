@@ -53,7 +53,13 @@ public class TestGeneratedCode_022 {
 				"}\r\n" + 
 				"}";
 		
-		String expectedAsnValue = asnValue;
+		String expectedAsnValue = "{\r\n" + 
+				"coach { name \"Doe\", years 10 },\r\n" + 
+				"players {\r\n" + 
+				"player  { name \"Bear\", years 2 },\r\n" + 
+				"player  { name \"Lamb\", years 4 }\r\n" + 
+				"}\r\n" + 
+				"}";
 
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
