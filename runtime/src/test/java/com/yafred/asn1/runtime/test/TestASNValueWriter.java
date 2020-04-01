@@ -51,6 +51,10 @@ public class TestASNValueWriter  {
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 
 		asnValueWriter.writeBitString(value);
+		
+		String expectedAsnValue = "'a1a380'H";
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  	
 	}
 
 	@Test
@@ -63,7 +67,29 @@ public class TestASNValueWriter  {
 		StringWriter stringWriter = new StringWriter(100);
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 
-		asnValueWriter.writeBitString(value);		
+		asnValueWriter.writeBitString(value);	
+		
+		String expectedAsnValue = "{ one, two }";
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  	
+
+	}
+	
+	@Test
+	public void test_array() throws Exception {
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+
+		asnValueWriter.beginArray("item");
+		asnValueWriter.writeRestrictedCharacterString("hello");
+		asnValueWriter.writeRestrictedCharacterString("world");
+		asnValueWriter.endArray();
+		
+		String expectedAsnValue = "{ item \"hello\", item \"world\" }";
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  	
+
 	}
 
 }
