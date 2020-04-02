@@ -80,28 +80,35 @@ public class Compiler {
 			options.addOption( "jb", "java-beautify", false, "Format generated code.");
 		}
 		options.addOption( "p", "print-asn1", false, "Print the validated model." );
+		options.addOption( "v", "print-version", false, "Print the version text for this compiler." );
 
 	    // parse the command line arguments
 	    CommandLine line = parser.parse( options, args );
 
-      	if(line.getOptions().length == 0) {
-      		String version = "No version (probably not built from a git checkout)";
+	    // version text
+  		String version = "No version (probably not built from a git checkout)";
 
-	       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
-	       			version = gitProperties.getProperty("git.tags");
-	       	}
-	       	else 
-		       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
-			    	version = gitProperties.getProperty("git.commit.id.describe");	       			
-	       	}
-	       	
+       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
+       			version = gitProperties.getProperty("git.tags");
+       	}
+       	else 
+	       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
+		    	version = gitProperties.getProperty("git.commit.id.describe");	       			
+       	}
+       	
+      	if(line.getOptions().length == 0) {
 		    String header = "";
 	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
 	    	HelpFormatter formatter = new HelpFormatter();
 	    	formatter.printHelp( "java -jar asn1-compiler.jar", header, options, footer, true );
 	    	System.exit(0);
 	    }
-	    
+
+    	if(line.hasOption("v")) {
+    		System.out.println(version);
+    		System.exit(0);
+    	}
+
     	validate(line.getOptionValue("f"));
     	if(line.hasOption("p")) {
     		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

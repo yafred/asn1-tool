@@ -78,21 +78,23 @@ public class Converter {
 		options.addOption( OPTION_OUTPUT_FILE, "output-file", true, "File to encode data to. (default stdout)");
 		options.addOption( OPTION_OUTPUT_ENCODING, "encode", true, "Encoding type of the output: BER.");
 		options.addOption( OPTION_PDU_CLASSNAME, "classname", true, "Class name (java) of the type to decode/encode. The class must be added to the classpath.");
+		options.addOption( "v", "print-version", false, "Print the version text for this converter." );
 
 		// parse the command line arguments
 	    CommandLine line = parser.parse( options, args );
 
-      	if(line.getOptions().length == 0) {
-      		String version = "No version (probably not built from a git checkout)";
+	    // version text
+ 		String version = "No version (probably not built from a git checkout)";
 
-	       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
-	       			version = gitProperties.getProperty("git.tags");
-	       	}
-	       	else 
-		       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
-			    	version = gitProperties.getProperty("git.commit.id.describe");	       			
-	       	}
-	       	
+       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
+       			version = gitProperties.getProperty("git.tags");
+       	}
+       	else 
+	       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
+		    	version = gitProperties.getProperty("git.commit.id.describe");	       			
+       	}
+
+       	if(line.getOptions().length == 0) {	       	
 		    String header = "";
 	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
 	    	HelpFormatter formatter = new HelpFormatter();
@@ -100,6 +102,11 @@ public class Converter {
 	    	System.exit(0);
 	    }
       	
+    	if(line.hasOption("v")) {
+    		System.out.println(version);
+    		System.exit(0);
+    	}
+
 		// We need a class name
 		if (!line.hasOption(OPTION_PDU_CLASSNAME)) {
 			System.err.println("Option -" + OPTION_PDU_CLASSNAME + " is required. (--"
