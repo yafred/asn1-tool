@@ -347,7 +347,7 @@ public class ASNValueHelper {
 				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("case \"" + namedType.getName() + "\":");
-			output.println("reader.readToken(); // read ':'");
+			output.println("if(\":\".equals(reader.lookAheadToken())) reader.readToken();"); // read optional ':'
 			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
 			output.println("break;");
 		}
