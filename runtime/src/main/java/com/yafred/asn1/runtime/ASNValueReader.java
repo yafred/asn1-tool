@@ -38,7 +38,7 @@ public class ASNValueReader {
 		reader = new BufferedReader(new InputStreamReader(in));
     }
 		
-	public String lookAhead() throws Exception {
+	public String lookAheadToken() throws Exception {
 		String ret = "";
 		
 		reader.mark(1000);
@@ -81,6 +81,29 @@ public class ASNValueReader {
 		return token;
 	}
 
+	public String lookAheadIdentifier() throws Exception {
+		StringBuffer stringBuffer = new StringBuffer();
+		int c = -1;
+		
+		reader.mark(1000);
+
+		// find first significant character
+		do {
+			c = reader.read();
+			if(c == -1) return ""; // end of stream
+		} while(-1 != skipChars.indexOf(c));
+		
+		// read until space or token
+		while(-1 == skipChars.indexOf(c) && -1 == tokens.indexOf(c) && c != -1) {
+			stringBuffer.append((char)c);
+			c = reader.read();
+		} 
+		
+		reader.reset();
+		
+		return stringBuffer.toString();
+	}
+	
 	public String readIdentifier() throws Exception {
 		StringBuffer stringBuffer = new StringBuffer();
 		int c = -1;
@@ -111,7 +134,7 @@ public class ASNValueReader {
 	}
 
 	// readBitString assumes 'xxx'B or 'xxx'H is in the reader
-	// lookAhead must be used to evacuate { bit1, bit3 } notation
+	// lookAheadToken must be used to evacuate { bit1, bit3 } notation
 	public BitSet readBitString() throws Exception {
 		BitSet ret = null;
 	

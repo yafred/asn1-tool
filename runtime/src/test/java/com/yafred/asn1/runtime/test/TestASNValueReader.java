@@ -190,7 +190,7 @@ public class TestASNValueReader  {
     public void test_look_ahead() throws Exception {
     	InputStream inputStream = new ByteArrayInputStream("  mySeq ".getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
-    	assertEquals("m", asnValueReader.lookAhead());
+    	assertEquals("m", asnValueReader.lookAheadToken());
     	assertEquals("mySeq", asnValueReader.readIdentifier());
     }
     
@@ -249,5 +249,16 @@ public class TestASNValueReader  {
        	value.set(11);
            	
     	assertEquals(value, decodedValue);
+    }
+    
+    @Test
+    public void test_named_list_element() throws Exception {
+    	InputStream inputStream = new ByteArrayInputStream(" item \"toto\" ".getBytes(StandardCharsets.UTF_8));
+    	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
+
+    	assertEquals("item", asnValueReader.lookAheadIdentifier());
+    	assertEquals("item", asnValueReader.readIdentifier());
+    	assertEquals("toto", asnValueReader.readRestrictedCharacterString());
+    	
     }
 }

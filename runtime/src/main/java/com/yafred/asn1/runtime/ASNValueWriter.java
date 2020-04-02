@@ -70,11 +70,20 @@ public class ASNValueWriter {
     }
 
     public void writeSelection(String selectionName) {
+ 
         if ((sequences.size() != 0) &&
                 ((Sequence) sequences.get(sequences.size() - 1)).isArray &&
                 !isWaitingForChoiceValue) {
         	// we indent only in SEQUENCE OF and SET OF
             indentComponent();
+        }
+
+        if (sequences.size() != 0) {
+            Sequence sequence = (Sequence) sequences.get(sequences.size() - 1);
+
+            if (sequence.isArray() && !sequence.getElementName().equals("")) {
+            	writer.print(sequence.getElementName() + " ");
+            }
         }
 
         writer.print(selectionName + " : ");

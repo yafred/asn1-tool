@@ -48,21 +48,8 @@ public class TestGeneratedCode_021 {
 
 	@Test
 	public void test_1() throws Exception {
-		String asnValue = "{\r\n" + 
-				" \r\n" + 
-				"{\r\n" + 
-				"name \"Smith\",\r\n" + 
-				"age 20\r\n" + 
-				"},\r\n" + 
-				"\r\n" + 
-				"{\r\n" + 
-				"name \"Doe\",\r\n" + 
-				"age 22\r\n" + 
-				"}\r\n" + 
-				"\r\n" + 
-				"}";
 		
-		String expectedAsnValue = "{\r\n" + 
+		String asnValue = "{\r\n" + 
 				" \r\n" + 
 				"player {\r\n" + 
 				"name \"Smith\",\r\n" + 
@@ -86,7 +73,7 @@ public class TestGeneratedCode_021 {
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 		Players.writePdu(decodedPdu, asnValueWriter);
 		
-		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	@Test

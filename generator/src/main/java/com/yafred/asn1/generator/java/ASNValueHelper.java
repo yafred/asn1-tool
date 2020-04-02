@@ -143,7 +143,7 @@ public class ASNValueHelper {
 	            " reader) throws Exception {");
 		output.println("String componentName = null;");
 		output.println("reader.readToken(); // read '{'");
-		output.println("if(\"}\".equals(reader.lookAhead())) { // empty sequence");
+		output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty sequence");
 		output.println("reader.readToken(); return;}");
 	
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
@@ -209,7 +209,7 @@ public class ASNValueHelper {
 		output.println("public static void read(" + className + " instance," + ASN_VALUE_READER +
 	            " reader) throws Exception {");
 		output.println("reader.readToken(); // read '{'");
-		output.println("if(\"}\".equals(reader.lookAhead())) { // empty sequence");
+		output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty sequence");
 		output.println("reader.readToken(); return;}");
 		output.println("do {");
 		output.println("String component = reader.readIdentifier();");
@@ -240,7 +240,6 @@ public class ASNValueHelper {
 	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
-		String elementName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
 			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
@@ -249,10 +248,14 @@ public class ASNValueHelper {
 			elementClassName = "Item";
 			if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
 				elementClassName = Utils.uNormalize(listOfType.getElement().getName());
-				elementName = listOfType.getElement().getName();
 			}
 		}		
-		
+
+		String elementName = "";
+		if(listOfType.getElement().getName() != null) {
+			elementName = listOfType.getElement().getName();		
+		}
+
 	    // write encoding code
 		output.println("public static void write(" + className + " instance," + ASN_VALUE_WRITER +
 	            " writer) throws Exception {");
@@ -287,9 +290,13 @@ public class ASNValueHelper {
 	            " reader) throws Exception {");	
 		output.println("instance.setValue(new java.util.ArrayList<" + javaType + ">());");
 		output.println("reader.readToken(); // read '{'");		
-		output.println("if(\"}\".equals(reader.lookAhead())) { // empty list");
+		output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty list");
 		output.println("reader.readToken(); return;}");
 		output.println("do {");
+		if(!elementName.equals("")) {
+			output.println("if(\"" + elementName + "\".equals(reader.lookAheadIdentifier())) {");			
+			output.println("reader.readIdentifier(); }");			
+		}
 		switchDecodeListElement(elementType, elementClassName, "value", javaType);
 		output.println("} while(\",\".equals(reader.readToken()));");
 		output.println("}");
@@ -610,7 +617,7 @@ public class ASNValueHelper {
 		else if(builtinType.isBitStringType()) {
 			boolean hasNamedBits = (((BitStringType)builtinType).getNamedBitList().size() != 0);
 			if(hasNamedBits) {
-				output.println("if(!\"{\".equals(reader.lookAhead())) {");
+				output.println("if(!\"{\".equals(reader.lookAheadToken())) {");
 			}
 			output.println(componentSetter + "reader.readBitString());");
 			if(hasNamedBits) {
@@ -618,7 +625,7 @@ public class ASNValueHelper {
 				output.println("}");
 				output.println(componentSetter + "new java.util.BitSet());");
 				output.println("reader.readToken(); // read '{'");
-				output.println("if(\"}\".equals(reader.lookAhead())) {");
+				output.println("if(\"}\".equals(reader.lookAheadToken())) {");
 				output.println("reader.readToken(); // read '}'");
 				output.println("return; // empty list");
 				output.println("}");
@@ -710,12 +717,22 @@ public class ASNValueHelper {
 					}
 				}
 			}
+			
+			String elementName = "";
+			if(listOfType.getElement().getName() != null) {
+				elementName = listOfType.getElement().getName();
+			}
+			
 			output.println(componentSetter + "new java.util.ArrayList<" + javaType + ">());");
 			
 			output.println("reader.readToken(); // read '{'");		
-			output.println("if(\"}\".equals(reader.lookAhead())) { // empty list");
+			output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty list");
 			output.println("reader.readToken(); return;}");
 			output.println("do {");
+			if(!elementName.equals("")) {
+				output.println("if(\"" + elementName + "\".equals(reader.lookAheadIdentifier())) {");			
+				output.println("reader.readIdentifier(); }");			
+			}
 			switchDecodeListElement(elementType, elementClassName, componentName, javaType);
 			output.println("} while(\",\".equals(reader.readToken()));");
 		}
@@ -757,7 +774,7 @@ public class ASNValueHelper {
 		else if(elementType.isBitStringType()) {
 			boolean hasNamedBits = (((BitStringType)elementType).getNamedBitList().size() != 0);
 			if(hasNamedBits) {
-				output.println("if(!\"{\".equals(reader.lookAhead())) {");
+				output.println("if(!\"{\".equals(reader.lookAheadToken())) {");
 			}
 			output.println(componentGetter + ".add(reader.readBitString());");	
 			if(hasNamedBits) {
@@ -765,7 +782,7 @@ public class ASNValueHelper {
 				output.println("java.util.BitSet item = new java.util.BitSet();");
 				output.println(componentGetter + ".add(item);");
 				output.println("reader.readToken(); // read '{'");
-				output.println("if(\"}\".equals(reader.lookAhead())) {");
+				output.println("if(\"}\".equals(reader.lookAheadToken())) {");
 				output.println("reader.readToken(); // read '}'");
 				output.println("return; // empty list");
 				output.println("}");
@@ -795,10 +812,6 @@ public class ASNValueHelper {
 		}
 		else if(elementType.isEnumeratedType()) {
 			EnumeratedType enumeratedType = (EnumeratedType)elementType;
-			String enumSuffix = "";
-			if(elementType.isTypeReference() || componentName.equals("value")) {
-				enumSuffix = ".Enum";
-			}
 			output.println("String identifier=reader.readIdentifier();");
 			output.println(javaType + " item=null;");
 			for(NamedNumber namedNumber : enumeratedType.getRootEnumeration()) {

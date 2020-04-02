@@ -51,18 +51,19 @@ public class TestGeneratedCode_025 {
 
 	@Test
 	public void test_1() throws Exception {
+		
 		String asnValue = "{\r\n" + 
-				"  {\r\n" + 
+				"  row {\r\n" + 
 				"    \"X\",\r\n" + 
 				"    \"0\",\r\n" + 
 				"    \"-\"\r\n" + 
 				"  },\r\n" + 
-				"  {\r\n" + 
+				"  row {\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"-\"\r\n" + 
 				"  },\r\n" + 
-				"  {\r\n" + 
+				"  row {\r\n" + 
 				"    \"X\",\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"0\"\r\n" + 
@@ -86,41 +87,26 @@ public class TestGeneratedCode_025 {
 	
 	@Test
 	public void test_2() throws Exception {
-		String asnValue = "{\r\n" + 
-				"  {\r\n" + 
+		
+		String asnValue =  "{\r\n" + 
+				"row {\r\n" + 
 				"    \"X\",\r\n" + 
 				"    \"0\",\r\n" + 
 				"    \"-\"\r\n" + 
 				"  },\r\n" + 
-				"  {\r\n" + 
+				"row {\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"-\"\r\n" + 
 				"  },\r\n" + 
-				"  {\r\n" + 
+				"row {\r\n" + 
 				"    \"X\",\r\n" + 
 				"    \"-\",\r\n" + 
 				"    \"0\"\r\n" + 
 				"  }\r\n" + 
 				"}";
 		
-		String expectedAsnValue =  "{\r\n" + 
-				"row {\r\n" + 
-				"    \"X\",\r\n" + 
-				"    \"0\",\r\n" + 
-				"    \"-\"\r\n" + 
-				"  },\r\n" + 
-				"row {\r\n" + 
-				"    \"-\",\r\n" + 
-				"    \"-\",\r\n" + 
-				"    \"-\"\r\n" + 
-				"  },\r\n" + 
-				"row {\r\n" + 
-				"    \"X\",\r\n" + 
-				"    \"-\",\r\n" + 
-				"    \"0\"\r\n" + 
-				"  }\r\n" + 
-				"}";
+		String expectedAsnValue = asnValue;
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
@@ -140,42 +126,20 @@ public class TestGeneratedCode_025 {
 		String asnValue = "{\r\n" + 
 				"  board \r\n" + 
 				"  {\r\n" + 
-				"    {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"0\",\r\n" + 
-				"      \"-\"\r\n" + 
-				"    },\r\n" + 
-				"    {\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\"\r\n" + 
-				"    },\r\n" + 
-				"    {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"0\"\r\n" + 
-				"    }\r\n" + 
-				"  }\r\n" + 
-				", info \"coucou\" }\r\n" + 
-				"";
-		
-		String expectedAsnValue = "{\r\n" + 
-				"  board \r\n" + 
-				"  {\r\n" + 
 				"  row  {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"0\",\r\n" + 
-				"      \"-\"\r\n" + 
+				"    column  \"X\",\r\n" + 
+				"    column  \"0\",\r\n" + 
+				"    column  \"-\"\r\n" + 
 				"    },\r\n" + 
 				"  row  {\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\"\r\n" + 
+				"    column  \"-\",\r\n" + 
+				"    column  \"-\",\r\n" + 
+				"    column  \"-\"\r\n" + 
 				"    },\r\n" + 
 				"  row  {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"0\"\r\n" + 
+				"    column  \"X\",\r\n" + 
+				"    column  \"-\",\r\n" + 
+				"    column  \"0\"\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
 				", info \"coucou\" }\r\n" + 
@@ -191,37 +155,16 @@ public class TestGeneratedCode_025 {
 		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
 		Game.writePdu(decodedPdu, asnValueWriter);
 		
-		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
+		assertEquals(asnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  		
 	}
 	
 	
 	@Test
 	public void test_4() throws Exception {
+		
 		String asnValue = "{\r\n" + 
 				"  board \r\n" + 
 				"  {\r\n" + 
-				"    {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"0\",\r\n" + 
-				"      \"-\"\r\n" + 
-				"    },\r\n" + 
-				"    {\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"-\"\r\n" + 
-				"    },\r\n" + 
-				"    {\r\n" + 
-				"      \"X\",\r\n" + 
-				"      \"-\",\r\n" + 
-				"      \"0\"\r\n" + 
-				"    }\r\n" + 
-				"  }\r\n" + 
-				"}\r\n" + 
-				"";
-		
-		String expectedAsnValue = "{\r\n" + 
-				"  board \r\n" + 
-				"  {\r\n" + 
 				"  row  {\r\n" + 
 				"      \"X\",\r\n" + 
 				"      \"0\",\r\n" + 
@@ -240,7 +183,7 @@ public class TestGeneratedCode_025 {
 				"  }\r\n" + 
 				"}\r\n" + 
 				"";
-
+		String expectedAsnValue = asnValue;
 				
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);

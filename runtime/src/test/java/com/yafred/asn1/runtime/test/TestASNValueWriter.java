@@ -89,7 +89,23 @@ public class TestASNValueWriter  {
 		String expectedAsnValue = "{ item \"hello\", item \"world\" }";
 		
 		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  	
-
 	}
 
+	@Test
+	public void test_array_of_choices() throws Exception {
+
+		StringWriter stringWriter = new StringWriter(100);
+		ASNValueWriter asnValueWriter = new ASNValueWriter(new PrintWriter(stringWriter));
+
+		asnValueWriter.beginArray("item");
+		asnValueWriter.writeSelection("word1");
+		asnValueWriter.writeRestrictedCharacterString("hello");
+		asnValueWriter.writeSelection("word2");
+		asnValueWriter.writeRestrictedCharacterString("world");
+		asnValueWriter.endArray();
+		
+		String expectedAsnValue = "{ item word1 : \"hello\", item word2 : \"world\" }";
+		
+		assertEquals(expectedAsnValue.replaceAll("\\s+",""), stringWriter.toString().replaceAll("\\s+",""));  	
+	}
 }
