@@ -133,6 +133,7 @@ public class Compiler {
         			generatorOptions.setBeautify(false);
         		}
         	}
+        	generatorOptions.setWatermark("Generated using https://github.com/yafred/asn1-tool " + version);
         	generator.setOptions(generatorOptions);
           	generator.processSpecification(model);	
     	}

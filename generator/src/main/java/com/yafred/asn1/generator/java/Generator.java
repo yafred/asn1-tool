@@ -180,6 +180,9 @@ public class Generator {
 		
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".java")));
 		fileWriter.println("/*");
+		if(!options.getWatermark().equals("")) {
+			fileWriter.println(options.getWatermark());
+		}
 		fileWriter.println(asn1Spec);
 		fileWriter.println("*/");
 		fileWriter.print(formattedSource);

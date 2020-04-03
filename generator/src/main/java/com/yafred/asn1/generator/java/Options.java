@@ -26,7 +26,14 @@ public class Options {
 	private String packagePrefix = "";
 	private boolean overwriteAllowed = false;
 	private boolean beautify = false;
+	private String watermark = "";
 	
+	public String getWatermark() {
+		return watermark;
+	}
+	public void setWatermark(String watermark) {
+		this.watermark = watermark;
+	}
 	public String getOutputPath() {
 		return outputPath;
 	}
