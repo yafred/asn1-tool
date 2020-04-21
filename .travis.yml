@@ -28,8 +28,7 @@ deploy:
   - asn1-runtime.jar
   skip_cleanup: true
   on:
-    tags: true
-    
+    tags: true   
   provider: script
   script: bash deploy.sh
   on:
