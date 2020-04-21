@@ -27,11 +27,10 @@ deploy:
   - asn1-converter.jar
   - asn1-runtime.jar
   skip_cleanup: true
+  on:
+    tags: true
+    
   provider: script
-  script:
-  - git clone https://github.com/yafred/asn1-playground.git
-  - cd asn1-playground
-  - git tag -a $TRAVIS_TAG -m "Refresh docker image"
-  - git push -f -q --follow-tags https://${GH_TOKEN}@github.com/yafred/asn1-playground master
+  script:bash deploy.sh
   on:
     tags: true
