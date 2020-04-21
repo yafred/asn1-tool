@@ -31,6 +31,6 @@ deploy:
     tags: true
     
   provider: script
-  script:bash deploy.sh
+  script: bash deploy.sh
   on:
     tags: true
