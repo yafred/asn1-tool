@@ -55,14 +55,14 @@
 		    <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
 		    <groupId>org.reflections</groupId>
 		    <artifactId>reflections</artifactId>
-		    <version>0.9.11</version>
+		    <version>0.9.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 		    <!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
 		    <groupId>com.google.googlejavaformat</groupId>
 		    <artifactId>google-java-format</artifactId>
-		    <version>1.5</version>
+		    <version>1.9</version>
 		</dependency>
     </dependencies>
 </project>
