@@ -15,12 +15,3 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: Copy artifacts to dist (for test)
-        run: |
-          mkdir -p ${{ github.workspace }}/dist
-          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-compiler-with-beautifier.jar ${{ github.workspace }}/dist/asn1-compiler-with-google-java-format.jar
-          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-compiler-without-beautifier.jar ${{ github.workspace }}/dist/asn1-compiler.jar
-          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-converter.jar ${{ github.workspace }}/dist/asn1-converter.jar
-          cp ${{ github.workspace }}/runtime/target/runtime-1.0-SNAPSHOT.jar ${{ github.workspace }}/dist/asn1-runtime.jar
-          ls -l ${{ github.workspace }}/dist
- 

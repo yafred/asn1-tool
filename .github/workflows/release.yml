@@ -20,12 +20,18 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: Copy artifacts to dist
+      - name: Copy artifacts to dist 
         run: |
-          mkdir -p ${{ GITHUB_WORKSPACE }}/dist
-          cp ${{ GITHUB_WORKSPACE }}/tool/target/tool-1.0-SNAPSHOT-compiler-with-beautifier.jar ${{ GITHUB_WORKSPACE }}/dist/asn1-compiler-with-google-java-format.jar
-          cp ${{ GITHUB_WORKSPACE }}/tool/target/tool-1.0-SNAPSHOT-compiler-without-beautifier.jar ${{ GITHUB_WORKSPACE }}/dist/asn1-compiler.jar
-          cp ${{ GITHUB_WORKSPACE }}/tool/target/tool-1.0-SNAPSHOT-converter.jar ${{ GITHUB_WORKSPACE }}/dist/asn1-converter.jar
-          cp ${{ GITHUB_WORKSPACE }}/runtime/target/runtime-1.0-SNAPSHOT.jar ${{ GITHUB_WORKSPACE }}/dist/asn1-runtime.jar
-          ls -l ${{ GITHUB_WORKSPACE }}/dist
+          mkdir -p ${{ github.workspace }}/dist
+          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-compiler-with-beautifier.jar ${{ github.workspace }}/dist/asn1-compiler-with-google-java-format.jar
+          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-compiler-without-beautifier.jar ${{ github.workspace }}/dist/asn1-compiler.jar
+          cp ${{ github.workspace }}/tool/target/tool-1.0-SNAPSHOT-converter.jar ${{ github.workspace }}/dist/asn1-converter.jar
+          cp ${{ github.workspace }}/runtime/target/runtime-1.0-SNAPSHOT.jar ${{ github.workspace }}/dist/asn1-runtime.jar
+          ls -l ${{ github.workspace }}/dist
+      - name: Publish artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_ARTIFACTS }}
+        with:
+          args: "./dist/*"
  
