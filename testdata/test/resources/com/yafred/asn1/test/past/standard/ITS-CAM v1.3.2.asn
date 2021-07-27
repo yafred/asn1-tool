@@ -160,7 +160,7 @@ BEGIN
 	stationID       StationID
     }
     
-    StationID ::= INTEGER (0..4294967295)
+    StationID ::= INTEGER (0..4294967295) 
     
     ReferencePosition ::= SEQUENCE {
 	latitude                  Latitude,

@@ -413,7 +413,7 @@ value:
     | LCURLY namedValue ( COMMA namedValue )* RCURLY           # value_NamedValueList
     | LCURLY objIdComponents  objIdComponents* RCURLY          # value_ObjectIdentifier
     | LCURLY value ( COMMA value )* RCURLY                     # value_ValueList
-    | MINUS? ( NUMBER | NUMBER_WITH_DECIMALS )                 # value_Integer 
+    | MINUS? ( NUMBER | NUMBER_WITH_DECIMALS )                 # value_Number
     | NULL_LITERAL                                             # value_NULL
     | valueReference                                           # value_ReferencedValue
 ;
@@ -437,6 +437,7 @@ objIdComponents:
 /*--------------------- Constraints -------------------------------------------------*/
 
 /* Constraint (see 49.6 in ITU-T X.680 (08/2015) */
+/* Constraint ::= "(" ConstraintSpec ExceptionSpec ")" */
 constraint:
     LPAREN 
     subtypeConstraint

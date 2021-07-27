@@ -50,6 +50,7 @@ import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueListValue;
+import com.yafred.asn1.model.ValueRangeConstraint;
 
 public class Asn1SpecificationWriter {
 	static class IndentWriter {
@@ -229,6 +230,25 @@ public class Asn1SpecificationWriter {
 			}
 		}
 		out.print(type.getName());
+		
+		if(type.isIntegerType() && type.getConstraint() != null && type.getConstraint().getConstraintSpec() != null) {
+			if(type.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
+				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)type.getConstraint().getConstraintSpec();
+				out.print("(");
+				if(valueRangeConstraint.getLowerEndValue() == null) {
+					out.print("MIN");
+				} else {
+					out.print(valueRangeConstraint.getLowerEndValue().toString());
+				}
+				out.print("..");
+				if(valueRangeConstraint.getUpperEndValue() == null) {
+					out.print("MAX");
+				} else {
+					out.print(valueRangeConstraint.getUpperEndValue().toString());
+				}
+				out.print(")");
+			}	
+		}
 		
 		if(type.isBitStringType()) {
 			visit((BitStringType)type);

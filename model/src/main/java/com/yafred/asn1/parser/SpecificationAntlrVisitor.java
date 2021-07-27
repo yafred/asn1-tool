@@ -34,6 +34,7 @@ import com.yafred.asn1.grammar.ASNParser.CharacterStringTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ChoiceTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeListContext;
+import com.yafred.asn1.grammar.ASNParser.ConstraintContext;
 import com.yafred.asn1.grammar.ASNParser.DefinedTypeContext;
 import com.yafred.asn1.grammar.ASNParser.DefinitiveObjIdComponentContext;
 import com.yafred.asn1.grammar.ASNParser.EnumeratedTypeContext;
@@ -78,6 +79,7 @@ import com.yafred.asn1.grammar.ASNParser.TypeContext;
 import com.yafred.asn1.grammar.ASNParser.UsefulTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ValueAssignmentContext;
 import com.yafred.asn1.grammar.ASNParser.ValueContext;
+import com.yafred.asn1.grammar.ASNParser.ValueRangeContext;
 import com.yafred.asn1.grammar.ASNParser.ValueReferenceContext;
 import com.yafred.asn1.grammar.ASNParser.Value_BOOLEANContext;
 import com.yafred.asn1.grammar.ASNParser.Value_BSTRINGContext;
@@ -85,7 +87,7 @@ import com.yafred.asn1.grammar.ASNParser.Value_CSTRINGContext;
 import com.yafred.asn1.grammar.ASNParser.Value_ChoiceContext;
 import com.yafred.asn1.grammar.ASNParser.Value_EmptyListContext;
 import com.yafred.asn1.grammar.ASNParser.Value_HSTRINGContext;
-import com.yafred.asn1.grammar.ASNParser.Value_IntegerContext;
+import com.yafred.asn1.grammar.ASNParser.Value_NumberContext;
 import com.yafred.asn1.grammar.ASNParser.Value_NULLContext;
 import com.yafred.asn1.grammar.ASNParser.Value_NamedValueListContext;
 import com.yafred.asn1.grammar.ASNParser.Value_ObjectIdentifierContext;
@@ -102,6 +104,7 @@ import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.ChoiceValue;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
+import com.yafred.asn1.model.Constraint;
 import com.yafred.asn1.model.DateTimeType;
 import com.yafred.asn1.model.DateType;
 import com.yafred.asn1.model.TypeReference;
@@ -161,6 +164,7 @@ import com.yafred.asn1.model.UniversalStringType;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueListValue;
+import com.yafred.asn1.model.ValueRangeConstraint;
 import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.VideotexStringType;
 import com.yafred.asn1.model.VisibleStringType;
@@ -365,6 +369,11 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			}
 			if(ctx.referencedType() != null) {
 				type = ctx.referencedType().accept(new ReferencedTypeVisitor());
+			}
+			// At this point type should not be null
+			if (ctx.constraint() != null) {
+				type.setConstraint(
+						ctx.constraint().accept(new ConstraintVisitor()));
 			}
 			type.setTokenLocation(new TokenLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()+1));
 			return type;
@@ -984,8 +993,15 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		}
 		
 		@Override
-		public Value visitValue_Integer(Value_IntegerContext ctx) {
-			return new IntegerValue(Integer.parseInt(ctx.getText()));
+		public Value visitValue_Number(Value_NumberContext ctx) {
+			Value value = null;
+			try {
+				value = new IntegerValue(Integer.parseInt(ctx.getText()));
+			}
+			catch(Exception e) {
+				// leave null
+			}
+			return value;
 		}
 
 		@Override
@@ -1051,6 +1067,43 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		public Value visitValue_ObjectIdentifier(Value_ObjectIdentifierContext ctx) {
 			return new NullValue(); // for now
 		}
+	}
+	
+	static class ConstraintVisitor extends ASNBaseVisitor<Constraint> {
+		@Override
+		public Constraint visitConstraint(ConstraintContext ctx) {
+			Constraint constraint = null;
+			// Proof of concept: we only try to recognize (n ... m) integer range
+			if (ctx.subtypeConstraint() != null &&
+				ctx.subtypeConstraint().elementSetSpec().size() == 1 &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions() != null &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().size() == 1 &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().size() == 1 &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().size() == 1 &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements() != null &&
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().valueRange() != null) {
+				constraint = new Constraint();
+				constraint.setConstraintSpec(ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().valueRange().accept(new ValueRangeVisitor()));
+			}
+
+			return constraint;
+		}
+	}
+
+	static class ValueRangeVisitor extends ASNBaseVisitor<ValueRangeConstraint> {
+		@Override
+		public ValueRangeConstraint visitValueRange(ValueRangeContext ctx) {
+			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+			int valueIndex = 0;
+			if(ctx.MIN_LITERAL() == null) {
+				valueRangeConstraint.setLowerEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
+				valueIndex++;
+			}
+			if(ctx.MAX_LITERAL() == null) {
+				valueRangeConstraint.setUpperEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
+			}
+			return valueRangeConstraint;
+		}		
 	}
 }
 

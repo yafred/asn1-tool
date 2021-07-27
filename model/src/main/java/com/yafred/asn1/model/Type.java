@@ -29,8 +29,10 @@ import java.util.ArrayList;
 abstract public class Type {
 	
 	ArrayList<Tag> tagList;
-	
+		
 	TokenLocation tokenLocation;
+	
+	Constraint constraint;
 	
     public ArrayList<Tag> getTagList() {
 		return tagList;
@@ -46,6 +48,14 @@ abstract public class Type {
 
 	public void setTokenLocation(TokenLocation tokenLocation) {
 		this.tokenLocation = tokenLocation;
+	}
+	
+	public Constraint getConstraint() {
+		return constraint;
+	}
+
+	public void setConstraint(Constraint constraint) {
+		this.constraint = constraint;
 	}
 
 	public boolean isBitStringType() {
