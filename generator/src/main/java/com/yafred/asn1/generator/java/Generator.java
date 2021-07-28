@@ -60,11 +60,13 @@ public class Generator {
 	PrintWriter output;
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
+	ValidationHelper validationHelper;
 	
 	
 	public Generator() {
 		berHelper = new BERHelper(this);
 		asnValueHelper = new ASNValueHelper(this);
+		validationHelper = new ValidationHelper(this);
 	}
 	
 	
@@ -549,6 +551,8 @@ public class Generator {
 		berHelper.processType(type, className, isInnerType);
 		// add ASN value methods to the POJO
 		asnValueHelper.processType(type, className, isInnerType);		
+		// add validation methods to the POJO
+		validationHelper.processType(type, className, isInnerType);		
 	}
 
 }
