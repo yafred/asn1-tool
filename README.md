@@ -150,3 +150,18 @@ System.out.println(asnValueWriter.toString());
 */
 ```
 
+### ASN.1 constraints (just starting ...)
+
+Only the INTEGER value range constraint is supported.
+
+```
+Flight obj = new Flight();
+...
+try {
+   Flight.validate(obj);
+}
+catch(Exception e) {
+   // failed validation
+   // no explanation yet
+}
+```
