@@ -449,7 +449,7 @@ public class ASNValueHelper {
 			output.println("}");
 		}
 		else if(type.isTypeReference()) {
-			output.println(referencedClassName + ".write(" + componentGetter + ",writer); /* TypeReference */");		
+			output.println(referencedClassName + ".write(" + componentGetter + ",writer);");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println(Utils.uNormalize(componentName) + ".write(" + componentGetter + ",writer);");		
@@ -682,7 +682,7 @@ public class ASNValueHelper {
 		}
 		else if(type.isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");		
-			output.println(componentClassName + ".read(" + componentGetter + ",reader); /* TypeReference */");		
+			output.println(componentClassName + ".read(" + componentGetter + ",reader);");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");		

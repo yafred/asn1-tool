@@ -164,6 +164,7 @@ public class Converter {
 				System.exit(1);				
 			}
 			
+			validate(pdu);
 			
     		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     	    String utf8 = StandardCharsets.UTF_8.name();
@@ -236,6 +237,13 @@ public class Converter {
 		new BERDumper(new PrintWriter(printStream)).dump(bufferIn);		
 	}
 	
+
+	private void validate(Object pdu) throws Exception {
+		Class<?> pduClass = pdu.getClass();
+		Method method = pduClass.getMethod("validate", new Class[] { pduClass });
+		method.invoke(null, new Object[] { pdu });
+	}
+
 	public static String inputStreamToString(final InputStream is, final int bufferSize) {
 	    final char[] buffer = new char[bufferSize];
 	    final StringBuilder out = new StringBuilder();

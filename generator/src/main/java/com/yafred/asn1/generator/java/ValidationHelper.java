@@ -33,6 +33,7 @@ import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeReference;
+import com.yafred.asn1.model.ValueRangeConstraint;
 
 public class ValidationHelper {
 	Generator generator;
@@ -164,14 +165,31 @@ public class ValidationHelper {
 
 	
 	private void processComponent(Type type, String componentName, String componentClassName) throws Exception {
+		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
+			referencedClassName = Utils.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
 			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+
 		if(builtinType.isRestrictedCharacterStringType()) {
 		}
 		else if(builtinType.isIntegerType()) {
+			if(builtinType.getConstraint() != null && builtinType.getConstraint().getConstraintSpec() != null && builtinType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
+				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)builtinType.getConstraint().getConstraintSpec();
+				if(valueRangeConstraint.getLowerEndValue() != null) {
+					output.println("if(" + componentGetter + "<" + valueRangeConstraint.getLowerEndValue() + "){");
+					output.println("throw new Exception();");
+					output.println("}");
+				}
+				if(valueRangeConstraint.getUpperEndValue() != null) {
+					output.println("if(" + componentGetter + ">" + valueRangeConstraint.getUpperEndValue() + "){");
+					output.println("throw new Exception();");
+					output.println("}");
+				}
+			}
 		}
 		else if(builtinType.isBooleanType()) {
 		}	
@@ -188,10 +206,30 @@ public class ValidationHelper {
 		else if(builtinType.isEnumeratedType()) {
 		}
 		else if(type.isTypeReference()) {
+			output.println(referencedClassName + ".validate(" + componentGetter + ");");		
 		}
 		else if(type.isTypeWithComponents()) {
+			output.println(Utils.uNormalize(componentName) + ".validate(" + componentGetter + ");");		
 		}
 		else if(type.isListOfType()) {
+			ListOfType listOfType = (ListOfType)type;
+			Type elementType = listOfType.getElement().getType();
+			String elementClassName = "";
+			if(listOfType.getElement().getType().isTypeReference()) {
+				elementClassName = Utils.uNormalize(listOfType.getElement().getType().getName());
+				elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
+			}
+			else if(listOfType.getElement().getType().isTypeWithComponents() || listOfType.getElement().getType().isListOfType()) {
+				elementClassName = "Item";
+				if(listOfType.getElement().getName() != null && !listOfType.getElement().getName().equals("")) {
+					elementClassName = Utils.uNormalize(listOfType.getElement().getName());
+				}
+			}
+			output.println("if(" + componentGetter + " != null) {");
+			output.println("for(int i=0;i<" + componentGetter + ".size(); i++) {");
+			processListElement(elementType, elementClassName, componentName);
+			output.println("}");
+			output.println("}");
 		}
 		else {
 			throw new Exception("ValidationHelper.processComponent: Code generation not supported for Type " + type.getName());
@@ -200,10 +238,24 @@ public class ValidationHelper {
 	
 	
 	private void processListElement(Type elementType, String elementClassName, String componentName) throws Exception {
-		
+		String componentGetter = "instance.get" + Utils.uNormalize(componentName) + "()";
+	
 		if(elementType.isRestrictedCharacterStringType()) {
 		}
 		else if(elementType.isIntegerType()) {
+			if(elementType.getConstraint() != null && elementType.getConstraint().getConstraintSpec() != null && elementType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
+				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)elementType.getConstraint().getConstraintSpec();
+				if(valueRangeConstraint.getLowerEndValue() != null) {
+					output.println("if(" + componentGetter + ".get(i) <" + valueRangeConstraint.getLowerEndValue() + "){");
+					output.println("throw new Exception();");
+					output.println("}");
+				}
+				if(valueRangeConstraint.getUpperEndValue() != null) {
+					output.println("if(" + componentGetter + ".get(i) >" + valueRangeConstraint.getUpperEndValue() + "){");
+					output.println("throw new Exception();");
+					output.println("}");
+				}
+			}
 		}
 		else if(elementType.isBooleanType()) {
 		}
@@ -220,6 +272,7 @@ public class ValidationHelper {
 		else if(elementType.isEnumeratedType()) {
 		}
 		else if(Utils.isConstructed(elementType)) {
+			output.println(elementClassName + ".validate(" + componentGetter + ".get(i));");						
 		}
 		else {
 			throw new Exception("ValidationHelper.processListElement: Code generation not supported for Type " + elementType.getName());

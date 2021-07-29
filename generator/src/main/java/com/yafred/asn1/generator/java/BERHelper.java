@@ -925,7 +925,7 @@ public class BERHelper {
 			output.println("componentLength=writer.writeInteger(intValue);");			
 		}
 		else if(type.isTypeReference()) {
-			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer); /* TypeReference */");		
+			output.println("componentLength=" + referencedClassName + ".write(" + componentGetter + ",writer);");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println("componentLength=" + Utils.uNormalize(componentName) + ".write(" + componentGetter + ",writer);");		
@@ -1081,7 +1081,7 @@ public class BERHelper {
 		}
 		else if(type.isTypeReference()) {
 			output.println(componentSetter + "new " + componentClassName + "());");		
-			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength); /* TypeReference */");		
+			output.println(componentClassName + ".read(" + componentGetter + ",reader, componentLength);");		
 		}
 		else if(type.isTypeWithComponents()) {
 			output.println(componentSetter + "new " + Utils.uNormalize(componentName) + "());");		
