@@ -155,6 +155,14 @@ System.out.println(asnValueWriter.toString());
 Only the INTEGER value range constraint is supported.
 
 ```
+/*
+Flight ::= SEQUENCE {
+   origin             IA5String,
+   destination        IA5String,
+   seats  INTEGER (100..200),
+   crew-format ENUMERATED { six, eight, ten }
+}
+*/
 Flight obj = new Flight();
 ...
 try {
