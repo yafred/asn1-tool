@@ -10,6 +10,10 @@ BEGIN
 
   Positive ::= INTEGER(0..MAX)
 
+  Positive-2 ::= INTEGER(0<)
+
   Negative ::= INTEGER(MIN .. -1)
+
+  Negative-2 ::= INTEGER(<-1)
 
 END

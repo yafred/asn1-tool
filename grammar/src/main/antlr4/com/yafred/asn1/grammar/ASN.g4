@@ -486,7 +486,9 @@ subtypeElements:
 ;
 
 valueRange:
-    ( value | MIN_LITERAL ) LESS_THAN? RANGE LESS_THAN? ( value | MAX_LITERAL )
+    ( value | MIN_LITERAL ) RANGE ( value | MAX_LITERAL )
+    | value LESS_THAN
+    | LESS_THAN value
 ;
 
 typeConstraints:

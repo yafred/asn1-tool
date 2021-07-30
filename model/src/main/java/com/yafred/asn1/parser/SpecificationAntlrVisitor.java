@@ -1094,13 +1094,21 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		@Override
 		public ValueRangeConstraint visitValueRange(ValueRangeContext ctx) {
 			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
-			int valueIndex = 0;
-			if(ctx.MIN_LITERAL() == null) {
-				valueRangeConstraint.setLowerEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
-				valueIndex++;
+			if(ctx.RANGE() != null) {
+				int valueIndex = 0;
+				if(ctx.MIN_LITERAL() == null) {
+					valueRangeConstraint.setLowerEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
+					valueIndex++;
+				}
+				if(ctx.MAX_LITERAL() == null) {
+					valueRangeConstraint.setUpperEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
+				}
 			}
-			if(ctx.MAX_LITERAL() == null) {
-				valueRangeConstraint.setUpperEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
+			else if(ctx.getText().startsWith("<")) {
+				valueRangeConstraint.setUpperEndValue(ctx.value().get(0).accept(new ValueVisitor()));
+			}
+			else {
+				valueRangeConstraint.setLowerEndValue(ctx.value().get(0).accept(new ValueVisitor()));
 			}
 			return valueRangeConstraint;
 		}		
