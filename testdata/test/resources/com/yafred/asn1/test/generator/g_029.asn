@@ -1,0 +1,15 @@
+-- Testing INTEGER value range constraint 
+G-029 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Small-Integer ::= INTEGER (-32..32)
+
+List-of-small-integer ::= SEQUENCE OF Small-Integer
+
+List-of-positive ::= SEQUENCE OF INTEGER(0..MAX)
+
+Plane ::= SEQUENCE {
+   seats INTEGER (0..500)
+}
+
+END
