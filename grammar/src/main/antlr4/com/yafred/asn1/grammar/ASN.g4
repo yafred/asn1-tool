@@ -486,9 +486,9 @@ subtypeElements:
 ;
 
 valueRange:
-    ( value | MIN_LITERAL ) RANGE ( value | MAX_LITERAL )
-    | value LESS_THAN
-    | LESS_THAN value
+    ( value | MIN_LITERAL ) RANGE ( value | MAX_LITERAL ) # closedRange
+    | value LESS_THAN # lowerEndPoint
+    | LESS_THAN value # upperEndPoint
 ;
 
 typeConstraints:

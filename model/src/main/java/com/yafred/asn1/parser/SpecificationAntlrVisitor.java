@@ -32,6 +32,7 @@ import com.yafred.asn1.grammar.ASNParser.BitStringTypeContext;
 import com.yafred.asn1.grammar.ASNParser.BuiltinTypeContext;
 import com.yafred.asn1.grammar.ASNParser.CharacterStringTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ChoiceTypeContext;
+import com.yafred.asn1.grammar.ASNParser.ClosedRangeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeListContext;
 import com.yafred.asn1.grammar.ASNParser.ConstraintContext;
@@ -50,6 +51,7 @@ import com.yafred.asn1.grammar.ASNParser.ExtensionsOnlyContext;
 import com.yafred.asn1.grammar.ASNParser.GlobalModuleReferenceContext;
 import com.yafred.asn1.grammar.ASNParser.ImportsContext;
 import com.yafred.asn1.grammar.ASNParser.IntegerTypeContext;
+import com.yafred.asn1.grammar.ASNParser.LowerEndPointContext;
 import com.yafred.asn1.grammar.ASNParser.ModuleDefinitionContext;
 import com.yafred.asn1.grammar.ASNParser.ModuleIdentifierContext;
 import com.yafred.asn1.grammar.ASNParser.NamedBitContext;
@@ -76,6 +78,7 @@ import com.yafred.asn1.grammar.ASNParser.TagDefaultContext;
 import com.yafred.asn1.grammar.ASNParser.TaggedTypeContext;
 import com.yafred.asn1.grammar.ASNParser.TypeAssignmentContext;
 import com.yafred.asn1.grammar.ASNParser.TypeContext;
+import com.yafred.asn1.grammar.ASNParser.UpperEndPointContext;
 import com.yafred.asn1.grammar.ASNParser.UsefulTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ValueAssignmentContext;
 import com.yafred.asn1.grammar.ASNParser.ValueContext;
@@ -1092,7 +1095,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 
 	static class ValueRangeVisitor extends ASNBaseVisitor<ValueRangeConstraint> {
 		@Override
-		public ValueRangeConstraint visitValueRange(ValueRangeContext ctx) {
+		public ValueRangeConstraint visitClosedRange(ClosedRangeContext ctx) {
 			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
 			if(ctx.RANGE() != null) {
 				int valueIndex = 0;
@@ -1104,14 +1107,22 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 					valueRangeConstraint.setUpperEndValue(ctx.value().get(valueIndex).accept(new ValueVisitor()));
 				}
 			}
-			else if(ctx.getText().startsWith("<")) {
-				valueRangeConstraint.setUpperEndValue(ctx.value().get(0).accept(new ValueVisitor()));
-			}
-			else {
-				valueRangeConstraint.setLowerEndValue(ctx.value().get(0).accept(new ValueVisitor()));
-			}
-			return valueRangeConstraint;
-		}		
+			return valueRangeConstraint;			
+		}
+
+		@Override
+		public ValueRangeConstraint visitLowerEndPoint(LowerEndPointContext ctx) {
+			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+			valueRangeConstraint.setLowerEndValue(ctx.value().accept(new ValueVisitor()));
+			return valueRangeConstraint;			
+		}
+		
+		@Override
+		public ValueRangeConstraint visitUpperEndPoint(UpperEndPointContext ctx) {
+			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+			valueRangeConstraint.setUpperEndValue(ctx.value().accept(new ValueVisitor()));
+			return valueRangeConstraint;			
+		}
 	}
 }
 
