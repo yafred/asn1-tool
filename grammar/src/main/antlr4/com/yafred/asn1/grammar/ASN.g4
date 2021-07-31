@@ -473,15 +473,15 @@ elements:
 
 /* Subtype elements (see 51 in ITU-T X.680 (08/2015) */
 subtypeElements:
-    value
-    | INCLUDES_LITERAL? type
-    | valueRange  // including DurationRange, TimePointRange, RecurrenceRange
-    | SIZE_LITERAL constraint
-    | type
-    | FROM_LITERAL constraint
-    | WITH_LITERAL COMPONENT_LITERAL constraint
-    | WITH_LITERAL COMPONENTS_LITERAL LCURLY ( ELLIPSIS COMMA )? typeConstraints RCURLY
-    | PATTERN_LITERAL CSTRING
+    value # singleValue
+    | INCLUDES_LITERAL? type # containedSubType
+    | valueRange # range // including DurationRange, TimePointRange, RecurrenceRange 
+    | SIZE_LITERAL constraint # size
+    | type # typeConstraint
+    | FROM_LITERAL constraint # permittedAlphabet
+    | WITH_LITERAL COMPONENT_LITERAL constraint # innerType
+    | WITH_LITERAL COMPONENTS_LITERAL LCURLY ( ELLIPSIS COMMA )? typeConstraints RCURLY # innerTypeMultiple
+    | PATTERN_LITERAL CSTRING # pattern
  // | SETTINGS_LITERAL propertyAndSettingPair propertyAndSettingPair*
 ;
 

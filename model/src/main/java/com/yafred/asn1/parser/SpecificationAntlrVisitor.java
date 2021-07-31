@@ -60,6 +60,7 @@ import com.yafred.asn1.grammar.ASNParser.NamedNumberContext;
 import com.yafred.asn1.grammar.ASNParser.NamedNumberListContext;
 import com.yafred.asn1.grammar.ASNParser.NamedTypeContext;
 import com.yafred.asn1.grammar.ASNParser.NamedValueContext;
+import com.yafred.asn1.grammar.ASNParser.RangeContext;
 import com.yafred.asn1.grammar.ASNParser.ReferencedTypeContext;
 import com.yafred.asn1.grammar.ASNParser.RootComponentOnlyContext;
 import com.yafred.asn1.grammar.ASNParser.RootComponentsAndExtensionsAndAdditionsContext;
@@ -82,7 +83,6 @@ import com.yafred.asn1.grammar.ASNParser.UpperEndPointContext;
 import com.yafred.asn1.grammar.ASNParser.UsefulTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ValueAssignmentContext;
 import com.yafred.asn1.grammar.ASNParser.ValueContext;
-import com.yafred.asn1.grammar.ASNParser.ValueRangeContext;
 import com.yafred.asn1.grammar.ASNParser.ValueReferenceContext;
 import com.yafred.asn1.grammar.ASNParser.Value_BOOLEANContext;
 import com.yafred.asn1.grammar.ASNParser.Value_BSTRINGContext;
@@ -108,6 +108,7 @@ import com.yafred.asn1.model.ChoiceValue;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
 import com.yafred.asn1.model.Constraint;
+import com.yafred.asn1.model.ConstraintSpec;
 import com.yafred.asn1.model.DateTimeType;
 import com.yafred.asn1.model.DateType;
 import com.yafred.asn1.model.TypeReference;
@@ -1076,23 +1077,31 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		@Override
 		public Constraint visitConstraint(ConstraintContext ctx) {
 			Constraint constraint = null;
-			// Proof of concept: we only try to recognize (n ... m) integer range
+			// as of now, we don't handle unions and intersections
 			if (ctx.subtypeConstraint() != null &&
 				ctx.subtypeConstraint().elementSetSpec().size() == 1 &&
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions() != null &&
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().size() == 1 &&
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().size() == 1 &&
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().size() == 1 &&
-				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements() != null &&
-				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().valueRange() != null) {
+				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements() != null ) {
 				constraint = new Constraint();
-				constraint.setConstraintSpec(ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().valueRange().accept(new ValueRangeVisitor()));
+				constraint.setConstraintSpec(ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().accept(new SubtypeElementsVisitor()));
 			}
 
 			return constraint;
 		}
 	}
+	
+	
+	static class SubtypeElementsVisitor extends ASNBaseVisitor<ConstraintSpec> {
+		@Override
+		public ConstraintSpec visitRange(RangeContext ctx) {
+			return ctx.accept(new ValueRangeVisitor());
+		}
+	}
 
+		
 	static class ValueRangeVisitor extends ASNBaseVisitor<ValueRangeConstraint> {
 		@Override
 		public ValueRangeConstraint visitClosedRange(ClosedRangeContext ctx) {
