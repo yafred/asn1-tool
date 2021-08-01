@@ -231,25 +231,6 @@ public class Asn1SpecificationWriter {
 		}
 		out.print(type.getName());
 		
-		if(type.isIntegerType() && type.getConstraint() != null && type.getConstraint().getConstraintSpec() != null) {
-			if(type.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
-				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)type.getConstraint().getConstraintSpec();
-				out.print("(");
-				if(valueRangeConstraint.getLowerEndValue() == null) {
-					out.print("MIN");
-				} else {
-					out.print(valueRangeConstraint.getLowerEndValue().toString());
-				}
-				out.print("..");
-				if(valueRangeConstraint.getUpperEndValue() == null) {
-					out.print("MAX");
-				} else {
-					out.print(valueRangeConstraint.getUpperEndValue().toString());
-				}
-				out.print(")");
-			}	
-		}
-		
 		if(type.isBitStringType()) {
 			visit((BitStringType)type);
 		}
@@ -330,6 +311,25 @@ public class Asn1SpecificationWriter {
 				visit(namedNumber);
 			}
 			out.print(" }");
+		}
+
+		if(integerType.getConstraint() != null && integerType.getConstraint().getConstraintSpec() != null) {
+			if(integerType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
+				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)integerType.getConstraint().getConstraintSpec();
+				out.print("(");
+				if(valueRangeConstraint.getLowerEndValue() == null) {
+					out.print("MIN");
+				} else {
+					out.print(valueRangeConstraint.getLowerEndValue().toString());
+				}
+				out.print("..");
+				if(valueRangeConstraint.getUpperEndValue() == null) {
+					out.print("MAX");
+				} else {
+					out.print(valueRangeConstraint.getUpperEndValue().toString());
+				}
+				out.print(")");
+			}	
 		}
 	}
 	
