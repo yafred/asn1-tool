@@ -1,12 +1,14 @@
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.constraint;
 
-public class ValueRangeConstraint extends ConstraintSpec {
+import com.yafred.asn1.model.Value;
+
+public class ValueRange extends ConstraintElement {
 	
 	Value lowerEndValue;
 	Value upperEndValue;
 	
 	@Override
-	public boolean isValueRangeConstraint() {
+	public boolean isValueRange() {
 		return true;
 	}
 

@@ -31,7 +31,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
-import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 
 public class Asn1ModelBuilder {
 	

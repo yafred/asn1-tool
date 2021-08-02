@@ -50,7 +50,7 @@ import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueListValue;
-import com.yafred.asn1.model.ValueRangeConstraint;
+import com.yafred.asn1.model.constraint.ValueRange;
 
 public class Asn1SpecificationWriter {
 	static class IndentWriter {
@@ -313,9 +313,9 @@ public class Asn1SpecificationWriter {
 			out.print(" }");
 		}
 
-		if(integerType.getConstraint() != null && integerType.getConstraint().getConstraintSpec() != null) {
-			if(integerType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
-				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)integerType.getConstraint().getConstraintSpec();
+		if(integerType.getConstraint() != null && integerType.getConstraint().getConstraintElement() != null) {
+			if(integerType.getConstraint().getConstraintElement().isValueRange()) {
+				ValueRange valueRangeConstraint = (ValueRange)integerType.getConstraint().getConstraintElement();
 				out.print("(");
 				if(valueRangeConstraint.getLowerEndValue() == null) {
 					out.print("MIN");

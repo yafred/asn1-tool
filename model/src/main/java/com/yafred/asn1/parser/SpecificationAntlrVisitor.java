@@ -107,8 +107,6 @@ import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.ChoiceValue;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
-import com.yafred.asn1.model.Constraint;
-import com.yafred.asn1.model.ConstraintSpec;
 import com.yafred.asn1.model.DateTimeType;
 import com.yafred.asn1.model.DateType;
 import com.yafred.asn1.model.TypeReference;
@@ -168,10 +166,12 @@ import com.yafred.asn1.model.UniversalStringType;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueListValue;
-import com.yafred.asn1.model.ValueRangeConstraint;
 import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.VideotexStringType;
 import com.yafred.asn1.model.VisibleStringType;
+import com.yafred.asn1.model.constraint.Constraint;
+import com.yafred.asn1.model.constraint.ConstraintElement;
+import com.yafred.asn1.model.constraint.ValueRange;
 
 public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	
@@ -1086,7 +1086,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().size() == 1 &&
 				ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements() != null ) {
 				constraint = new Constraint();
-				constraint.setConstraintSpec(ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().accept(new SubtypeElementsVisitor()));
+				constraint.setConstraintElement(ctx.subtypeConstraint().elementSetSpec().get(0).unions().intersections().get(0).intersectionElements().get(0).elements().get(0).subtypeElements().accept(new SubtypeElementsVisitor()));
 			}
 
 			return constraint;
@@ -1094,18 +1094,18 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	}
 	
 	
-	static class SubtypeElementsVisitor extends ASNBaseVisitor<ConstraintSpec> {
+	static class SubtypeElementsVisitor extends ASNBaseVisitor<ConstraintElement> {
 		@Override
-		public ConstraintSpec visitRange(RangeContext ctx) {
+		public ConstraintElement visitRange(RangeContext ctx) {
 			return ctx.accept(new ValueRangeVisitor());
 		}
 	}
 
 		
-	static class ValueRangeVisitor extends ASNBaseVisitor<ValueRangeConstraint> {
+	static class ValueRangeVisitor extends ASNBaseVisitor<ValueRange> {
 		@Override
-		public ValueRangeConstraint visitClosedRange(ClosedRangeContext ctx) {
-			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+		public ValueRange visitClosedRange(ClosedRangeContext ctx) {
+			ValueRange valueRangeConstraint = new ValueRange();
 			if(ctx.RANGE() != null) {
 				int valueIndex = 0;
 				if(ctx.MIN_LITERAL() == null) {
@@ -1120,15 +1120,15 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		}
 
 		@Override
-		public ValueRangeConstraint visitLowerEndPoint(LowerEndPointContext ctx) {
-			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+		public ValueRange visitLowerEndPoint(LowerEndPointContext ctx) {
+			ValueRange valueRangeConstraint = new ValueRange();
 			valueRangeConstraint.setLowerEndValue(ctx.value().accept(new ValueVisitor()));
 			return valueRangeConstraint;			
 		}
 		
 		@Override
-		public ValueRangeConstraint visitUpperEndPoint(UpperEndPointContext ctx) {
-			ValueRangeConstraint valueRangeConstraint = new ValueRangeConstraint();
+		public ValueRange visitUpperEndPoint(UpperEndPointContext ctx) {
+			ValueRange valueRangeConstraint = new ValueRange();
 			valueRangeConstraint.setUpperEndValue(ctx.value().accept(new ValueVisitor()));
 			return valueRangeConstraint;			
 		}

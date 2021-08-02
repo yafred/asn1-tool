@@ -33,7 +33,7 @@ import com.yafred.asn1.model.SequenceType;
 import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeReference;
-import com.yafred.asn1.model.ValueRangeConstraint;
+import com.yafred.asn1.model.constraint.ValueRange;
 
 public class ValidationHelper {
 	Generator generator;
@@ -177,8 +177,8 @@ public class ValidationHelper {
 		if(builtinType.isRestrictedCharacterStringType()) {
 		}
 		else if(builtinType.isIntegerType()) {
-			if(builtinType.getConstraint() != null && builtinType.getConstraint().getConstraintSpec() != null && builtinType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
-				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)builtinType.getConstraint().getConstraintSpec();
+			if(builtinType.getConstraint() != null && builtinType.getConstraint().getConstraintElement() != null && builtinType.getConstraint().getConstraintElement().isValueRange()) {
+				ValueRange valueRangeConstraint = (ValueRange)builtinType.getConstraint().getConstraintElement();
 				if(valueRangeConstraint.getLowerEndValue() != null) {
 					output.println("if(" + componentGetter + "<" + valueRangeConstraint.getLowerEndValue() + "){");
 					output.println("throw new Exception();");
@@ -243,8 +243,8 @@ public class ValidationHelper {
 		if(elementType.isRestrictedCharacterStringType()) {
 		}
 		else if(elementType.isIntegerType()) {
-			if(elementType.getConstraint() != null && elementType.getConstraint().getConstraintSpec() != null && elementType.getConstraint().getConstraintSpec().isValueRangeConstraint()) {
-				ValueRangeConstraint valueRangeConstraint = (ValueRangeConstraint)elementType.getConstraint().getConstraintSpec();
+			if(elementType.getConstraint() != null && elementType.getConstraint().getConstraintElement() != null && elementType.getConstraint().getConstraintElement().isValueRange()) {
+				ValueRange valueRangeConstraint = (ValueRange)elementType.getConstraint().getConstraintElement();
 				if(valueRangeConstraint.getLowerEndValue() != null) {
 					output.println("if(" + componentGetter + ".get(i) <" + valueRangeConstraint.getLowerEndValue() + "){");
 					output.println("throw new Exception();");
