@@ -19,54 +19,75 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TokenLocation;
+import com.yafred.asn1.model.Type;
 
-public class GlobalModuleReference {
+public class SelectionType extends Type {
+	private String selection = null;
+	private Type type = null;
+	private Type selectedType = null;
+	private TokenLocation tokenLocation = null;
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
+	public SelectionType(String selection, Type type) {
+		this.selection = selection;
+		this.type = type;
 	}
 	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+	
+    public String getSelection() {
+		return selection;
 	}
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
+
+	public void setSelection(String selection) {
+		this.selection = selection;
 	}
 
+
+	public Type getType() {
+		return type;
+	}
+
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+
+	public Type getSelectedType() {
+		return selectedType;
+	}
+
+
+	public void setSelectedType(Type selectedType) {
+		this.selectedType = selectedType;
+	}
+
+
+	public TokenLocation getTokenLocation() {
+		return tokenLocation;
+	}
+
+	public void setTokenLocation(TokenLocation tokenLocation) {
+		this.tokenLocation = tokenLocation;
+	}
+
+
+	@Override
+	public boolean isSelectionType() {
+        return true;
+    }
+
+    @Override
+	public Tag getUniversalTag() {
+        return null;
+    }
+    
+    @Override
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
+    	return "";
+    }
 }

@@ -25,18 +25,18 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import com.yafred.asn1.model.IntegerType;
-import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
-import com.yafred.asn1.model.EnumeratedType;
-import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.NamedNumber;
-import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.SequenceType;
-import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeReference;
+import com.yafred.asn1.model.type.BitStringType;
+import com.yafred.asn1.model.type.ChoiceType;
+import com.yafred.asn1.model.type.EnumeratedType;
+import com.yafred.asn1.model.type.IntegerType;
+import com.yafred.asn1.model.type.ListOfType;
+import com.yafred.asn1.model.type.NamedType;
+import com.yafred.asn1.model.type.SequenceType;
+import com.yafred.asn1.model.type.SetType;
 
 public class ASNValueHelper {
 	Generator generator;

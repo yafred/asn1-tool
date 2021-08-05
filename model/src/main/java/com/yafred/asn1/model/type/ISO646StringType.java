@@ -19,54 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+public class ISO646StringType extends VisibleStringType {
+    
+    @Override
+	public boolean isISO646StringType() {
+        return true;
+    }
 
-public class GlobalModuleReference {
-	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
-	}
-	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
-	}
-
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
+	@Override
 	public String getName() {
-		return name;
+		return ("ISO646String");
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
 }

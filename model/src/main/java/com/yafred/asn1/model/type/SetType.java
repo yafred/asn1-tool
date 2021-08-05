@@ -19,54 +19,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import java.util.ArrayList;
 
-public class GlobalModuleReference {
-	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
-	}
-	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
-	}
+import com.yafred.asn1.model.Component;
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TagClass;
+import com.yafred.asn1.model.TypeWithComponents;
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
 
+public class SetType extends TypeWithComponents {
+
+    public SetType(ArrayList<Component> rootComponentList,
+    		ArrayList<Component> extensionComponentList,
+    		ArrayList<Component> additionalComponentList) {
+    	super(rootComponentList, extensionComponentList, additionalComponentList);
+    }
+
+    @Override
+	public boolean isSetType() {
+        return true;
+    }
+
+    @Override
+	public Tag getUniversalTag() {
+        return new Tag(Integer.valueOf(17), TagClass.UNIVERSAL_TAG, null);
+    }
+
+     @Override
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
+     	return "SET";
+     }
 }
+
+

@@ -25,21 +25,12 @@ package com.yafred.asn1.parser;
 import java.io.PrintStream;
 
 import com.yafred.asn1.model.Assignment;
-import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.ChoiceValue;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
 import com.yafred.asn1.model.DefinitiveObjectIdComponent;
-import com.yafred.asn1.model.EnumeratedType;
-import com.yafred.asn1.model.IntegerType;
-import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.ModuleIdentifier;
 import com.yafred.asn1.model.NamedNumber;
-import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.NamedValue;
-import com.yafred.asn1.model.NamedValueListValue;
-import com.yafred.asn1.model.SelectionType;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.SymbolsFromModule;
 import com.yafred.asn1.model.Tag;
@@ -49,8 +40,17 @@ import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
-import com.yafred.asn1.model.ValueListValue;
 import com.yafred.asn1.model.constraint.ValueRange;
+import com.yafred.asn1.model.type.BitStringType;
+import com.yafred.asn1.model.type.EnumeratedType;
+import com.yafred.asn1.model.type.IntegerType;
+import com.yafred.asn1.model.type.ListOfType;
+import com.yafred.asn1.model.type.NamedType;
+import com.yafred.asn1.model.type.SelectionType;
+import com.yafred.asn1.model.value.ChoiceValue;
+import com.yafred.asn1.model.value.NamedValue;
+import com.yafred.asn1.model.value.NamedValueListValue;
+import com.yafred.asn1.model.value.ValueListValue;
 
 public class Asn1SpecificationWriter {
 	static class IndentWriter {

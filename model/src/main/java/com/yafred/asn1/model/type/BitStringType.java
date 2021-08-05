@@ -19,54 +19,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import java.util.ArrayList;
 
-public class GlobalModuleReference {
+import com.yafred.asn1.model.NamedNumber;
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TagClass;
+import com.yafred.asn1.model.Type;
+
+
+public class BitStringType extends Type {
+
+	private ArrayList<NamedNumber> namedBitList = null;
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
-	}
-	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+	public BitStringType() {
+    }
+
+	public BitStringType(ArrayList<NamedNumber> namedBitList) {
+        this.namedBitList = namedBitList;
+    }
+
+    public void setNamedBitList(ArrayList<NamedNumber> namedBitList) {
+        this.namedBitList = namedBitList;
+    }
+
+    public ArrayList<NamedNumber> getNamedBitList() {
+		return namedBitList;
 	}
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
+	@Override
+	public boolean isBitStringType() {
+        return true;
+    }
 
+    @Override
+	public Tag getUniversalTag() {
+        return new Tag(Integer.valueOf(3), TagClass.UNIVERSAL_TAG, null);
+    }
+    
+	@Override
 	public String getName() {
-		return name;
+		return ("BIT STRING");
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
 }

@@ -19,54 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import java.util.ArrayList;
 
-public class GlobalModuleReference {
+import com.yafred.asn1.model.NamedNumber;
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TagClass;
+import com.yafred.asn1.model.Type;
+
+public class IntegerType extends Type {
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
+	ArrayList<NamedNumber> namedNumberList;
 	
-	public GlobalModuleReference(String name) {
-		this.name = name;
+	public IntegerType() {
+		
 	}
 	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+	public void setNamedNumberList(ArrayList<NamedNumber> namedNumberList) {
+		this.namedNumberList = namedNumberList;
 	}
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
+	public ArrayList<NamedNumber> getNamedNumberList() {
+		return namedNumberList;
 	}
 
+	@Override
+	public boolean isIntegerType() {
+        return true;
+    }
+
+    @Override
+	public Tag getUniversalTag() {
+        return new Tag(Integer.valueOf(2), TagClass.UNIVERSAL_TAG, null);
+    }
+    
+	@Override
 	public String getName() {
-		return name;
+		return ("INTEGER");
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
 }

@@ -37,19 +37,19 @@ import java.util.Map.Entry;
 
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
-import com.yafred.asn1.model.BitStringType;
 import com.yafred.asn1.model.Component;
-import com.yafred.asn1.model.EnumeratedType;
-import com.yafred.asn1.model.IntegerType;
-import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
-import com.yafred.asn1.model.NamedType;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
 import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
+import com.yafred.asn1.model.type.BitStringType;
+import com.yafred.asn1.model.type.EnumeratedType;
+import com.yafred.asn1.model.type.IntegerType;
+import com.yafred.asn1.model.type.ListOfType;
+import com.yafred.asn1.model.type.NamedType;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 
 public class Generator {

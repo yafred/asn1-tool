@@ -19,54 +19,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import com.yafred.asn1.model.Type;
 
-public class GlobalModuleReference {
+abstract public class RestrictedCharacterStringType extends Type {
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
+	public boolean isRestrictedCharacterStringType() {
+		return true;
 	}
 	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+	public boolean isBMPStringType() {
+		return false;
 	}
-
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
+	
+	public boolean isGeneralStringType() {
+		return false;		
 	}
-
-	public String getName() {
-		return name;
+	
+	public boolean isGraphicStringType() {
+		return false;		
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	public boolean isIA5StringType() {
+		return false;		
 	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
+	
+	public boolean isISO646StringType() {
+		return false;		
 	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
+	
+	public boolean isNumericStringType() {
+		return false;		
 	}
-
-	public String getDefinedValue() {
-		return definedValue;
+	
+	public boolean isPrintableStringType() {
+		return false;		
 	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
+	
+	public boolean isTeletexStringType() {
+		return false;		
 	}
-
-
-
+	
+	public boolean isT61StringType() {
+		return false;		
+	}
+	
+	public boolean isUniversalStringType() {
+		return false;		
+	}
+	
+	public boolean isUTF8StringType() {
+		return false;		
+	}
+	
+	public boolean isVideotexStringType() {
+		return false;		
+	}
+	
+	public boolean isVisibleStringType() {
+		return false;		
+	}
 }

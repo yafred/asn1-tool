@@ -19,54 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.value;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import java.util.ArrayList;
 
-public class GlobalModuleReference {
+import com.yafred.asn1.model.Value;
+
+public class NamedValueListValue extends Value {
+	ArrayList<NamedValue> valueList; 
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
+	public NamedValueListValue(ArrayList<NamedValue> valueList) {
+		this.valueList = valueList;
 	}
 	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+    public ArrayList<NamedValue> getValueList() {
+		return valueList;
 	}
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
+	public void setValueList(ArrayList<NamedValue> valueList) {
+		this.valueList = valueList;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
+	@Override
+	public boolean isNamedValueList() {
+        return true;
+    }
 }

@@ -29,20 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.yafred.asn1.model.Assignment;
-import com.yafred.asn1.model.BitStringType;
-import com.yafred.asn1.model.ChoiceType;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
-import com.yafred.asn1.model.EnumeratedType;
-import com.yafred.asn1.model.IntegerType;
-import com.yafred.asn1.model.IntegerValue;
-import com.yafred.asn1.model.ListOfType;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
-import com.yafred.asn1.model.NamedType;
-import com.yafred.asn1.model.SelectionType;
-import com.yafred.asn1.model.SequenceType;
-import com.yafred.asn1.model.SetType;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.SymbolsFromModule;
 import com.yafred.asn1.model.Tag;
@@ -56,6 +46,16 @@ import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueReference;
+import com.yafred.asn1.model.type.BitStringType;
+import com.yafred.asn1.model.type.ChoiceType;
+import com.yafred.asn1.model.type.EnumeratedType;
+import com.yafred.asn1.model.type.IntegerType;
+import com.yafred.asn1.model.type.ListOfType;
+import com.yafred.asn1.model.type.NamedType;
+import com.yafred.asn1.model.type.SelectionType;
+import com.yafred.asn1.model.type.SequenceType;
+import com.yafred.asn1.model.type.SetType;
+import com.yafred.asn1.model.value.IntegerValue;
 
 public class Asn1ModelValidator {
 	private ArrayList<String> errorList = new ArrayList<String>();

@@ -19,54 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.value;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import com.yafred.asn1.model.Value;
 
-public class GlobalModuleReference {
+public class IntegerValue extends Value {
+	int value = 0;
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
+	public IntegerValue(int value) {
+		this.value = value;
 	}
 	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
+    public int getValue() {
+		return value;
 	}
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
+	public void setValue(int value) {
+		this.value = value;
 	}
 
-	public String getName() {
-		return name;
-	}
+	@Override
+	public boolean isIntegerValue() {
+        return true;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
+    @Override
+	public String toString() {
+    	return Integer.toString(value, 10);
+    }
 }

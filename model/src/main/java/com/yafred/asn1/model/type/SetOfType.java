@@ -19,54 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
-import com.yafred.asn1.model.value.ObjectIdentifierValue;
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TagClass;
 
-public class GlobalModuleReference {
+public class SetOfType extends ListOfType {
 	
-	private String name = null;
-	private ObjectIdentifierValue objectIdentifierValue = null; 	
-	private String definedValue = null;
-	
-	public GlobalModuleReference(String name) {
-		this.name = name;
-	}
-	
-	public GlobalModuleReference(String name, String definedValue) {
-		this.name = name;
-		this.definedValue = definedValue;
-	}
+    public SetOfType(NamedType element) {
+    	super(element);
+    }
 
-	public GlobalModuleReference(String name, ObjectIdentifierValue objectIdentifierValue) {
-		this.name = name;
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
+    @Override
+	public boolean isSetOfType() {
+        return true;
+    }
+    
+    @Override
+	public Tag getUniversalTag() {
+        return new Tag(Integer.valueOf(17), TagClass.UNIVERSAL_TAG, null);
+    }
+    
+	@Override
 	public String getName() {
-		return name;
+		return ("SET OF");
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ObjectIdentifierValue getObjectIdentifierValue() {
-		return objectIdentifierValue;
-	}
-
-	public void setObjectIdentifierValue(ObjectIdentifierValue objectIdentifierValue) {
-		this.objectIdentifierValue = objectIdentifierValue;
-	}
-
-	public String getDefinedValue() {
-		return definedValue;
-	}
-
-	public void setDefinedValue(String definedValue) {
-		this.definedValue = definedValue;
-	}
-
-
-
 }

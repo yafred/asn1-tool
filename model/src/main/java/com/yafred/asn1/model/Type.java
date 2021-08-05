@@ -23,7 +23,7 @@ package com.yafred.asn1.model;
 
 import java.util.ArrayList;
 
-import com.yafred.asn1.model.constraint.Constraint;
+import com.yafred.asn1.model.type.SelectionType;
 
 /**
  * Abstract base for all ASN.1 types
