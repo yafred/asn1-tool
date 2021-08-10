@@ -19,9 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.model;
+package com.yafred.asn1.model.type;
 
 import java.util.ArrayList;
+
+import com.yafred.asn1.model.Tag;
+import com.yafred.asn1.model.TokenLocation;
+import com.yafred.asn1.model.Type;
 
 public class TypeReference extends Type {
     /**
@@ -98,8 +102,8 @@ public class TypeReference extends Type {
 	 */
     public ArrayList<Tag> getFullTagList() {
     	ArrayList<Tag> fullTagList = new ArrayList<Tag>();
-    	if(tagList != null) {
-    		fullTagList.addAll(tagList);
+    	if(getTagList() != null) {
+    		fullTagList.addAll(getTagList());
     	}
 		if(referencedType != null) {
 			if(referencedType.isTypeReference()) {

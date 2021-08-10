@@ -28,7 +28,7 @@ import java.util.List;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.TagMode;
 import com.yafred.asn1.model.Type;
-import com.yafred.asn1.model.TypeReference;
+import com.yafred.asn1.model.type.TypeReference;
 
 public class Utils {
 

@@ -27,13 +27,13 @@ import java.util.ArrayList;
 
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.Type;
-import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.constraint.ValueRange;
 import com.yafred.asn1.model.type.ChoiceType;
 import com.yafred.asn1.model.type.ListOfType;
 import com.yafred.asn1.model.type.NamedType;
 import com.yafred.asn1.model.type.SequenceType;
 import com.yafred.asn1.model.type.SetType;
+import com.yafred.asn1.model.type.TypeReference;
 
 public class ValidationHelper {
 	Generator generator;

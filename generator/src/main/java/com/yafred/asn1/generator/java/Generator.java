@@ -43,13 +43,13 @@ import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
-import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.type.BitStringType;
 import com.yafred.asn1.model.type.EnumeratedType;
 import com.yafred.asn1.model.type.IntegerType;
 import com.yafred.asn1.model.type.ListOfType;
 import com.yafred.asn1.model.type.NamedType;
+import com.yafred.asn1.model.type.TypeReference;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 
 public class Generator {

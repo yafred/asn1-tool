@@ -24,6 +24,7 @@ package com.yafred.asn1.model;
 import java.util.ArrayList;
 
 import com.yafred.asn1.model.type.SelectionType;
+import com.yafred.asn1.model.type.TypeReference;
 
 /**
  * Abstract base for all ASN.1 types

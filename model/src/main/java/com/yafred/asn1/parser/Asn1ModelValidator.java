@@ -41,7 +41,6 @@ import com.yafred.asn1.model.TagDefault;
 import com.yafred.asn1.model.TagMode;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
-import com.yafred.asn1.model.TypeReference;
 import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
@@ -55,6 +54,7 @@ import com.yafred.asn1.model.type.NamedType;
 import com.yafred.asn1.model.type.SelectionType;
 import com.yafred.asn1.model.type.SequenceType;
 import com.yafred.asn1.model.type.SetType;
+import com.yafred.asn1.model.type.TypeReference;
 import com.yafred.asn1.model.value.IntegerValue;
 
 public class Asn1ModelValidator {
