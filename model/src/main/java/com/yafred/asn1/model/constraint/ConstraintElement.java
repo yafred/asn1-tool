@@ -21,4 +21,8 @@ public abstract class ConstraintElement {
 	public boolean isValueRange() {
 		return false;
 	}
+
+	public boolean isSize() {
+		return false;
+	}
 }

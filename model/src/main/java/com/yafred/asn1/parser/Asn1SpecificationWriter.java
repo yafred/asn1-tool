@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ComponentsOf;
+import com.yafred.asn1.model.Constraint;
 import com.yafred.asn1.model.DefinitiveObjectIdComponent;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.ModuleIdentifier;
@@ -51,6 +52,7 @@ import com.yafred.asn1.model.value.ChoiceValue;
 import com.yafred.asn1.model.value.NamedValue;
 import com.yafred.asn1.model.value.NamedValueListValue;
 import com.yafred.asn1.model.value.ValueListValue;
+import com.yafred.asn1.parser.SpecificationAntlrVisitor.ConstraintVisitor;
 
 public class Asn1SpecificationWriter {
 	static class IndentWriter {
@@ -250,6 +252,7 @@ public class Asn1SpecificationWriter {
 		if(type.isSelectionType()) {
 			visitSelectionType((SelectionType)type);
 		}
+		visit(type.getConstraint());
 	}
 	
 	private void visit(BitStringType bitStringType) {
@@ -311,25 +314,6 @@ public class Asn1SpecificationWriter {
 				visit(namedNumber);
 			}
 			out.print(" }");
-		}
-
-		if(integerType.getConstraint() != null && integerType.getConstraint().getConstraintElement() != null) {
-			if(integerType.getConstraint().getConstraintElement().isValueRange()) {
-				ValueRange valueRangeConstraint = (ValueRange)integerType.getConstraint().getConstraintElement();
-				out.print("(");
-				if(valueRangeConstraint.getLowerEndValue() == null) {
-					out.print("MIN");
-				} else {
-					out.print(valueRangeConstraint.getLowerEndValue().toString());
-				}
-				out.print("..");
-				if(valueRangeConstraint.getUpperEndValue() == null) {
-					out.print("MAX");
-				} else {
-					out.print(valueRangeConstraint.getUpperEndValue().toString());
-				}
-				out.print(")");
-			}	
 		}
 	}
 	
@@ -482,5 +466,26 @@ public class Asn1SpecificationWriter {
 			visit(value);
 		}
 		out.print(" }");
+	}
+	
+	private void visit(Constraint constraint) {
+		if(constraint != null && constraint.getConstraintElement() != null) {
+			if(constraint.getConstraintElement().isValueRange()) {
+				ValueRange valueRangeConstraint = (ValueRange)constraint.getConstraintElement();
+				out.print("(");
+				if(valueRangeConstraint.getLowerEndValue() == null) {
+					out.print("MIN");
+				} else {
+					out.print(valueRangeConstraint.getLowerEndValue().toString());
+				}
+				out.print("..");
+				if(valueRangeConstraint.getUpperEndValue() == null) {
+					out.print("MAX");
+				} else {
+					out.print(valueRangeConstraint.getUpperEndValue().toString());
+				}
+				out.print(")");
+			}	
+		}	
 	}
 }

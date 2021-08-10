@@ -70,6 +70,7 @@ import com.yafred.asn1.grammar.ASNParser.SequenceOfTypeContext;
 import com.yafred.asn1.grammar.ASNParser.SequenceTypeContext;
 import com.yafred.asn1.grammar.ASNParser.SetOfTypeContext;
 import com.yafred.asn1.grammar.ASNParser.SetTypeContext;
+import com.yafred.asn1.grammar.ASNParser.SizeContext;
 import com.yafred.asn1.grammar.ASNParser.SpecificationContext;
 import com.yafred.asn1.grammar.ASNParser.SymbolContext;
 import com.yafred.asn1.grammar.ASNParser.SymbolListContext;
@@ -117,6 +118,7 @@ import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
 import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.constraint.ConstraintElement;
+import com.yafred.asn1.model.constraint.Size;
 import com.yafred.asn1.model.constraint.ValueRange;
 import com.yafred.asn1.model.type.BMPStringType;
 import com.yafred.asn1.model.type.BitStringType;
@@ -1099,6 +1101,16 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		public ConstraintElement visitRange(RangeContext ctx) {
 			return ctx.accept(new ValueRangeVisitor());
 		}
+		@Override
+		public ConstraintElement visitSize(SizeContext ctx) {
+			Size sizeConstraint = new Size();
+			Constraint constraint = ctx.constraint().accept(new ConstraintVisitor());
+			if(constraint != null && constraint.getConstraintElement() != null) {
+				sizeConstraint.setConstraintElement(constraint.getConstraintElement());				
+			}
+			return sizeConstraint;
+		}
+		
 	}
 
 		
