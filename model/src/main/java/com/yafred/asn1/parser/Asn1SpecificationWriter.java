@@ -40,6 +40,7 @@ import com.yafred.asn1.model.TypeAssignment;
 import com.yafred.asn1.model.TypeWithComponents;
 import com.yafred.asn1.model.Value;
 import com.yafred.asn1.model.ValueAssignment;
+import com.yafred.asn1.model.constraint.Size;
 import com.yafred.asn1.model.constraint.ValueRange;
 import com.yafred.asn1.model.type.BitStringType;
 import com.yafred.asn1.model.type.EnumeratedType;
@@ -473,19 +474,31 @@ public class Asn1SpecificationWriter {
 			if(constraint.getConstraintElement().isValueRange()) {
 				ValueRange valueRangeConstraint = (ValueRange)constraint.getConstraintElement();
 				out.print("(");
-				if(valueRangeConstraint.getLowerEndValue() == null) {
-					out.print("MIN");
-				} else {
-					out.print(valueRangeConstraint.getLowerEndValue().toString());
-				}
-				out.print("..");
-				if(valueRangeConstraint.getUpperEndValue() == null) {
-					out.print("MAX");
-				} else {
-					out.print(valueRangeConstraint.getUpperEndValue().toString());
-				}
+				visit(valueRangeConstraint);
 				out.print(")");
-			}	
+			}
+			if(constraint.getConstraintElement().isSize()) {
+				if(((Size)constraint.getConstraintElement()).getConstraintElement() != null && ((Size)constraint.getConstraintElement()).getConstraintElement().isValueRange()) {
+					out.print("(SIZE(");
+					visit((ValueRange)((Size)constraint.getConstraintElement()).getConstraintElement());
+					out.print("))");			
+				}
+			}
 		}	
+	}
+	
+	private void visit(ValueRange valueRange) {
+		if(valueRange.getLowerEndValue() == null) {
+			out.print("MIN");
+		} else {
+			out.print(valueRange.getLowerEndValue().toString());
+		}
+		out.print("..");
+		if(valueRange.getUpperEndValue() == null) {
+			out.print("MAX");
+		} else {
+			out.print(valueRange.getUpperEndValue().toString());
+		}
+		
 	}
 }

@@ -904,6 +904,10 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 				Type type = ctx.type().accept(new TypeVisitor());
 				sequenceOfType = new SequenceOfType(new NamedType(null, type));
 			}
+			if (ctx.constraint() != null) {
+				sequenceOfType.setConstraint(
+						ctx.constraint().accept(new ConstraintVisitor()));
+			}
 			return sequenceOfType;
 		}
 	}	
@@ -920,6 +924,10 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			else {
 				Type type = ctx.type().accept(new TypeVisitor());
 				setOfType = new SetOfType(new NamedType(null, type));
+			}
+			if (ctx.constraint() != null) {
+				setOfType.setConstraint(
+						ctx.constraint().accept(new ConstraintVisitor()));
 			}
 			return setOfType;
 		}
