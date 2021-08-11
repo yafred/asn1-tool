@@ -53,7 +53,6 @@ import com.yafred.asn1.model.value.ChoiceValue;
 import com.yafred.asn1.model.value.NamedValue;
 import com.yafred.asn1.model.value.NamedValueListValue;
 import com.yafred.asn1.model.value.ValueListValue;
-import com.yafred.asn1.parser.SpecificationAntlrVisitor.ConstraintVisitor;
 
 public class Asn1SpecificationWriter {
 	static class IndentWriter {
