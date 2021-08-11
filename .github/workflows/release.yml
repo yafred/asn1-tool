@@ -31,7 +31,7 @@ jobs:
       - name: Publish artifacts
         uses: skx/github-action-publish-binaries@master
         env:
-          GITHUB_TOKEN: ${{ secrets.PUBLISH_ARTIFACTS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: "./dist/*"
  
