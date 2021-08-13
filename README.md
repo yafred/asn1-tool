@@ -150,9 +150,7 @@ System.out.println(asnValueWriter.toString());
 */
 ```
 
-### ASN.1 constraints (just starting ...)
-
-Only the INTEGER value range constraint is supported.
+### ASN.1 constraints
 
 ```
 /*
@@ -172,4 +170,15 @@ catch(Exception e) {
    // failed validation
    // no explanation yet
 }
+```
+
+Just the beginning ...
+
+* Value range constraint on INTEGER
+```
+INTEGER (100..200))
+```
+* Value range Size constraint on SET OF and SEQUENCE OF 
+```
+SEQUENCE (SIZE(0..10)) OF IA5String
 ```
