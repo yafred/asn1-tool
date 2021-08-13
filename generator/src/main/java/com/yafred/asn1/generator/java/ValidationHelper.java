@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.Type;
+import com.yafred.asn1.model.constraint.ConstraintElement;
+import com.yafred.asn1.model.constraint.Size;
 import com.yafred.asn1.model.constraint.ValueRange;
 import com.yafred.asn1.model.type.ChoiceType;
 import com.yafred.asn1.model.type.ListOfType;
@@ -132,6 +134,24 @@ public class ValidationHelper {
 		}		
 
 		output.println("if(instance.getValue() != null) {");
+		
+		if(listOfType.getConstraint() != null && listOfType.getConstraint().getConstraintElement().isSize()) {
+			Size sizeConstraint = (Size)listOfType.getConstraint().getConstraintElement();
+			if(sizeConstraint.getConstraintElement() != null && sizeConstraint.getConstraintElement().isValueRange()) {
+				ValueRange valueRange = (ValueRange)sizeConstraint.getConstraintElement();
+				if(valueRange.getLowerEndValue() != null) {
+					output.println("if(instance.getValue().size() <" + valueRange.getLowerEndValue() + "){");
+					output.println("throw new Exception(\" size of value should not be < " + valueRange.getLowerEndValue() + "\");");
+					output.println("}");
+				}
+				if(valueRange.getUpperEndValue() != null) {
+					output.println("if(instance.getValue().size() >" + valueRange.getUpperEndValue() + "){");
+					output.println("throw new Exception(\" size of value should not be > " + valueRange.getUpperEndValue() + "\");");
+					output.println("}");
+				}					
+			}
+		}
+		
 		output.println("for(int i=0; i<instance.getValue().size(); i++) {");
 		
 		processListElement(elementType, elementClassName, "value");
@@ -178,15 +198,15 @@ public class ValidationHelper {
 		}
 		else if(builtinType.isIntegerType()) {
 			if(builtinType.getConstraint() != null && builtinType.getConstraint().getConstraintElement() != null && builtinType.getConstraint().getConstraintElement().isValueRange()) {
-				ValueRange valueRangeConstraint = (ValueRange)builtinType.getConstraint().getConstraintElement();
-				if(valueRangeConstraint.getLowerEndValue() != null) {
-					output.println("if(" + componentGetter + "<" + valueRangeConstraint.getLowerEndValue() + "){");
-					output.println("throw new Exception(\"" + componentName + " should not be < " + valueRangeConstraint.getLowerEndValue() + "\");");
+				ValueRange valueRange = (ValueRange)builtinType.getConstraint().getConstraintElement();
+				if(valueRange.getLowerEndValue() != null) {
+					output.println("if(" + componentGetter + "<" + valueRange.getLowerEndValue() + "){");
+					output.println("throw new Exception(\"" + componentName + " should not be < " + valueRange.getLowerEndValue() + "\");");
 					output.println("}");
 				}
-				if(valueRangeConstraint.getUpperEndValue() != null) {
-					output.println("if(" + componentGetter + ">" + valueRangeConstraint.getUpperEndValue() + "){");
-					output.println("throw new Exception(\"" + componentName + " should not be > " + valueRangeConstraint.getUpperEndValue() + "\");");
+				if(valueRange.getUpperEndValue() != null) {
+					output.println("if(" + componentGetter + ">" + valueRange.getUpperEndValue() + "){");
+					output.println("throw new Exception(\"" + componentName + " should not be > " + valueRange.getUpperEndValue() + "\");");
 					output.println("}");
 				}
 			}
@@ -226,6 +246,24 @@ public class ValidationHelper {
 				}
 			}
 			output.println("if(" + componentGetter + " != null) {");
+			
+			if(type.getConstraint() != null && type.getConstraint().getConstraintElement().isSize()) {
+				Size sizeConstraint = (Size)type.getConstraint().getConstraintElement();
+				if(sizeConstraint.getConstraintElement() != null && sizeConstraint.getConstraintElement().isValueRange()) {
+					ValueRange valueRange = (ValueRange)sizeConstraint.getConstraintElement();
+					if(valueRange.getLowerEndValue() != null) {
+						output.println("if(" + componentGetter + ".size() <" + valueRange.getLowerEndValue() + "){");
+						output.println("throw new Exception(\" size of " + componentName + " should not be < " + valueRange.getLowerEndValue() + "\");");
+						output.println("}");
+					}
+					if(valueRange.getUpperEndValue() != null) {
+						output.println("if(" + componentGetter + ".size() >" + valueRange.getUpperEndValue() + "){");
+						output.println("throw new Exception(\" size of " + componentName + " should not be > " + valueRange.getUpperEndValue() + "\");");
+						output.println("}");
+					}					
+				}
+			}
+						
 			output.println("for(int i=0;i<" + componentGetter + ".size(); i++) {");
 			processListElement(elementType, elementClassName, componentName);
 			output.println("}");

@@ -1,0 +1,11 @@
+-- Testing List OF SIZE constraint
+G-030 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Route ::= SEQUENCE (SIZE(2..10)) OF VisibleString
+
+Flight ::= SEQUENCE {
+    properties SET (SIZE(0..2)) OF SET { name VisibleString, value VisibleString  }
+}
+
+END

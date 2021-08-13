@@ -231,28 +231,41 @@ public class Asn1SpecificationWriter {
 				}
 			}
 		}
-		out.print(type.getName());
 		
-		if(type.isBitStringType()) {
-			visit((BitStringType)type);
-		}
-		if(type.isEnumeratedType()) {
-			visitEnumeratedType((EnumeratedType)type);
-		}
-		if(type.isIntegerType()) {
-			visitIntegerType((IntegerType)type);
-		}
-		if(type.isTypeWithComponents()) {
-			visit((TypeWithComponents)type);
-		}
 		if(type.isListOfType()) {
-			out.print(" ");
-			visitListOfType((ListOfType)type);
+			if(type.isSetOfType()) {
+				out.print("SET ");
+			}
+			else {
+				out.print("SEQUENCE ");				
+			}
+			boolean hasConstraint = visit(type.getConstraint());
+			if(hasConstraint) {
+				out.print(" ");
+			}
+			out.print("OF ");
+			visitListOfType((ListOfType)type);			
 		}
-		if(type.isSelectionType()) {
-			visitSelectionType((SelectionType)type);
+		else {
+			out.print(type.getName());
+			
+			if(type.isBitStringType()) {
+				visit((BitStringType)type);
+			}
+			if(type.isEnumeratedType()) {
+				visitEnumeratedType((EnumeratedType)type);
+			}
+			if(type.isIntegerType()) {
+				visitIntegerType((IntegerType)type);
+			}
+			if(type.isTypeWithComponents()) {
+				visit((TypeWithComponents)type);
+			}
+			if(type.isSelectionType()) {
+				visitSelectionType((SelectionType)type);
+			}
+			visit(type.getConstraint());
 		}
-		visit(type.getConstraint());
 	}
 	
 	private void visit(BitStringType bitStringType) {
@@ -468,22 +481,26 @@ public class Asn1SpecificationWriter {
 		out.print(" }");
 	}
 	
-	private void visit(Constraint constraint) {
+	private boolean visit(Constraint constraint) {
+		boolean ret = false;
 		if(constraint != null && constraint.getConstraintElement() != null) {
 			if(constraint.getConstraintElement().isValueRange()) {
 				ValueRange valueRangeConstraint = (ValueRange)constraint.getConstraintElement();
 				out.print("(");
 				visit(valueRangeConstraint);
 				out.print(")");
+				ret = true;
 			}
 			if(constraint.getConstraintElement().isSize()) {
 				if(((Size)constraint.getConstraintElement()).getConstraintElement() != null && ((Size)constraint.getConstraintElement()).getConstraintElement().isValueRange()) {
 					out.print("(SIZE(");
 					visit((ValueRange)((Size)constraint.getConstraintElement()).getConstraintElement());
-					out.print("))");			
+					out.print("))");
+					ret = true;
 				}
 			}
-		}	
+		}
+		return ret;
 	}
 	
 	private void visit(ValueRange valueRange) {
