@@ -181,12 +181,12 @@ public class ValidationHelper {
 				ValueRange valueRangeConstraint = (ValueRange)builtinType.getConstraint().getConstraintElement();
 				if(valueRangeConstraint.getLowerEndValue() != null) {
 					output.println("if(" + componentGetter + "<" + valueRangeConstraint.getLowerEndValue() + "){");
-					output.println("throw new Exception();");
+					output.println("throw new Exception(\"" + componentName + " should not be < " + valueRangeConstraint.getLowerEndValue() + "\");");
 					output.println("}");
 				}
 				if(valueRangeConstraint.getUpperEndValue() != null) {
 					output.println("if(" + componentGetter + ">" + valueRangeConstraint.getUpperEndValue() + "){");
-					output.println("throw new Exception();");
+					output.println("throw new Exception(\"" + componentName + " should not be > " + valueRangeConstraint.getUpperEndValue() + "\");");
 					output.println("}");
 				}
 			}
@@ -247,12 +247,12 @@ public class ValidationHelper {
 				ValueRange valueRangeConstraint = (ValueRange)elementType.getConstraint().getConstraintElement();
 				if(valueRangeConstraint.getLowerEndValue() != null) {
 					output.println("if(" + componentGetter + ".get(i) <" + valueRangeConstraint.getLowerEndValue() + "){");
-					output.println("throw new Exception();");
+					output.println("throw new Exception(\"" + componentName + " should not be < " + valueRangeConstraint.getLowerEndValue() + "\");");
 					output.println("}");
 				}
 				if(valueRangeConstraint.getUpperEndValue() != null) {
 					output.println("if(" + componentGetter + ".get(i) >" + valueRangeConstraint.getUpperEndValue() + "){");
-					output.println("throw new Exception();");
+					output.println("throw new Exception(\"" + componentName + " should not be > " + valueRangeConstraint.getUpperEndValue() + "\");");
 					output.println("}");
 				}
 			}
