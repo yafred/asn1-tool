@@ -34,7 +34,7 @@ import com.yafred.asn1.runtime.BERWriter;
 
 public class TestHelper {
 
-	Object readPdu(Class valueClass, Class berClass, String hexaAsString) throws Exception {
+	Object readPdu(Class<?> valueClass, Class<?> berClass, String hexaAsString) throws Exception {
 		Method method = berClass.getMethod("readPdu", new Class[] { BERReader.class });
 
 		byte[] hexa = BERDumper.bytesFromString(hexaAsString);
@@ -48,7 +48,7 @@ public class TestHelper {
 		return ret;
 	}
 
-	void writePdu(Object pdu, Class berClass, String expectedHexa) throws Exception {
+	void writePdu(Object pdu, Class<?> berClass, String expectedHexa) throws Exception {
 		Method method = berClass.getMethod("writePdu", new Class[] { pdu.getClass(), BERWriter.class });
 		ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
 		BERWriter writer = new BERWriter(bufferOut);
