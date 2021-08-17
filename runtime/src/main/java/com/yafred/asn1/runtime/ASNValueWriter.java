@@ -332,10 +332,6 @@ public class ASNValueWriter {
             return indent;
         }
 
-        public boolean isEmpty() {
-            return isEmpty;
-        }
-
         public void setEmpty(boolean isEmpty) {
             this.isEmpty = isEmpty;
         }

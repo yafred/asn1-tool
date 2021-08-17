@@ -34,8 +34,6 @@ import java.io.Writer;
 
 import java.util.ArrayList;
 
-import com.yafred.asn1.runtime.BERReader;
-
 
 public class BERDumper {
     static private final String INDENT = " ";

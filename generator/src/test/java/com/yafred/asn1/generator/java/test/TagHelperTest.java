@@ -21,6 +21,9 @@
  ******************************************************************************/
 package com.yafred.asn1.generator.java.test;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.yafred.asn1.generator.java.TagHelper;
@@ -37,6 +40,8 @@ public class TagHelperTest {
 		byte[] encoded = tagHelper.getByteArray();
 		String tagComment = tagHelper.toString();
 
+		assertArrayEquals(encoded, new byte[] { 0x1f, 0x20});
+		assertEquals(tagComment, "PRIMITIVE_UNIVERSAL_32");
 	}
 	
 }

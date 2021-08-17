@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.Type;
-import com.yafred.asn1.model.constraint.ConstraintElement;
 import com.yafred.asn1.model.constraint.Size;
 import com.yafred.asn1.model.constraint.ValueRange;
 import com.yafred.asn1.model.type.ChoiceType;

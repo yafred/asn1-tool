@@ -138,7 +138,7 @@ public class TestGeneratedCode_009 {
     	InputStream inputStream = new ByteArrayInputStream(asnValue.getBytes(StandardCharsets.UTF_8));
     	ASNValueReader asnValueReader = new ASNValueReader(inputStream);
     	
-    	FlightWithOptional decodedPdu = FlightWithOptional.readPdu(asnValueReader);
+    	FlightWithOptional.readPdu(asnValueReader);
 	}
 
 	@Test

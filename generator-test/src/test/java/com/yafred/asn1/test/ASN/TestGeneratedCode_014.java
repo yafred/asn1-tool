@@ -32,8 +32,6 @@ import java.nio.charset.StandardCharsets;
 import com.yafred.asn1.runtime.ASNValueReader;
 import com.yafred.asn1.runtime.ASNValueWriter;
 
-import g_012.MyIntegerList;
-
 import org.junit.Test;
 
 import g_014.Audience;

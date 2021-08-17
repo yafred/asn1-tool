@@ -22,15 +22,12 @@
 package com.yafred.asn1.test.BER;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
 
 import org.junit.Test;
 
-import g_028.MySubChoice;
 import g_028.MyChoice;
+import g_028.MySubChoice;
 import g_028.MySubSequence;
 import g_028.MySubSet;
 

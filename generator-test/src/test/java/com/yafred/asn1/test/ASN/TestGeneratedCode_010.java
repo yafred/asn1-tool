@@ -29,8 +29,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
-import java.util.BitSet;
-
 import org.junit.Test;
 
 import com.yafred.asn1.runtime.ASNValueReader;

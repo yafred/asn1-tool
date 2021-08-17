@@ -143,19 +143,19 @@ public class BERTag {
 
         if (tagNumber < 31) {
             int1 += tagNumber;
-            result.add(new Byte((byte) int1));
+            result.add(Byte.valueOf((byte) int1));
         } else {
             int1 += 31;
-            result.add(new Byte((byte) int1));
+            result.add(Byte.valueOf((byte) int1));
 
             for (int highBits = tagNumber; highBits != 0; highBits = highBits >> 7) {
                 int1 = (highBits & 0x7f) | 0x80;
-                result.add(1, new Byte((byte) int1));
+                result.add(1, Byte.valueOf((byte) int1));
             }
 
             Byte last = result.get(result.size()-1);
             result.remove(last);
-            result.add(new Byte((byte) (last.byteValue() & (byte) 0x7f)));
+            result.add(Byte.valueOf((byte) (last.byteValue() & (byte) 0x7f)));
         }
 
         // make an array

@@ -22,8 +22,6 @@
 package com.yafred.asn1.test.ASN;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -31,12 +29,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
+import org.junit.Test;
+
 import com.yafred.asn1.runtime.ASNValueReader;
 import com.yafred.asn1.runtime.ASNValueWriter;
-
-import java.util.Arrays;
-
-import org.junit.Test;
 
 import g_022.Team;
 

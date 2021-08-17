@@ -333,7 +333,7 @@ public class BERReader {
         for (int i = nBytes-1; i >= 0; i--) {	
             if((buffer[i] & 0x80) == 0x00) {
             	if(arc != -1) {
-            		objectIdentifier.add(0, new Long(arc));
+            		objectIdentifier.add(0, Long.valueOf(arc));
             	}
             	arc = buffer[i];
             	mult = 1;
@@ -346,16 +346,16 @@ public class BERReader {
             }
         }
         if(arc < 40) {
-            objectIdentifier.add(0, new Long(arc));
-            objectIdentifier.add(0, new Long(0));                  	
+            objectIdentifier.add(0, Long.valueOf(arc));
+            objectIdentifier.add(0, Long.valueOf(0));                  	
         }
         else if(arc < 80) {
-            objectIdentifier.add(0, new Long(arc-40));
-            objectIdentifier.add(0, new Long(1));                  	
+            objectIdentifier.add(0, Long.valueOf(arc-40));
+            objectIdentifier.add(0, Long.valueOf(1));                  	
         }
         else {
-            objectIdentifier.add(0, new Long(arc-80));
-            objectIdentifier.add(0, new Long(2));                  	
+            objectIdentifier.add(0, Long.valueOf(arc-80));
+            objectIdentifier.add(0, Long.valueOf(2));                  	
         }    
         
         long[] ret = new long[objectIdentifier.size()];
@@ -375,7 +375,7 @@ public class BERReader {
         for (int i = nBytes-1; i >= 0; i--) {	
             if((buffer[i] & 0x80) == 0x00) {
             	if(arc != -1) {
-            		objectIdentifier.add(0, new Long(arc));
+            		objectIdentifier.add(0, Long.valueOf(arc));
             	}
             	arc = buffer[i];
             	mult = 1;
@@ -387,7 +387,7 @@ public class BERReader {
             	arc = Math.addExact(arc, Math.multiplyExact(mult, (buffer[i] & 0x7F))); // detect overflow
             }
         }
-        objectIdentifier.add(0, new Long(arc));
+        objectIdentifier.add(0, Long.valueOf(arc));
         
         long[] ret = new long[objectIdentifier.size()];
         int i=0;
@@ -412,9 +412,9 @@ public class BERReader {
         int value = readChar();
 
         if (value == 0) {
-            return new Boolean(false);
+            return Boolean.valueOf(false);
         } else {
-            return new Boolean(true);
+            return Boolean.valueOf(true);
         }
     }
 
