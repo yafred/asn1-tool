@@ -293,8 +293,8 @@ public class Generator {
 				output.println("static public class " + uComponentName + "{");
 			}
 			for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
-				output.println("static final public " + javaType + " " + Utils.normalizeConstant(namedNumber.getName()) + " = new "
-						+ javaType + "(" + namedNumber.getNumber() + ");");
+				output.println("static final public " + javaType + " " + Utils.normalizeConstant(namedNumber.getName()) + " = "
+						+ javaType + ".valueOf(" + namedNumber.getNumber() + ");");
 			}
 			if(createInnerClass) {
 				output.println("}");

@@ -544,7 +544,9 @@ public class BERHelper {
         // write decoding code
 		output.println("public static void read(" + className + " instance," + BER_READER +
 	            " reader, int length) throws Exception {");
-		output.println("int componentLength=0;");
+		if(componentList.size() > 0) {
+			output.println("int componentLength=0;");
+		}
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			output.println("if(length==0) return;"); 			
 			if(componentIndex != 0) {
@@ -662,7 +664,9 @@ public class BERHelper {
 
 		output.println("while(length==-1||length>0){");
 
-		output.println("int componentLength=0;");
+		if(componentList.size() > 0) {
+			output.println("int componentLength=0;");
+		}
 
 		output.println("reader.readTag();");
 		output.println("if(length!=-1) length-=reader.getTagLength();");

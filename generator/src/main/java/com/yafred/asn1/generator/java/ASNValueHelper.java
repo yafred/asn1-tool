@@ -141,7 +141,9 @@ public class ASNValueHelper {
         // write decoding code
 		output.println("public static void read(" + className + " instance," + ASN_VALUE_READER +
 	            " reader) throws Exception {");
-		output.println("String componentName = null;");
+		if(componentList.size() > 0) {
+			output.println("String componentName = null;");
+		}
 		output.println("reader.readToken(); // read '{'");
 		output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty sequence");
 		output.println("reader.readToken(); return;}");
