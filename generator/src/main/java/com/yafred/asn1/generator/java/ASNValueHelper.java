@@ -146,6 +146,7 @@ public class ASNValueHelper {
 		output.println("if(\"}\".equals(reader.lookAheadToken())) { // empty sequence");
 		output.println("reader.readToken(); return;}");
 	
+		boolean lastIsOptional = true;
 		for(int componentIndex = 0; componentIndex < componentList.size(); componentIndex++) {
 			Component component = componentList.get(componentIndex);
 			if(!component.isNamedType()) throw new Exception("Component can only be a NamedType here");
@@ -168,8 +169,11 @@ public class ASNValueHelper {
 			if(!namedType.isOptional()) {
 				output.println("else { throw new Exception(\"Expecting " + namedType.getName() + " (not OPTIONAL)\"); }");
 			}
+			lastIsOptional = namedType.isOptional();
 		}
-		output.println("if(componentName != null) throw  new Exception(\"Unexpected component \" + componentName);");
+		if (lastIsOptional && componentList.size() > 0) {
+			output.println("if(componentName != null) throw  new Exception(\"Unexpected component \" + componentName);");
+		}
 		output.println("}");
 	}
 
