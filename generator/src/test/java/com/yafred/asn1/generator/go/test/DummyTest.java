@@ -9,14 +9,22 @@ import org.junit.Test;
 public class DummyTest {
 	@Test
 	public void generateCode() throws Exception {
-		
+
        	// create output dir
        	String outputPath = System.getProperty("buildDirectory") + File.separator + "generator-output" + File.separator + "go" + File.separator + "dummy";
        	File outputPathFile = new File(outputPath);
        	outputPathFile.mkdirs();
        	
-       	// write a dummy file
-		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "dummy.go")));
+       	// write dummy module
+		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "go.mod")));
+		
+		fileWriter.println("module generator.output\r\n" +
+		"go 1.17");
+		
+		fileWriter.close();
+
+		// write dummy file
+		fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "dummy.go")));
 		
 		fileWriter.println("package dummy\r\n" + 
 				"\r\n" + 
