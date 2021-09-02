@@ -24,6 +24,4 @@ jobs:
       - name: Test generated go code
         run: |
           cd generator-test-go
-          ls
-          go version
           go test ./testcases
