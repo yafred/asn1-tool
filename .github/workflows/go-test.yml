@@ -26,4 +26,4 @@ jobs:
           cd generator-test-go
           ls
           go version
-          go test testcases
+          go test ./testcases
