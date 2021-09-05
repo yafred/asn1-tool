@@ -15,14 +15,14 @@ jobs:
         with:
           java-version: 11
 
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
           go-version: ^1.17
         id: go
-
-      - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots verify
 
       - name: Test generated go code
         run: |

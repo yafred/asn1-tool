@@ -18,7 +18,7 @@ public class DummyTest {
        	// write dummy module
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "go.mod")));
 		
-		fileWriter.println("module generator.output\r\n" +
+		fileWriter.println("module dummy\r\n" +
 		"go 1.17");
 		
 		fileWriter.close();
