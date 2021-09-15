@@ -15,16 +15,8 @@ public class DummyTest {
        	File outputPathFile = new File(outputPath);
        	outputPathFile.mkdirs();
        	
-       	// write dummy module
-		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "go.mod")));
-		
-		fileWriter.println("module dummy\r\n" +
-		"go 1.17");
-		
-		fileWriter.close();
-
 		// write dummy file
-		fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "dummy.go")));
+		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "dummy.go")));
 		
 		fileWriter.println("package dummy\r\n" + 
 				"\r\n" + 

@@ -30,6 +30,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -107,6 +109,15 @@ public class ParameterizedTest {
        	File outputPathFile = new File(outputPath);
        	outputPathFile.mkdirs();
         	
+		// create module
+		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "go.mod")));
+
+		fileWriter.println("module generated-code\r\n" +
+		"go 1.17");
+		
+		fileWriter.close();
+		  
+
        	// generate code
 	}
 }

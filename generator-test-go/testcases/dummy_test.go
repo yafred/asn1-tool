@@ -3,7 +3,7 @@ package testcases
 import (
 	"testing"
 
-	"generator/output/go/dummy"
+	"generated-code/dummy"
 )
 
 func TestHello(t *testing.T) {
