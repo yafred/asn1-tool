@@ -35,6 +35,8 @@ import java.io.PrintWriter;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.yafred.asn1.generator.go.Generator;
+import com.yafred.asn1.generator.go.Options;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
@@ -117,7 +119,11 @@ public class ParameterizedTest {
 		
 		fileWriter.close();
 		  
-
        	// generate code
+       	Generator generator = new Generator();
+       	Options options = new Options();
+       	options.setOutputPath(outputPath);
+       	generator.setOptions(options);
+       	generator.processSpecification(specification);		   
 	}
 }

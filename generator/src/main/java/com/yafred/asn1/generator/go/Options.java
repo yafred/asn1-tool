@@ -25,7 +25,6 @@ public class Options {
 	private String outputPath;
 	private String packagePrefix = "";
 	private boolean overwriteAllowed = false;
-	private boolean beautify = false;
 	private String watermark = "";
 	
 	public String getWatermark() {
@@ -51,11 +50,5 @@ public class Options {
 	}
 	public void setOverwriteAllowed(boolean overwriteAllowed) {
 		this.overwriteAllowed = overwriteAllowed;
-	}
-	public boolean isBeautify() {
-		return beautify;
-	}
-	public void setBeautify(boolean beautify) {
-		this.beautify = beautify;
 	}
 }
