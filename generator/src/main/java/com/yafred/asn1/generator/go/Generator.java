@@ -92,7 +92,7 @@ public class Generator {
 
 	
 	private void processModuleDefinition(ModuleDefinition moduleDefinition) throws Exception {
-		// create java package
+		// create package
 		packageName = Utils.normalizePackageName(moduleDefinition.getModuleIdentifier().getModuleReference()).toLowerCase();
 		packageDirectory = new File(outputDir, packageName);
 
@@ -149,6 +149,12 @@ public class Generator {
 		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 		typeMap.add(entry);
 
+		if (typeAssignment.getType().isTypeReference()) {
+			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getReferencedTypeName());
+			output.println("type " + className + " " + parentClassName);
+		} else {
+			switchProcessTypeAssignment(typeAssignment.getType(), className);
+		}
 
 		output.close();
 			
@@ -163,5 +169,9 @@ public class Generator {
 		fileWriter.close();
 	}
 
-	
+	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
+		if (type.isIntegerType()) {
+			output.println("type " + className + " int");
+		}	
+	}
 }

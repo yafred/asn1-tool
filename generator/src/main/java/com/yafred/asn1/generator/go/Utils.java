@@ -47,7 +47,7 @@ public class Utils {
 	}
 		
 	/**
-	 * ASN.1 name to Java name
+	 * ASN.1 name to Go name
 	 */
 	public static String normalize(String name) {
 		StringBuffer buffer = new StringBuffer();
@@ -69,7 +69,7 @@ public class Utils {
 	}
 
 	/**
-	 * ASN.1 name to Java name and forces 1rst letter to Uppercase
+	 * ASN.1 name to Go name and forces 1rst letter to Uppercase
 	 */
 	public static String uNormalize(String name) {
 		char[] temp = name.toCharArray();
@@ -80,43 +80,7 @@ public class Utils {
 		return normalize(retName);
 	}
 	
-	/**
-	 * Adds package name to java type if from another ASN.1 module
-	 */
-	public static String normalizeJavaType(TypeReference typeReference, String packagePrefix) {
-		
-		String javaType = uNormalize(typeReference.getReferencedTypeName());
-		
-		if(typeReference.getReferencedModuleName() != null && !typeReference.getReferencedModuleName().equals("")) {
-			javaType = packagePrefix + normalizePackageName(typeReference.getReferencedModuleName().toLowerCase()) + "." + javaType;
-		}
-		
-		return javaType;
-	}
-	
-	public static String mapToJava(Type type) throws Exception {
-		String javaType = "";
 
-		if (type.isRestrictedCharacterStringType()) {
-            javaType = "java.lang.String";
-		} else if (type.isIntegerType()) {
-			javaType = "java.lang.Integer";
-		} else if (type.isBitStringType()) {
-			javaType = "java.util.BitSet";
-		} else if (type.isBooleanType()) {
-			javaType = "java.lang.Boolean";
-		} else if (type.isNullType()) {
-			javaType = "java.lang.Object";
-		} else if (type.isOctetStringType()) {
-			javaType = "byte[]";
-		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {
-			javaType = "long[]";
-		} else {
-			throw new Exception("Type not mapped: " + type.getName());
-		}
-
-		return javaType;
-	}
 	
 	public static boolean isConstructed(Type type) {
 		boolean ret = false;
