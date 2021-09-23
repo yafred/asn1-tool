@@ -172,6 +172,22 @@ public class Generator {
 	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
 		if (type.isIntegerType()) {
 			output.println("type " + className + " int");
+
+			IntegerType integerType = (IntegerType)type;
+			if (integerType.getNamedNumberList() != null) {
+				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
+					output.println("func (intValue *" + className + ") Set" + Utils.normalizeConstant(namedNumber.getName()) + "() {");
+					output.println("*intValue = " + namedNumber.getNumber());
+					output.println("}");
+					output.println("func (intValue *" + className + ") Is" + Utils.normalizeConstant(namedNumber.getName()) + "() (bool) {");
+					output.println("if *intValue == " + namedNumber.getNumber() + "{");
+					output.println("return true");
+					output.println("} else {");
+					output.println("return false");
+					output.println("}");
+					output.println("}");
+				}
+			}			
 		}	
 	}
 }
