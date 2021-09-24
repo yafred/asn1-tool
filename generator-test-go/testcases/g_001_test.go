@@ -17,9 +17,9 @@ func Test_g001_1(t *testing.T) {
 func Test_g001_2(t *testing.T) {
 	var value g_001.ColorType
 
-	value.SetNAVY_BLUE()
+	value.SetNavyBlue()
 
-	if !value.IsNAVY_BLUE() {
+	if !value.IsNavyBlue() {
 		t.Fatal("Wrong:", value)
 	}
 }

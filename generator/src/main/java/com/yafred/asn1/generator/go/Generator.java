@@ -175,19 +175,36 @@ public class Generator {
 
 			IntegerType integerType = (IntegerType)type;
 			if (integerType.getNamedNumberList() != null) {
-				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
-					output.println("func (intValue *" + className + ") Set" + Utils.normalizeConstant(namedNumber.getName()) + "() {");
-					output.println("*intValue = " + namedNumber.getNumber());
-					output.println("}");
-					output.println("func (intValue *" + className + ") Is" + Utils.normalizeConstant(namedNumber.getName()) + "() (bool) {");
-					output.println("if *intValue == " + namedNumber.getNumber() + "{");
-					output.println("return true");
-					output.println("} else {");
-					output.println("return false");
-					output.println("}");
-					output.println("}");
-				}
+				processNamedNumberList(className, integerType.getNamedNumberList());
 			}			
 		}	
+		
+		if (type.isEnumeratedType()) {
+			output.println("type " + className + " int");
+
+			EnumeratedType enumeratedType = (EnumeratedType)type;
+			if (enumeratedType.getRootEnumeration() != null) {
+				processNamedNumberList(className, enumeratedType.getRootEnumeration());
+			}
+			
+			if (enumeratedType.getAdditionalEnumeration() != null) {
+				processNamedNumberList(className, enumeratedType.getAdditionalEnumeration());
+			}		
+		}	
+	}
+
+	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	
+		for (NamedNumber namedNumber : namedNumberList) {
+			output.println("func (intValue *" + className + ") Set" + Utils.uNormalize(namedNumber.getName()) + "() {");
+			output.println("*intValue = " + namedNumber.getNumber());
+			output.println("}");
+			output.println("func (intValue *" + className + ") Is" + Utils.uNormalize(namedNumber.getName()) + "() (bool) {");
+			output.println("if *intValue == " + namedNumber.getNumber() + "{");
+			output.println("return true");
+			output.println("} else {");
+			output.println("return false");
+			output.println("}");
+			output.println("}");
+		}			
 	}
 }
