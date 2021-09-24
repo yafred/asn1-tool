@@ -195,11 +195,11 @@ public class Generator {
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	
 		for (NamedNumber namedNumber : namedNumberList) {
-			output.println("func (intValue *" + className + ") Set" + Utils.uNormalize(namedNumber.getName()) + "() {");
-			output.println("*intValue = " + namedNumber.getNumber());
+			output.println("func (value *" + className + ") Set" + Utils.uNormalize(namedNumber.getName()) + "() {");
+			output.println("*value = " + namedNumber.getNumber());
 			output.println("}");
-			output.println("func (intValue *" + className + ") Is" + Utils.uNormalize(namedNumber.getName()) + "() (bool) {");
-			output.println("if *intValue == " + namedNumber.getNumber() + "{");
+			output.println("func (value *" + className + ") Is" + Utils.uNormalize(namedNumber.getName()) + "() (bool) {");
+			output.println("if *value == " + namedNumber.getNumber() + "{");
 			output.println("return true");
 			output.println("} else {");
 			output.println("return false");
