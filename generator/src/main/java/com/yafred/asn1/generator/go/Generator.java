@@ -36,18 +36,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.yafred.asn1.model.Assignment;
-import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.ModuleDefinition;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
-import com.yafred.asn1.model.TypeWithComponents;
-import com.yafred.asn1.model.type.BitStringType;
 import com.yafred.asn1.model.type.EnumeratedType;
 import com.yafred.asn1.model.type.IntegerType;
-import com.yafred.asn1.model.type.ListOfType;
-import com.yafred.asn1.model.type.NamedType;
 import com.yafred.asn1.model.type.TypeReference;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 
@@ -58,8 +53,15 @@ public class Generator {
 	File packageDirectory;
 	PrintWriter output;
 
+	BERHelper berHelper;
+	ASNValueHelper asnValueHelper;
+	ValidationHelper validationHelper;
+	
 	
 	public Generator() {
+		berHelper = new BERHelper(this);
+		asnValueHelper = new ASNValueHelper(this);
+		validationHelper = new ValidationHelper(this);
 	}
 	
 	
@@ -156,6 +158,8 @@ public class Generator {
 			switchProcessTypeAssignment(typeAssignment.getType(), className);
 		}
 
+		// add encoding and decoding methods to the POJO
+		this.addMethods(typeAssignment.getType(), className, false);
 		output.close();
 			
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".go")));
@@ -206,5 +210,15 @@ public class Generator {
 			output.println("}");
 			output.println("}");
 		}			
+	}
+
+
+	private void addMethods(Type type, String className, boolean isInnerType) throws Exception {
+		// add BER methods to the POJO
+		berHelper.processType(type, className, isInnerType);
+		// add ASN value methods to the POJO
+		asnValueHelper.processType(type, className, isInnerType);		
+		// add validation methods to the POJO
+		validationHelper.processType(type, className, isInnerType);			
 	}
 }
