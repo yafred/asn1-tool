@@ -150,6 +150,7 @@ public class Generator {
 
 		// runtime library
 		output.println("import \"github.com/yafred/asn1-go/ber\""); 
+		output.println("import \"errors\""); 
 
 		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 		typeMap.add(entry);

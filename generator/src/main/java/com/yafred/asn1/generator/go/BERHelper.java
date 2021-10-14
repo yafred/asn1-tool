@@ -76,8 +76,9 @@ public class BERHelper {
 				}
 				output.println("reader.ReadTag();");
 				output.println(
-						"reader.MatchTag([]byte {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
-				
+						"if !reader.MatchTag([]byte {" + tagBytesAsString + "}) { /* " + tagHelper.toString() + " */");
+				output.println("return errors.New(\"Expected tag: " + tagHelper.toString() + "\")");
+				output.println("}");
 				output.println("reader.ReadLength();");
 			}
 		}
