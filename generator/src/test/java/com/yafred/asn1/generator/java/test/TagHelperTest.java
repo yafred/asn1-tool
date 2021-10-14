@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.yafred.asn1.generator.java.TagHelper;
+import com.yafred.asn1.generator.common.TagHelper;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.TagClass;
 
