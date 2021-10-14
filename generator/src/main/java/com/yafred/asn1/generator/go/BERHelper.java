@@ -39,6 +39,12 @@ public class BERHelper {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		
 		output.println("// BER encoding methods for " + className);
+
+		output.println("func (value *" + className + ") ReadPdu(reader *ber.Reader) {");
+		output.println("}");
+
+		output.println("func (value *" + className + ") WritePdu(writer *ber.Writer) {");
+		output.println("}");
 	}
 
 }
