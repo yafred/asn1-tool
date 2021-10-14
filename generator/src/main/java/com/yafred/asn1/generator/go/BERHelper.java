@@ -44,12 +44,14 @@ public class BERHelper {
 
 		if (!isInnerType) {
 	        // readPdu method
-			output.println("func (value *" + className + ") ReadPdu(reader *ber.Reader) {");
+			output.println("func (value *" + className + ") ReadPdu(reader *ber.Reader) error {");
 			writePduTagsDecode(type);
+			output.println("return nil");
 			output.println("}");
 
 			// writePdu method
-			output.println("func (value *" + className + ") WritePdu(writer *ber.Writer) {");
+			output.println("func (value *" + className + ") WritePdu(writer *ber.Writer) error {");
+			output.println("return nil");
 			output.println("}");
 		}
 	}
@@ -74,7 +76,7 @@ public class BERHelper {
 				}
 				output.println("reader.ReadTag();");
 				output.println(
-						"// reader.mustMatchTag(new byte[] {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
+						"reader.MatchTag([]byte {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
 				
 				output.println("reader.ReadLength();");
 			}
