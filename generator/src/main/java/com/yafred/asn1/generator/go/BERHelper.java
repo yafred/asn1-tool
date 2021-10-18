@@ -46,7 +46,7 @@ public class BERHelper {
 	        // readPdu method
 			output.println("func (value *" + className + ") ReadPdu(reader *ber.Reader) error {");
 			writePduTagsDecode(type);
-			output.println("return nil");
+			output.println("return value.Read(reader, reader.GetLengthValue())");
 			output.println("}");
 
 			// writePdu method
@@ -54,6 +54,13 @@ public class BERHelper {
 			output.println("return nil");
 			output.println("}");
 		}
+
+		output.println("func (value *" + className + ") Read(reader *ber.Reader, componentLength int) error {");
+		output.println("var error error = nil");
+		switchDecodeComponent(type, "value", className);
+		output.println("return error");
+		output.println("}");
+
 	}
 
 	private void writePduTagsDecode(Type type) throws Exception {
@@ -79,9 +86,24 @@ public class BERHelper {
 						"if !reader.MatchTag([]byte {" + tagBytesAsString + "}) { /* " + tagHelper.toString() + " */");
 				output.println("return errors.New(\"Expected tag: " + tagHelper.toString() + "\")");
 				output.println("}");
-				output.println("reader.ReadLength();");
+				output.println("error := reader.ReadLength();");
+				output.println("if error != nil {");
+				output.println("return error");
+				output.println("}");
 			}
 		}
 	}	
+
+
+	private void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
+		
+		Type builtinType = type;
+		if(builtinType.isIntegerType()) {
+			output.println("intValue, error := reader.ReadInteger(componentLength)");
+			output.println("if error == nil {");
+			output.println("*value = "+componentClassName+"(intValue)");
+			output.println("}");
+		}
+	}
 
 }

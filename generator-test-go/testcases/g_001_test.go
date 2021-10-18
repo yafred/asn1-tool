@@ -9,7 +9,7 @@ import (
 )
 
 func Test_g001_1(t *testing.T) {
-	var value g_001.MyInteger = 10
+	var value g_001.MyInteger = 0
 
 	in := bytes.NewReader([]byte{0x02, 0x01, 0x0a})
 
@@ -19,6 +19,10 @@ func Test_g001_1(t *testing.T) {
 
 	if error != nil {
 		t.Fatal("Wrong", error)
+	}
+
+	if value != 10 {
+		t.Fatal("value should be 10")
 	}
 
 }
