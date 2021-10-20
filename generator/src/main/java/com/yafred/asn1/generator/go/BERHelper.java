@@ -40,6 +40,8 @@ public class BERHelper {
 	void processType(Type type, String className, boolean isInnerType) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 
+		ArrayList<Tag> tagList = Utils.getTagChain(type);
+
 		output.println("// BER encoding methods for " + className);
 
 		if (!isInnerType) {
@@ -51,17 +53,86 @@ public class BERHelper {
 
 			// writePdu method
 			output.println("func (value *" + className + ") WritePdu(writer *ber.Writer) error {");
-			output.println("return nil");
+	        String lengthDeclaration = "";
+	        if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
+	            lengthDeclaration = "componentLength, error := ";
+	        }
+			else {
+	            lengthDeclaration = "error := ";
+			}
+	        output.println(lengthDeclaration + "value.Write(writer);");
+			writeTagsEncode(type);
+			output.println("return error");
 			output.println("}");
 		}
 
-		output.println("func (value *" + className + ") Read(reader *ber.Reader, componentLength int) error {");
-		output.println("var error error = nil");
-		switchDecodeComponent(type, "value", className);
-		output.println("return error");
-		output.println("}");
+		if (!type.isTypeWithComponents() && !type.isListOfType()) {
+			// read method
+			output.println("func (value *" + className + ") Read(reader *ber.Reader, componentLength int) error {");
+			output.println("var error error = nil");
+			switchDecodeComponent(type, "value", className);
+			output.println("return error");
+			output.println("}");
 
+			// write method
+			output.println("func (value *" + className + ") Write(writer *ber.Writer) (int, error) {");
+			output.println("var componentLength int = 0");
+			output.println("var error error = nil");
+			switchEncodeComponent(type, "value", className);
+			output.println("return componentLength, error");			
+			output.println("}");
+		}
 	}
+
+
+	private void writeTagsEncode(Type type) throws Exception {
+		writeTagsEncode(type, null);
+	}
+	
+	
+	private void writeTagsEncode(Type type, Tag automaticTag) throws Exception {
+		ArrayList<Tag> tagList = Utils.getTagChain(type);
+		
+		if(tagList == null) {
+			tagList = new ArrayList<Tag>();
+		}
+		if (tagList.size() == 0 && automaticTag == null) { // it is a untagged CHOICE, no tag to write
+			return;
+		}
+		
+		if(automaticTag != null) {
+			if(tagList.size() == 0) {
+				tagList.add(automaticTag);
+			}
+			else {
+				tagList.set(0, automaticTag);
+			}
+		}
+		for (int iTag = tagList.size() - 1; iTag >= 0; iTag--) {
+			boolean isConstructedForm = true;
+
+			if ((iTag == (tagList.size() - 1)) && !Utils.isConstructed(type)) {
+				isConstructedForm = false;
+			}
+
+			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
+			output.println("componentLength += int(writer.WriteLength(uint32(componentLength)))"); // NEED sorting
+
+			byte[] tagBytes = tagHelper.getByteArray();
+			String tagBytesAsString = "[]byte {";
+			for(int i=0; i<tagBytes.length; i++) {
+				if(i!=0) {
+					tagBytesAsString += ",";
+				}
+				tagBytesAsString += tagBytes[i];
+			}
+			tagBytesAsString += "}";
+			
+			output.println(
+						"componentLength += writer.WriteOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+		}
+	}
+
 
 	private void writePduTagsDecode(Type type) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
@@ -95,8 +166,15 @@ public class BERHelper {
 	}	
 
 
+	private void switchEncodeComponent(Type type, String componentName, String componentClassName) throws Exception {
+		Type builtinType = type;
+		if(builtinType.isIntegerType()) {
+			output.println("componentLength=writer.WriteInteger(int(*value))");			
+		}
+	}
+
+
 	private void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
-		
 		Type builtinType = type;
 		if(builtinType.isIntegerType()) {
 			output.println("intValue, error := reader.ReadInteger(componentLength)");
@@ -105,5 +183,4 @@ public class BERHelper {
 			output.println("}");
 		}
 	}
-
 }

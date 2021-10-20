@@ -35,4 +35,16 @@ func Test_g001_2(t *testing.T) {
 	if !value.IsNavyBlue() {
 		t.Fatal("Wrong:", value)
 	}
+
+	writer := ber.NewWriter(-1)
+
+	error := value.WritePdu(writer)
+
+	if error != nil {
+		t.Fatal("Wrong", error)
+	}
+
+	if bytes.Equal(writer.GetDataBuffer(), []byte{0x02, 0x01, 0x02}) == false {
+		t.Fatal("Wrong", "GetDataBuffer")
+	}
 }
