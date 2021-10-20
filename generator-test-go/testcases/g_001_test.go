@@ -45,6 +45,6 @@ func Test_g001_2(t *testing.T) {
 	}
 
 	if bytes.Equal(writer.GetDataBuffer(), []byte{0x02, 0x01, 0x02}) == false {
-		t.Fatal("Wrong", "GetDataBuffer")
+		t.Fatal("Wrong", writer.GetDataBuffer(), "expected", []byte{0x02, 0x01, 0x03})
 	}
 }
