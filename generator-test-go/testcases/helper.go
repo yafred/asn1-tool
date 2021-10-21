@@ -25,3 +25,14 @@ func testWritePdu(pdu berAble, data []byte, t *testing.T) {
 		t.Fatal("Wrong", writer.GetDataBuffer(), "expected", data)
 	}
 }
+
+func testReadPdu(pdu berAble, data []byte, t *testing.T) {
+	in := bytes.NewReader(data)
+	reader := ber.NewReader(in)
+
+	error := pdu.ReadPdu(reader)
+
+	if error != nil {
+		t.Fatal("Wrong", error)
+	}
+}
