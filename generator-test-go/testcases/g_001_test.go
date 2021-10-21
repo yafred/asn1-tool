@@ -48,3 +48,8 @@ func Test_g001_2(t *testing.T) {
 		t.Fatal("Wrong", writer.GetDataBuffer(), "expected", []byte{0x02, 0x01, 0x03})
 	}
 }
+
+func Test_g001_3(t *testing.T) {
+	var value g_001.MyInteger = 10
+	testWritePdu(&value, []byte{0x02, 0x01, 0x0a}, t)
+}
