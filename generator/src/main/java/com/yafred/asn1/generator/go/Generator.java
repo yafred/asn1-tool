@@ -199,6 +199,10 @@ public class Generator {
 				processNamedNumberList(className, enumeratedType.getAdditionalEnumeration());
 			}		
 		}	
+
+		if (type.isBooleanType()) {
+			output.println("type " + className + " bool");
+		}
 	}
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	

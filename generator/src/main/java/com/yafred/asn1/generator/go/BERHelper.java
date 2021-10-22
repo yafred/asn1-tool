@@ -137,6 +137,7 @@ public class BERHelper {
 	private void writePduTagsDecode(Type type) throws Exception {
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
 		if (tagList != null && tagList.size() != 0) { // it is not an untagged CHOICE
+			output.println("var error error");
 			for (int iTag = 0; iTag < tagList.size(); iTag++) {
 				boolean isConstructedForm = true;
 
@@ -152,12 +153,15 @@ public class BERHelper {
 				for(int i=1; i<tagBytes.length; i++) {
 					tagBytesAsString += "," + tagBytes[i];
 				}
-				output.println("reader.ReadTag();");
+				output.println("error = reader.ReadTag();");
+				output.println("if error != nil {");
+				output.println("return error");
+				output.println("}");				
 				output.println(
 						"if !reader.MatchTag([]byte {" + tagBytesAsString + "}) { /* " + tagHelper.toString() + " */");
 				output.println("return errors.New(\"Expected tag: " + tagHelper.toString() + "\")");
 				output.println("}");
-				output.println("error := reader.ReadLength();");
+				output.println("error = reader.ReadLength();");
 				output.println("if error != nil {");
 				output.println("return error");
 				output.println("}");
@@ -171,6 +175,9 @@ public class BERHelper {
 		if(builtinType.isIntegerType() || builtinType.isEnumeratedType()) {
 			output.println("componentLength=writer.WriteInteger(int(*value))");			
 		}
+		if(builtinType.isBooleanType()) {
+			output.println("componentLength=writer.WriteBoolean(bool(*value))");			
+		}
 	}
 
 
@@ -180,6 +187,12 @@ public class BERHelper {
 			output.println("intValue, error := reader.ReadInteger(componentLength)");
 			output.println("if error == nil {");
 			output.println("*value = "+componentClassName+"(intValue)");
+			output.println("}");
+		}
+		if(builtinType.isBooleanType()) {
+			output.println("boolValue, error := reader.ReadBoolean()");
+			output.println("if error == nil {");
+			output.println("*value = "+componentClassName+"(boolValue)");
 			output.println("}");
 		}
 	}
