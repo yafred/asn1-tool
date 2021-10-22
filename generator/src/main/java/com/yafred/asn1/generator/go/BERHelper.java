@@ -168,7 +168,7 @@ public class BERHelper {
 
 	private void switchEncodeComponent(Type type, String componentName, String componentClassName) throws Exception {
 		Type builtinType = type;
-		if(builtinType.isIntegerType()) {
+		if(builtinType.isIntegerType() || builtinType.isEnumeratedType()) {
 			output.println("componentLength=writer.WriteInteger(int(*value))");			
 		}
 	}
@@ -176,7 +176,7 @@ public class BERHelper {
 
 	private void switchDecodeComponent(Type type, String componentName, String componentClassName) throws Exception {
 		Type builtinType = type;
-		if(builtinType.isIntegerType()) {
+		if(builtinType.isIntegerType() || builtinType.isEnumeratedType()) {
 			output.println("intValue, error := reader.ReadInteger(componentLength)");
 			output.println("if error == nil {");
 			output.println("*value = "+componentClassName+"(intValue)");

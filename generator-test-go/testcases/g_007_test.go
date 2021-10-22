@@ -19,6 +19,15 @@ func Test_g007_1(t *testing.T) {
 	if !value.IsLemon() {
 		t.Fatal("Wrong:", value)
 	}
+
+	value.SetApple()
+	testWritePdu(&value, []byte{0x0a, 0x01, 0x01}, t)
+
+	value = 0
+	testReadPdu(&value, []byte{0x0a, 0x01, 0x01}, t)
+	if value.IsApple() != true {
+		t.Fatal("Wrong", value, "expected 1 (apple)")
+	}
 }
 
 func Test_g007_2(t *testing.T) {
