@@ -207,6 +207,10 @@ public class Generator {
 		if (type.isNullType()) {
 			output.println("type " + className + " struct{}");
 		}
+
+		if (type.isOctetStringType()) {
+			output.println("type " + className + " []byte");
+		}
 	}
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	

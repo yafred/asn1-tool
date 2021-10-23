@@ -178,6 +178,9 @@ public class BERHelper {
 		if(builtinType.isBooleanType()) {
 			output.println("componentLength=writer.WriteBoolean(bool(*value))");			
 		}
+		if(builtinType.isOctetStringType()) {
+			output.println("componentLength=writer.WriteOctetString(*value)");			
+		}
 	}
 
 
@@ -193,6 +196,12 @@ public class BERHelper {
 			output.println("boolValue, error := reader.ReadBoolean()");
 			output.println("if error == nil {");
 			output.println("*value = "+componentClassName+"(boolValue)");
+			output.println("}");
+		}
+		if(builtinType.isOctetStringType()) {
+			output.println("bytesValue, error := reader.ReadOctetString(componentLength)");
+			output.println("if error == nil {");
+			output.println("*value = "+componentClassName+"(bytesValue)");
 			output.println("}");
 		}
 	}

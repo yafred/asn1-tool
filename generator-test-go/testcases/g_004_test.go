@@ -1,0 +1,18 @@
+package testcases
+
+import (
+	"bytes"
+	"generated-code/g_004"
+	"testing"
+)
+
+func Test_g004_1(t *testing.T) {
+	var value g_004.MyOctetString = []byte{0x0a, 0x0b, 0x0c, 0x0d}
+	testWritePdu(&value, []byte{0x42, 0x04, 0x0a, 0x0b, 0x0c, 0x0d}, t)
+
+	value = nil
+	testReadPdu(&value, []byte{0x42, 0x04, 0x0a, 0x0b, 0x0c, 0x0d}, t)
+	if bytes.Equal(value, []byte{0x0a, 0x0b, 0x0c, 0x0d}) == false {
+		t.Fatal("Wrong", value, "expected", []byte{0x0a, 0x0b, 0x0c, 0x0d})
+	}
+}
