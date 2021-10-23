@@ -203,6 +203,10 @@ public class Generator {
 		if (type.isBooleanType()) {
 			output.println("type " + className + " bool");
 		}
+
+		if (type.isNullType()) {
+			output.println("type " + className + " struct{}");
+		}
 	}
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	
