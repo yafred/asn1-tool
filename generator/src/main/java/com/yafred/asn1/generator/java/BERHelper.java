@@ -156,21 +156,12 @@ public class BERHelper {
 				isConstructedForm = false;
 			}
 
-			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
 			output.println("componentLength += writer.writeLength(componentLength);");
 
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "new byte[] {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
-			
+			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
+		
 			output.println(
-						"componentLength += writer.writeOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+						"componentLength += writer.writeOctetString(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 		}
 	}
 
@@ -214,26 +205,17 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "new byte[] {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
 				if(namedType.isOptional()) {
-					output.println("reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+					output.println("reader.matchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 					output.println("if(reader.isTagMatched()){");
 					output.println("reader.readLength();");
 					output.println("if(length!=-1) length-=reader.getLengthLength();");
 					output.println("}");
 				}
 				else {
-					output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");					
+					output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");					
 					output.println("reader.readLength();");
 					output.println("if(length!=-1) length-=reader.getLengthLength();");
 				}
@@ -244,7 +226,7 @@ public class BERHelper {
 				}
 				output.println("reader.readTag();");
 				output.println("if(length!=-1) length-=reader.getTagLength();");
-				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
 				output.println("if(length!=-1) length-=reader.getLengthLength();");
 				if(namedType.isOptional()) {
@@ -285,19 +267,11 @@ public class BERHelper {
 				}
 
 				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				byte[] tagBytes = tagHelper.getByteArray();
-				String tagBytesAsString = "new byte[] {";
-				for(int i=0; i<tagBytes.length; i++) {
-					if(i!=0) {
-						tagBytesAsString += ",";
-					}
-					tagBytesAsString += tagBytes[i];
-				}
-				tagBytesAsString += "}";
+
 				if(iAlternative++ != 0) {
 					output.print(",");
 				}
-				output.println(tagBytesAsString);
+				output.println("new byte[] {" + tagHelper.tagBytesAsString() + "}");
 			}
 		}
 		output.println("}))");
@@ -341,18 +315,9 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "new byte[] {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
-				output.println("reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.matchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("if(reader.isTagMatched()){");
 				output.println("reader.readLength();");
 				output.println("if(length!=-1) length-=reader.getLengthLength();");
@@ -362,7 +327,7 @@ public class BERHelper {
 				output.println("if(reader.isTagMatched()){");
 				output.println("reader.readTag();");
 				output.println("if(length!=-1) length-=reader.getTagLength();");
-				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
 				output.println("if(length!=-1) length-=reader.getLengthLength();");
 				output.println("}");
@@ -403,24 +368,15 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "new byte[] {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
-				output.println("reader.matchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.matchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 			}
 			else {
 				output.println("if(reader.isTagMatched()){");
 				output.println("reader.readTag();");
 				output.println("componentLength-=reader.getTagLength();");
-				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
 				output.println("componentLength-=reader.getLengthLength();");
 				output.println("}");
@@ -452,25 +408,16 @@ public class BERHelper {
 			}
 
 			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "new byte[] {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
 			
 			if(iTag == 0) {
-				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
 				output.println("if(listLength!=-1) listLength-=reader.getLengthLength();");
 			}
 			else {
 				output.println("reader.readTag();");
 				output.println("if(listLength!=-1) listLength-=reader.getTagLength();");
-				output.println("reader.mustMatchTag(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+				output.println("reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				output.println("reader.readLength();");
 				output.println("if(listLength!=-1) listLength-=reader.getLengthLength();");
 			}
@@ -490,16 +437,10 @@ public class BERHelper {
 				}
 
 				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				byte[] tagBytes = tagHelper.getByteArray();
-				
-				String tagBytesAsString = "" + tagBytes[0];
-				
-				for(int i=1; i<tagBytes.length; i++) {
-					tagBytesAsString += "," + tagBytes[i];
-				}
+
 				output.println("reader.readTag();");
 				output.println(
-						"reader.mustMatchTag(new byte[] {" + tagBytesAsString + "}); /* " + tagHelper.toString() + " */");
+						"reader.mustMatchTag(new byte[] {" + tagHelper.tagBytesAsString() + "}); /* " + tagHelper.toString() + " */");
 				
 				output.println("reader.readLength();");
 			}

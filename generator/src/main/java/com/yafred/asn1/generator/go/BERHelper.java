@@ -115,21 +115,11 @@ public class BERHelper {
 				isConstructedForm = false;
 			}
 
-			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
 			output.println("componentLength += int(writer.WriteLength(uint32(componentLength)))"); // NEED sorting
 
-			byte[] tagBytes = tagHelper.getByteArray();
-			String tagBytesAsString = "[]byte {";
-			for(int i=0; i<tagBytes.length; i++) {
-				if(i!=0) {
-					tagBytesAsString += ",";
-				}
-				tagBytesAsString += tagBytes[i];
-			}
-			tagBytesAsString += "}";
-			
+			TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);	
 			output.println(
-						"componentLength += writer.WriteOctetString(" + tagBytesAsString + "); /* " + tagHelper.toString() + " */");
+						"componentLength += writer.WriteOctetString([]byte {" + tagHelper.tagBytesAsGoString() + "}); /* " + tagHelper.toString() + " */");
 		}
 	}
 
@@ -146,19 +136,12 @@ public class BERHelper {
 				}
 
 				TagHelper tagHelper = new TagHelper(tagList.get(iTag), !isConstructedForm);
-				byte[] tagBytes = tagHelper.getByteArray();
-				
-				String tagBytesAsString = "" + tagBytes[0];
-				
-				for(int i=1; i<tagBytes.length; i++) {
-					tagBytesAsString += "," + tagBytes[i];
-				}
 				output.println("error = reader.ReadTag();");
 				output.println("if error != nil {");
 				output.println("return error");
 				output.println("}");				
 				output.println(
-						"if !reader.MatchTag([]byte {" + tagBytesAsString + "}) { /* " + tagHelper.toString() + " */");
+						"if !reader.MatchTag([]byte {" + tagHelper.tagBytesAsGoString() + "}) { /* " + tagHelper.toString() + " */");
 				output.println("return errors.New(\"Expected tag: " + tagHelper.toString() + "\")");
 				output.println("}");
 				output.println("error = reader.ReadLength();");
@@ -181,6 +164,9 @@ public class BERHelper {
 		if(builtinType.isOctetStringType()) {
 			output.println("componentLength=writer.WriteOctetString(*value)");			
 		}
+		if(builtinType.isRestrictedCharacterStringType()) {
+			output.println("componentLength=writer.WriteRestrictedCharacterString(string(*value))");			
+		}
 	}
 
 
@@ -202,6 +188,12 @@ public class BERHelper {
 			output.println("bytesValue, error := reader.ReadOctetString(componentLength)");
 			output.println("if error == nil {");
 			output.println("*value = "+componentClassName+"(bytesValue)");
+			output.println("}");
+		}
+		if(builtinType.isRestrictedCharacterStringType()) {
+			output.println("stringValue, error := reader.ReadRestrictedCharacterString(componentLength)");
+			output.println("if error == nil {");
+			output.println("*value = "+componentClassName+"(stringValue)");
 			output.println("}");
 		}
 	}

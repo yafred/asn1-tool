@@ -211,6 +211,10 @@ public class Generator {
 		if (type.isOctetStringType()) {
 			output.println("type " + className + " []byte");
 		}
+
+		if (type.isRestrictedCharacterStringType()) {
+			output.println("type " + className + " string");
+		}
 	}
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	

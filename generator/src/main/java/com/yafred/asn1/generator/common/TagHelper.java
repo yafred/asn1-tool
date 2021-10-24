@@ -92,4 +92,55 @@ public class TagHelper {
 				+ ((tag.getTagClass() == null || tag.getTagClass().toString().equals("")) ? "CONTEXT" : tag.getTagClass().toString()) + "_"
 				+ tag.getNumber();
     }
+
+
+
+    public String tagBytesAsString() {
+        byte[] tagBytes = this.getByteArray();
+				
+        String tagBytesAsString = ""; 
+        
+        if(tagBytes.length > 0) {
+            tagBytesAsString += tagBytes[0] + " /*" + byteToHexString(tagBytes[0]) + "*/";
+        }
+        
+        for(int i=1; i<tagBytes.length; i++) {
+            tagBytesAsString += ", " + tagBytes[i] + " /*" + byteToHexString(tagBytes[i]) + "*/";
+        }
+        return tagBytesAsString;
+    } 
+
+    public String tagBytesAsGoString() {
+        byte[] tagBytes = this.getByteArray();
+				
+        String tagBytesAsString = ""; 
+        
+        if(tagBytes.length > 0) {
+            tagBytesAsString += byteToHexString(tagBytes[0]);
+        }
+        
+        for(int i=1; i<tagBytes.length; i++) {
+            tagBytesAsString += ", " + byteToHexString(tagBytes[i]);
+        }
+        return tagBytesAsString;
+    } 
+
+    private String byteToHexString(byte aByte) {
+        int intByte = (int)aByte;
+
+        if(intByte < 0) {
+            intByte += 256;
+        }
+
+        String result = Integer.toHexString(intByte);
+        
+        if (result.length() == 1) {
+            result = "0x0" + result;
+        }
+        else {
+            result = "0x" + result;
+        }
+
+        return result;
+    }
 }
