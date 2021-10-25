@@ -167,6 +167,9 @@ public class BERHelper {
 		if(builtinType.isRestrictedCharacterStringType()) {
 			output.println("componentLength=writer.WriteRestrictedCharacterString(string(*value))");			
 		}
+		if(builtinType.isBitStringType()) {
+			output.println("componentLength=writer.WriteBitString(value.bitString)");			
+		}
 	}
 
 
@@ -196,5 +199,13 @@ public class BERHelper {
 			output.println("*value = "+componentClassName+"(stringValue)");
 			output.println("}");
 		}
+		/*
+		if(builtinType.isBitStringType()) {
+			output.println("bitStringValue, error := reader.ReadBitString(componentLength)"); // Needs coding
+			output.println("if error == nil {");
+			output.println("*value.bitString = bitStringValue");
+			output.println("}");
+		}
+		*/
 	}
 }

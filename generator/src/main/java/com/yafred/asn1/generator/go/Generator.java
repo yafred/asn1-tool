@@ -41,6 +41,7 @@ import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.Specification;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.TypeAssignment;
+import com.yafred.asn1.model.type.BitStringType;
 import com.yafred.asn1.model.type.EnumeratedType;
 import com.yafred.asn1.model.type.IntegerType;
 import com.yafred.asn1.model.type.TypeReference;
@@ -52,6 +53,8 @@ public class Generator {
 	String packageName;
 	File packageDirectory;
 	PrintWriter output;
+
+	boolean needsTypes = false;
 
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
@@ -134,6 +137,8 @@ public class Generator {
 	
 	
 	private void processTypeAssignment(TypeAssignment typeAssignment, List<Map.Entry<String,String>> typeMap) throws Exception {
+		// reset condition
+		needsTypes = false;
 		// get the ASN.1 spec for this type assignment
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Asn1SpecificationWriter asn1SpecificationWriter = new Asn1SpecificationWriter(new PrintStream(baos, true, "UTF-8"));
@@ -145,12 +150,6 @@ public class Generator {
 
 		StringWriter stringWriter = new StringWriter();
 		output = new PrintWriter(stringWriter);
-
-		output.println("package " + options.getPackagePrefix() + packageName);
-
-		// runtime library
-		output.println("import \"github.com/yafred/asn1-go/ber\""); 
-		output.println("import \"errors\""); 
 
 		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 		typeMap.add(entry);
@@ -167,12 +166,21 @@ public class Generator {
 		output.close();
 			
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(packageDirectory, className + ".go")));
+
 		fileWriter.println("/*");
 		if(!options.getWatermark().equals("")) {
 			fileWriter.println(options.getWatermark());
 		}
 		fileWriter.println(asn1Spec);
 		fileWriter.println("*/");
+
+		fileWriter.println("package " + options.getPackagePrefix() + packageName);
+		fileWriter.println("import \"github.com/yafred/asn1-go/ber\""); 
+		if(needsTypes) {
+			fileWriter.println("import \"github.com/yafred/asn1-go/types\"");  
+		}
+		fileWriter.println("import \"errors\"");
+
 		fileWriter.print(stringWriter.getBuffer().toString());
 		fileWriter.close();
 	}
@@ -215,6 +223,23 @@ public class Generator {
 		if (type.isRestrictedCharacterStringType()) {
 			output.println("type " + className + " string");
 		}
+
+		if (type.isBitStringType()) {
+			output.println("type " + className + " struct{");
+			output.println("bitString types.BitString");
+			output.println("}");
+			needsTypes = true;
+
+			BitStringType bitStringType = (BitStringType)type;
+			for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
+				output.println("func (value *" + className + ") Set" + Utils.uNormalize(namedNumber.getName()) + "(bitValue bool) {");
+				output.println("value.bitString.Set(" + namedNumber.getNumber() + ",bitValue)");
+				output.println("}");	
+				output.println("func (value *" + className + ") Get" + Utils.uNormalize(namedNumber.getName()) + "() (bool) {");
+				output.println("return value.bitString.Get(" + namedNumber.getNumber() + ")");
+				output.println("}");	
+			}
+		}
 	}
 
 	private void processNamedNumberList(String className, ArrayList<NamedNumber> namedNumberList) throws Exception {	
@@ -231,7 +256,7 @@ public class Generator {
 			output.println("}");
 		}			
 	}
-
+	
 
 	private void addMethods(Type type, String className, boolean isInnerType) throws Exception {
 		// add BER methods to the POJO

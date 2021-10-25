@@ -2,7 +2,7 @@ module generator-go.test
 
 go 1.17
 
-require github.com/yafred/asn1-go v0.0.2
+require github.com/yafred/asn1-go v0.0.4
 
 replace generated-code => ../generator/target/generator-output/go
 

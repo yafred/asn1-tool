@@ -115,7 +115,7 @@ public class ParameterizedTest {
 		PrintWriter fileWriter = new PrintWriter(new FileWriter(new File(outputPathFile, "go.mod")));
 
 		fileWriter.println("module generated-code\r\n" +
-		"require github.com/yafred/asn1-go v0.0.2\r\n" +
+		"require github.com/yafred/asn1-go v0.0.4\r\n" +
 		"go 1.17");
 		
 		fileWriter.close();
