@@ -1,3 +1,2 @@
-github.com/yafred/asn1-go v0.0.2/go.mod h1:Jz7SS2w2uQzD/xyMA5VwZNfc7kWEAyX+/CSE8XkTfTQ=
-github.com/yafred/asn1-go v0.0.4 h1:VjgqIdWibabQXwOb9TtPcb96dQvd0mvJkPrPTlvUx+E=
-github.com/yafred/asn1-go v0.0.4/go.mod h1:Jz7SS2w2uQzD/xyMA5VwZNfc7kWEAyX+/CSE8XkTfTQ=
+github.com/yafred/asn1-go v0.0.5 h1:bEBUL7Jvl6QIytgWe3SICVfKH0eNc1SL8ZtjaHlZI1I=
+github.com/yafred/asn1-go v0.0.5/go.mod h1:Jz7SS2w2uQzD/xyMA5VwZNfc7kWEAyX+/CSE8XkTfTQ=

@@ -199,13 +199,11 @@ public class BERHelper {
 			output.println("*value = "+componentClassName+"(stringValue)");
 			output.println("}");
 		}
-		/*
 		if(builtinType.isBitStringType()) {
 			output.println("bitStringValue, error := reader.ReadBitString(componentLength)"); // Needs coding
 			output.println("if error == nil {");
-			output.println("*value.bitString = bitStringValue");
+			output.println("value.bitString = bitStringValue");
 			output.println("}");
 		}
-		*/
 	}
 }
