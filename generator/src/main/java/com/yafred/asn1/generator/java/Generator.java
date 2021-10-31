@@ -230,21 +230,21 @@ public class Generator {
 	}
 	
 	
-	private void processBitStringType(BitStringType bitStringType, String componentName, boolean isList, boolean createInnerClass) throws Exception {
+	private void processBitStringType(BitStringType bitStringType, String componentName, boolean isList, boolean isComponent) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
 		String javaType = Utils.mapToJava(bitStringType);
 		if(isList) {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
 		
-		if(createInnerClass) {
+		if(isComponent) {
 			// inner class
 			output.println("static public class " + uComponentName + "{");
 		}
 		for(NamedNumber namedNumber : bitStringType.getNamedBitList()) {
 			output.println("static final public int " + Utils.normalizeConstant(namedNumber.getName()) + "=" + namedNumber.getNumber() + ";");
 		}
-		if(createInnerClass) {
+		if(isComponent) {
 			output.println("}");
 		}
 
@@ -283,12 +283,12 @@ public class Generator {
 	}
 	
 	
-	private void processIntegerType(IntegerType integerType, String componentName, boolean isList, boolean createInnerClass) throws Exception {
+	private void processIntegerType(IntegerType integerType, String componentName, boolean isList, boolean isComponent) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
 		String javaType = Utils.mapToJava(integerType);
 		
 		if (integerType.getNamedNumberList() != null) {
-			if(createInnerClass) {
+			if(isComponent) {
 				// inner class
 				output.println("static public class " + uComponentName + "{");
 			}
@@ -296,7 +296,7 @@ public class Generator {
 				output.println("static final public " + javaType + " " + Utils.normalizeConstant(namedNumber.getName()) + " = "
 						+ javaType + ".valueOf(" + namedNumber.getNumber() + ");");
 			}
-			if(createInnerClass) {
+			if(isComponent) {
 				output.println("}");
 			}
 		}
