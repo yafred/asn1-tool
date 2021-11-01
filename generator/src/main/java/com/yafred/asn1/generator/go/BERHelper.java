@@ -37,14 +37,14 @@ public class BERHelper {
 		this.generator = generator;
 	}
 
-	void processType(Type type, String className, boolean isInnerType) throws Exception {
+	void processType(Type type, String className, boolean isComponent) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 
 		ArrayList<Tag> tagList = Utils.getTagChain(type);
 
 		output.println("// BER encoding methods for " + className);
 
-		if (!isInnerType) {
+		if (!isComponent) {
 	        // readPdu method
 			output.println("func (value *" + className + ") ReadPdu(reader *ber.Reader) error {");
 			writePduTagsDecode(type);

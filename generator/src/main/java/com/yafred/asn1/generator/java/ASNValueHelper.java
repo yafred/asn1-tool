@@ -52,10 +52,10 @@ public class ASNValueHelper {
 	}
 	
 
-	void processType(Type type, String className, boolean isInnerType) throws Exception {
+	void processType(Type type, String className, boolean isComponent) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		
-        if(!isInnerType) {
+        if(!isComponent) {
 	        // readPdu method
 			output.println("public static " + className + " readPdu(" + ASN_VALUE_READER
 					+ " reader) throws Exception {");

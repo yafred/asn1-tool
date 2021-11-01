@@ -52,12 +52,12 @@ public class BERHelper {
 	}
 	
 
-	void processType(Type type, String className, boolean isInnerType) throws Exception {
+	void processType(Type type, String className, boolean isComponent) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		
         ArrayList<Tag> tagList = Utils.getTagChain(type);
 		
-        if(!isInnerType) {
+        if(!isComponent) {
 	        // readPdu method
 			output.println("public static " + className + " readPdu(" + BER_READER
 					+ " reader) throws Exception {");

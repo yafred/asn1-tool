@@ -546,13 +546,13 @@ public class Generator {
 	}
 	
 	
-	private void addEncodingMethods(Type type, String className, boolean isInnerType) throws Exception {
+	private void addEncodingMethods(Type type, String className, boolean isComponent) throws Exception {
 		// add BER methods to the POJO
-		berHelper.processType(type, className, isInnerType);
+		berHelper.processType(type, className, isComponent);
 		// add ASN value methods to the POJO
-		asnValueHelper.processType(type, className, isInnerType);		
+		asnValueHelper.processType(type, className, isComponent);		
 		// add validation methods to the POJO
-		validationHelper.processType(type, className, isInnerType);		
+		validationHelper.processType(type, className, isComponent);		
 	}
 
 }

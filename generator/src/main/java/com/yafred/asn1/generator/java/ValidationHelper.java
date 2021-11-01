@@ -47,7 +47,7 @@ public class ValidationHelper {
 	}
 	
 
-	void processType(Type type, String className, boolean isInnerType) throws Exception {
+	void processType(Type type, String className, boolean isComponent) throws Exception {
 		this.output = generator.output; // for now, write encoding/decoding methods in the POJO class
 		      
 		output.println("public static void validate(" + className + " instance) throws Exception {");
