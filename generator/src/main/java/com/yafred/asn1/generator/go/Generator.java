@@ -52,7 +52,8 @@ public class Generator {
 	File outputDir;
 	String packageName;
 	File packageDirectory;
-	PrintWriter output;
+	PrintWriter typesOutput;
+	PrintWriter output; // functions ouput
 
 	boolean needsTypes = false;
 
@@ -148,6 +149,9 @@ public class Generator {
 		// systematically create a class
 		String className = Utils.uNormalize(typeAssignment.getReference());
 
+		// there is no inner class in Go, we have to separate types and functions 
+		StringWriter typesStringWriter = new StringWriter();
+		typesOutput = new PrintWriter(typesStringWriter);
 		StringWriter stringWriter = new StringWriter();
 		output = new PrintWriter(stringWriter);
 
@@ -156,10 +160,11 @@ public class Generator {
 
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.uNormalize(((TypeReference) typeAssignment.getType()).getReferencedTypeName());
-			output.println("type " + className + " " + parentClassName);
+			typesOutput.println("type " + className + " " + parentClassName);
 		} else {
 			switchProcessTypeAssignment(typeAssignment.getType(), className);
 		}
+		typesOutput.close();
 
 		// add encoding and decoding methods to the POJO
 		this.addMethods(typeAssignment.getType(), className, false);
@@ -181,13 +186,14 @@ public class Generator {
 		}
 		fileWriter.println("import \"errors\"");
 
-		fileWriter.print(stringWriter.getBuffer().toString());
+		fileWriter.println(typesStringWriter.getBuffer().toString());
+		fileWriter.println(stringWriter.getBuffer().toString());
 		fileWriter.close();
 	}
 
 	private void switchProcessTypeAssignment(Type type, String className) throws Exception {		
 		if (type.isIntegerType()) {
-			output.println("type " + className + " int");
+			typesOutput.println("type " + className + " int");
 
 			IntegerType integerType = (IntegerType)type;
 			if (integerType.getNamedNumberList() != null) {
@@ -196,7 +202,7 @@ public class Generator {
 		}	
 		
 		if (type.isEnumeratedType()) {
-			output.println("type " + className + " int");
+			typesOutput.println("type " + className + " int");
 
 			EnumeratedType enumeratedType = (EnumeratedType)type;
 			if (enumeratedType.getRootEnumeration() != null) {
@@ -209,25 +215,25 @@ public class Generator {
 		}	
 
 		if (type.isBooleanType()) {
-			output.println("type " + className + " bool");
+			typesOutput.println("type " + className + " bool");
 		}
 
 		if (type.isNullType()) {
-			output.println("type " + className + " struct{}");
+			typesOutput.println("type " + className + " struct{}");
 		}
 
 		if (type.isOctetStringType()) {
-			output.println("type " + className + " []byte");
+			typesOutput.println("type " + className + " []byte");
 		}
 
 		if (type.isRestrictedCharacterStringType()) {
-			output.println("type " + className + " string");
+			typesOutput.println("type " + className + " string");
 		}
 
 		if (type.isBitStringType()) {
-			output.println("type " + className + " struct{");
-			output.println("bitString types.BitString");
-			output.println("}");
+			typesOutput.println("type " + className + " struct{");
+			typesOutput.println("bitString types.BitString");
+			typesOutput.println("}");
 			needsTypes = true;
 
 			BitStringType bitStringType = (BitStringType)type;
