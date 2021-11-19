@@ -76,6 +76,11 @@ public class BERWriter {
         dataSize += nBytes;
     }
 
+    // Reminder on java types
+    // byte 8bits
+    // short 16 bits
+    // int 32 bits
+    // long 64 bits
     public int writeInteger(java.lang.Integer value) {
         int intValue = value.intValue();
         int nBytes = 1; // bytes needed to write integer
@@ -113,6 +118,10 @@ public class BERWriter {
         }
 
         return nBytes;
+    }
+
+    public int writeInteger(java.math.BigInteger value) {
+        return writeOctetString(value.toByteArray());
     }
 
     /*

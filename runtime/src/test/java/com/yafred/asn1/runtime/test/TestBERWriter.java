@@ -134,6 +134,16 @@ public class TestBERWriter  {
 		
 		assertEquals("04 c4 b4 00", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
+
+	@Test
+	public void test_4b_biginteger() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(java.math.BigInteger.valueOf(80000000));
+		assertEquals(4, nBytes);
+		
+		assertEquals("04 c4 b4 00", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
 	
 	@Test
 	public void test_4b_integer2() {
@@ -155,6 +165,16 @@ public class TestBERWriter  {
 		assertEquals("fe 82 87 c0", BERDumper.bytesToString(writer.getTraceBuffer()));
 	}
 	
+	@Test
+	public void test_4b_biginteger3() {
+		
+		BERWriter writer = new BERWriter();	
+		int nBytes = writer.writeInteger(java.math.BigInteger.valueOf(-25000000));
+		assertEquals(4, nBytes);
+		
+		assertEquals("fe 82 87 c0", BERDumper.bytesToString(writer.getTraceBuffer()));
+	}
+
 	@Test
 	public void test_1b_negative_integer() {
 		

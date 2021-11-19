@@ -668,4 +668,32 @@ public class TestBERReader  {
             e.printStackTrace();
         }  	
     }
+
+	@Test
+    public void test_biginteger1() {
+    	String hexaString = "01 7d 78 40";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	java.math.BigInteger intValue = reader.readBigInteger(4);
+        	assertEquals(25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+    
+    @Test
+    public void test_biginteger2() {
+    	String hexaString = "fe 82 87 c0";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	java.math.BigInteger intValue = reader.readBigInteger(4);
+        	assertEquals(-25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
 }

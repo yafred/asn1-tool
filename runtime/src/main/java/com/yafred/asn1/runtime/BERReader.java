@@ -228,10 +228,14 @@ public class BERReader {
         }
     }
 
-
+    // Reminder on java types
+    // byte 8bits
+    // short 16 bits
+    // int 32 bits
+    // long 64 bits
     public Integer readInteger(int nBytes) throws IOException {
         if (nBytes > 4) {
-            throw new RuntimeException("Integers over 4 bytes not supported");
+            throw new RuntimeException("Integer over 4 bytes not supported");
         }
 
         int result = 0;
@@ -267,6 +271,10 @@ public class BERReader {
         }
 
         return Integer.valueOf(result | resultMask);
+    }
+
+    public java.math.BigInteger readBigInteger(int nBytes) throws IOException {
+        return new java.math.BigInteger(readOctetString(nBytes));
     }
 
     public String readRestrictedCharacterString(int nBytes) throws IOException {
