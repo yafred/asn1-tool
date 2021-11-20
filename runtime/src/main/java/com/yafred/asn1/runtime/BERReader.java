@@ -229,48 +229,36 @@ public class BERReader {
     }
 
     // Reminder on java types
-    // byte 8bits
+    // byte 8 bits
     // short 16 bits
     // int 32 bits
     // long 64 bits
-    public Integer readInteger(int nBytes) throws IOException {
+    public Byte readByte(int nBytes)  throws IOException {
+        if (nBytes > 1) {
+            throw new RuntimeException("Size of Byte cannot be " + nBytes);
+        }
+        return readBigInteger(nBytes).byteValue();
+    }
+
+    public Short readShort(int nBytes)  throws IOException {
+        if (nBytes > 2) {
+            throw new RuntimeException("Size of Short cannot be " + nBytes);
+        }
+        return readBigInteger(nBytes).shortValue();
+    }
+
+    public Integer readInteger(int nBytes)  throws IOException {
         if (nBytes > 4) {
-            throw new RuntimeException("Integer over 4 bytes not supported");
+            throw new RuntimeException("Size of Integer cannot be " + nBytes);
         }
+        return readBigInteger(nBytes).intValue();
+    }
 
-        int result = 0;
-        int resultMask = 0;
-
-        int aByte = readChar();
-
-        if ((aByte & 0x80) == 0x80) { // negative number
-
-            switch (nBytes) {
-            case 1:
-                resultMask = 0xffffff00;
-
-                break;
-
-            case 2:
-                resultMask = 0xffff0000;
-
-                break;
-
-            case 3:
-                resultMask = 0xff000000;
-
-                break;
-            }
+    public Long readLong(int nBytes)  throws IOException {
+        if (nBytes > 8) {
+            throw new RuntimeException("Size of Long cannot be " + nBytes);
         }
-
-        result += (aByte << ((nBytes - 1) * 8));
-
-        for (int i = nBytes - 1; i > 0; i--) {
-            aByte = readChar();
-            result += (aByte << ((i - 1) * 8));
-        }
-
-        return Integer.valueOf(result | resultMask);
+        return readBigInteger(nBytes).longValue();
     }
 
     public java.math.BigInteger readBigInteger(int nBytes) throws IOException {

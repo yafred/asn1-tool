@@ -98,15 +98,15 @@ public class Utils {
 		String javaType = "";
 
 		if (type.isRestrictedCharacterStringType()) {
-            javaType = "java.lang.String";
+            javaType = "String";
 		} else if (type.isIntegerType()) {
-			javaType = "java.lang.Integer";
+			javaType = "Integer";
 		} else if (type.isBitStringType()) {
 			javaType = "java.util.BitSet";
 		} else if (type.isBooleanType()) {
-			javaType = "java.lang.Boolean";
+			javaType = "Boolean";
 		} else if (type.isNullType()) {
-			javaType = "java.lang.Object";
+			javaType = "Object";
 		} else if (type.isOctetStringType()) {
 			javaType = "byte[]";
 		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {

@@ -90,12 +90,12 @@ public class ASNValueWriter {
         isWaitingForChoiceValue = true;
     }
 
-    public void writeInteger(java.lang.Integer value) {
+    public void writeInteger(Integer value) {
         indentValue();
         writer.println(value);
     }
 
-    public void writeBoolean(java.lang.Boolean value) {
+    public void writeBoolean(Boolean value) {
         indentValue();
 
         boolean boolValue = value.booleanValue();

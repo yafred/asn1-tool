@@ -128,7 +128,7 @@ public class ASNValueReader {
 		return stringBuffer.toString();
 	}
 	
-	public java.lang.Integer readInteger() throws Exception {
+	public Integer readInteger() throws Exception {
 		String integerAsString = readIdentifier(); 
 		return Integer.valueOf(integerAsString);
 	}
@@ -180,7 +180,7 @@ public class ASNValueReader {
 		return ret;
 	}
 
-	public java.lang.Boolean readBoolean() throws Exception {
+	public Boolean readBoolean() throws Exception {
 		Boolean ret = null;
 		String booleanAsString = readIdentifier(); 
 		switch(booleanAsString) {
@@ -196,7 +196,7 @@ public class ASNValueReader {
 		return ret;
 	}
 	
-	public java.lang.Object readNull() throws Exception {
+	public Object readNull() throws Exception {
 		Object ret = null;
 		String NullAsTring = readIdentifier(); 
 		switch(NullAsTring) {

@@ -81,43 +81,20 @@ public class BERWriter {
     // short 16 bits
     // int 32 bits
     // long 64 bits
-    public int writeInteger(java.lang.Integer value) {
-        int intValue = value.intValue();
-        int nBytes = 1; // bytes needed to write integer
+    public int writeInteger(Byte value) {
+        return writeInteger(value.longValue());
+    }
 
-        if (intValue >= 0) {
-            if (intValue < 0x80) {
-                nBytes = 1;
-            } else if (intValue < 0x8000) {
-                nBytes = 2;
-            } else if (intValue < 0x800000) {
-                nBytes = 3;
-            } else {
-                nBytes = 4;
-            }
-        } else {
-            if (intValue >= 0xffffff80) {
-                nBytes = 1;
-            } else if (intValue >= 0xffff8000) {
-                nBytes = 2;
-            } else if (intValue >= 0xff800000) {
-                nBytes = 3;
-            } else {
-                nBytes = 4;
-            }
-        }
+    public int writeInteger(Short value) {
+        return writeInteger(value.longValue());
+    }
 
-        increaseDataSize(nBytes);
+    public int writeInteger(Integer value) {
+        return writeInteger(value.longValue());
+    }
 
-        int begin = buffer.length - dataSize;
-        int end = (begin + nBytes) - 1;
-
-        for (int i = end; i >= begin; i--) {
-            buffer[i] = (byte) intValue;
-            intValue >>= 8;
-        }
-
-        return nBytes;
+    public int writeInteger(Long value) {
+        return writeInteger(java.math.BigInteger.valueOf(value));
     }
 
     public int writeInteger(java.math.BigInteger value) {
@@ -178,7 +155,7 @@ public class BERWriter {
         return nBytes + 1; // bit string bytes + leading byte (containing num of padding bits)
     }
 
-    public int writeBoolean(java.lang.Boolean value) {
+    public int writeBoolean(Boolean value) {
         boolean boolValue = value.booleanValue();
         increaseDataSize(1);
 
