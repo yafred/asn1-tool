@@ -36,6 +36,7 @@ grammar ASN;
 /*--------------------- Specification (content of an asn.1 specification file) ------*/
 
 specification:
+    configComments ?
     moduleDefinition*
 ;
 
@@ -499,7 +500,10 @@ namedConstraint:
     LCASE_ID constraint? ( PRESENT_LITERAL | ABSENT_LITERAL | OPTIONAL_LITERAL )?
 ;
 
-
+/* Additions */
+configComments:
+    CONFIG_COMMENT CONFIG_COMMENT*
+;
 
 /*--------------------- LITERAL -----------------------------------------------------*/
 
@@ -918,7 +922,11 @@ LCASE_ID:
     ('a'..'z') ('-'('a'..'z'|'A'..'Z'|'0'..'9')|('a'..'z'|'A'..'Z'|'0'..'9'))* 
 ;
    
-/* comment (see 12.6 in ITU-T X.680 (08/2015) */
+/* comments (see 12.6 in ITU-T X.680 (08/2015) */
+CONFIG_COMMENT: 
+    '-->' ~('\n'|'\r')* '\r'? '\n' 
+;
+
 LINE_COMMENT: 
     '--' ~('\n'|'\r')* '\r'? '\n' ->skip
 ; 

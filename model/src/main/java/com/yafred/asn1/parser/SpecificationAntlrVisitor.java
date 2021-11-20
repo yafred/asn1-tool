@@ -35,6 +35,7 @@ import com.yafred.asn1.grammar.ASNParser.ChoiceTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ClosedRangeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeContext;
 import com.yafred.asn1.grammar.ASNParser.ComponentTypeListContext;
+import com.yafred.asn1.grammar.ASNParser.ConfigCommentsContext;
 import com.yafred.asn1.grammar.ASNParser.ConstraintContext;
 import com.yafred.asn1.grammar.ASNParser.DefinedTypeContext;
 import com.yafred.asn1.grammar.ASNParser.DefinitiveObjIdComponentContext;
@@ -179,6 +180,10 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	
 	@Override
 	public Specification visitSpecification(SpecificationContext ctx) {
+		if(ctx.configComments() != null) {
+			ArrayList<String> comments = ctx.configComments().accept(new ConfigCommentsVisitor());
+			System.out.println(comments);
+		}
 		ArrayList<ModuleDefinition> moduleDefinitionList = new ArrayList<ModuleDefinition>();
 		for ( ModuleDefinitionContext moduleDefinitionContext : ctx.moduleDefinition()) {
 			moduleDefinitionList.add(moduleDefinitionContext.accept(new ModuleDefinitionVisitor()));
@@ -186,6 +191,19 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 		return new Specification(moduleDefinitionList);
 	}
 	
+	static class ConfigCommentsVisitor extends ASNBaseVisitor<ArrayList<String>> {
+		@Override
+		public ArrayList<String> visitConfigComments(ConfigCommentsContext ctx) {
+			ArrayList<String> comments = new ArrayList<String>();
+			for (int i = 0; i < ctx.CONFIG_COMMENT().size(); i++) {
+				int startConfig = ctx.CONFIG_COMMENT(i).getText().indexOf("-->");
+				String comment = ctx.CONFIG_COMMENT(i).getText().substring(startConfig + 3).strip();
+				comments.add(comment);
+			}
+			return comments;
+		}
+	}
+
 	static class ModuleDefinitionVisitor extends ASNBaseVisitor<ModuleDefinition> {
 		@Override
 		public ModuleDefinition visitModuleDefinition(ModuleDefinitionContext ctx) {

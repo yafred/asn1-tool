@@ -1,0 +1,25 @@
+
+--> config1 for spec
+-- just a comment
+-->config2 for spec
+    -->      config3 for spec
+
+ValueRange DEFINITIONS ::=
+BEGIN
+
+  FooQuestion ::= SEQUENCE {
+      trackingNumber INTEGER(0..199),
+      question       IA5String
+  }
+
+  Score ::= INTEGER(0..20)
+
+  Positive ::= INTEGER(0..MAX)
+
+  Positive-2 ::= INTEGER(0<)
+
+  Negative ::= INTEGER(MIN .. -1)
+
+  Negative-2 ::= INTEGER(<-1)
+
+END
