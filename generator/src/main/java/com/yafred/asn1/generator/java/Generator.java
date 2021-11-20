@@ -58,12 +58,14 @@ public class Generator {
 	String packageName;
 	File packageDirectory;
 	PrintWriter output;
+	ArrayList<String> breadCrumbs;
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
 	ValidationHelper validationHelper;
 	
 	
 	public Generator() {
+		breadCrumbs = new ArrayList<String>();
 		berHelper = new BERHelper(this);
 		asnValueHelper = new ASNValueHelper(this);
 		validationHelper = new ValidationHelper(this);
@@ -93,7 +95,9 @@ public class Generator {
 		ArrayList<ModuleDefinition> moduleDefinitionList = specification.getModuleDefinitionList();
 
 		for (ModuleDefinition moduleDefinition : moduleDefinitionList) {
+			breadCrumbs.add(moduleDefinition.getModuleIdentifier().getModuleReference());
 			processModuleDefinition(moduleDefinition);
+			breadCrumbs.remove(breadCrumbs.size()-1);
 		}
 	}
 
@@ -156,6 +160,7 @@ public class Generator {
 		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 		typeMap.add(entry);
 
+		breadCrumbs.add(typeAssignment.getReference());
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = Utils.normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
 			output.println("public class " + className + " extends " + parentClassName);
@@ -168,6 +173,7 @@ public class Generator {
 
 		// add encoding and decoding methods to the POJO
 		this.addEncodingMethods(typeAssignment.getType(), className, false);
+		breadCrumbs.remove(breadCrumbs.size()-1);
 
 		output.println("}");
 		output.close();
@@ -319,7 +325,9 @@ public class Generator {
 		for(Component component : componentList) {
 			if(!component.isNamedType()) throw new Exception("Generator.processTypeWithComponentsAssignment: Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
+			breadCrumbs.add(namedType.getName());
 			switchProcessNamedType(namedType);
+			breadCrumbs.remove(breadCrumbs.size()-1);
 		}
 	}
 	

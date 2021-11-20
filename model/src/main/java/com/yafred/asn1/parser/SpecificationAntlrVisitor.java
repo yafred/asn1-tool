@@ -182,7 +182,6 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	public Specification visitSpecification(SpecificationContext ctx) {
 		if(ctx.configComments() != null) {
 			ArrayList<String> comments = ctx.configComments().accept(new ConfigCommentsVisitor());
-			System.out.println(comments);
 		}
 		ArrayList<ModuleDefinition> moduleDefinitionList = new ArrayList<ModuleDefinition>();
 		for ( ModuleDefinitionContext moduleDefinitionContext : ctx.moduleDefinition()) {
