@@ -704,7 +704,7 @@ public class BERHelper {
 		
 		if(!Utils.isConstructed(elementType)) {
 			if(!elementType.isEnumeratedType()) {
-				javaType= Generator.mapToJava(elementType);
+				javaType= generator.mapToJava(elementType);
 			}
 			else {
 				if(elementClassName.equals("")) {
@@ -1052,7 +1052,7 @@ public class BERHelper {
 			
 			if(!Utils.isConstructed(elementType)) {
 				if(!elementType.isEnumeratedType()) {
-					javaType= Generator.mapToJava(elementType);
+					javaType = generator.mapToJava(elementType);
 				}
 				else {
 					if(elementClassName.equals("")) {

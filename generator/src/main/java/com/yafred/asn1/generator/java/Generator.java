@@ -61,6 +61,7 @@ public class Generator {
 	File packageDirectory;
 	PrintWriter output;
 	ArrayList<String> breadCrumbs;
+	StringBuffer breadCrumbsBuffer;
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
 	ValidationHelper validationHelper;
@@ -68,6 +69,7 @@ public class Generator {
 	
 	public Generator() {
 		breadCrumbs = new ArrayList<String>();
+		breadCrumbsBuffer = new StringBuffer();
 		berHelper = new BERHelper(this);
 		asnValueHelper = new ASNValueHelper(this);
 		validationHelper = new ValidationHelper(this);
@@ -335,6 +337,7 @@ public class Generator {
 	
 	
 	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
+		breadCrumbs.add("item");
 		Type type = listOfType.getElement().getType();
 		if(type.isIntegerType()) {
 			processIntegerType((IntegerType)listOfType.getElement().getType(), "value", true, false);
@@ -368,6 +371,7 @@ public class Generator {
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
+		breadCrumbs.remove(breadCrumbs.size()-1);
 	}
 	
 	
@@ -579,7 +583,7 @@ public class Generator {
 		return javaType;
 	}
 	
-	public static String mapToJava(Type type) throws Exception {
+	public String mapToJava(Type type) throws Exception {
 		String javaType = "";
 
 		if (type.isRestrictedCharacterStringType()) {
@@ -597,10 +601,24 @@ public class Generator {
 		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			javaType = "long[]";
 		} else {
-			throw new Exception("Type not mapped: " + type.getName());
+			throw new Exception("No mapping found for: " + type.getName());
+		}
+		return javaType;
+	}
+
+	public String getBreadCrumbsAsString() {
+		breadCrumbsBuffer.delete(0, breadCrumbsBuffer.length());
+
+		boolean isFirst = true;
+		for(String breadCrumb : breadCrumbs) {
+			if(!isFirst) {
+				breadCrumbsBuffer.append(".");
+			}
+			isFirst = false;
+			breadCrumbsBuffer.append(breadCrumb);
 		}
 
-		return javaType;
+		return breadCrumbsBuffer.toString();
 	}
 
 }
