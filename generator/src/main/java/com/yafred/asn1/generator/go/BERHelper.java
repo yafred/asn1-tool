@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.yafred.asn1.generator.common.TagHelper;
-
+import com.yafred.asn1.generator.common.Utils;
 import com.yafred.asn1.model.Tag;
 import com.yafred.asn1.model.Type;
 

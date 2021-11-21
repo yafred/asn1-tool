@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.yafred.asn1.generator.java.Utils;
+import com.yafred.asn1.generator.common.Utils;
 
 
 public class UtilsTest {

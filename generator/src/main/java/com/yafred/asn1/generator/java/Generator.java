@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.yafred.asn1.generator.common.Utils;
+
 import com.google.googlejavaformat.java.Formatter;
 import com.yafred.asn1.model.Assignment;
 import com.yafred.asn1.model.Component;
@@ -162,7 +164,7 @@ public class Generator {
 
 		breadCrumbs.add(typeAssignment.getReference());
 		if (typeAssignment.getType().isTypeReference()) {
-			String parentClassName = Utils.normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
+			String parentClassName = normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
 			output.println("public class " + className + " extends " + parentClassName);
 			output.println("{");
 		} else {
@@ -225,7 +227,7 @@ public class Generator {
 	
 	private void processBasicType(Type type, String componentName, boolean isList) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
-		String javaType = Utils.mapToJava(type);
+		String javaType = mapToJava(type);
 		if(isList) {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
@@ -238,7 +240,7 @@ public class Generator {
 	
 	private void processBitStringType(BitStringType bitStringType, String componentName, boolean isList, boolean isComponent) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
-		String javaType = Utils.mapToJava(bitStringType);
+		String javaType = mapToJava(bitStringType);
 		if(isList) {
 			javaType = "java.util.ArrayList<" + javaType + ">";
 		}
@@ -291,7 +293,7 @@ public class Generator {
 	
 	private void processIntegerType(IntegerType integerType, String componentName, boolean isList, boolean isComponent) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
-		String javaType = Utils.mapToJava(integerType);
+		String javaType = mapToJava(integerType);
 		
 		if (integerType.getNamedNumberList() != null) {
 			if(isComponent) {
@@ -402,9 +404,9 @@ public class Generator {
 	private void processTypeReferenceListElement(TypeReference typeReference, String componentName) throws Exception {
 		String uComponentName = Utils.uNormalize(componentName);
 
-		String javaType = Utils.normalizeJavaType(typeReference, options.getPackagePrefix());
+		String javaType = normalizeJavaType(typeReference, options.getPackagePrefix());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
-			javaType = Utils.mapToJava(typeReference.getBuiltinType());
+			javaType = mapToJava(typeReference.getBuiltinType());
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
@@ -463,9 +465,9 @@ public class Generator {
 	
 	
 	private void processTypeReferenceNamedType(TypeReference typeReference, String componentName, String uComponentName) throws Exception {
-		String javaType = Utils.normalizeJavaType(typeReference, options.getPackagePrefix());
+		String javaType = normalizeJavaType(typeReference, options.getPackagePrefix());
 		if(!Utils.isConstructed(typeReference.getBuiltinType()) && !typeReference.getBuiltinType().isEnumeratedType()) {
-			javaType = Utils.mapToJava(typeReference.getBuiltinType());
+			javaType = mapToJava(typeReference.getBuiltinType());
 		}
 
 		if(typeReference.getBuiltinType().isEnumeratedType()) {
@@ -561,6 +563,44 @@ public class Generator {
 		asnValueHelper.processType(type, className, isComponent);		
 		// add validation methods to the POJO
 		validationHelper.processType(type, className, isComponent);		
+	}
+
+	/**
+	 * Adds package name to java type if from another ASN.1 module
+	 */
+	public static String normalizeJavaType(TypeReference typeReference, String packagePrefix) {
+		
+		String javaType = Utils.uNormalize(typeReference.getReferencedTypeName());
+		
+		if(typeReference.getReferencedModuleName() != null && !typeReference.getReferencedModuleName().equals("")) {
+			javaType = packagePrefix + Utils.normalizePackageName(typeReference.getReferencedModuleName().toLowerCase()) + "." + javaType;
+		}
+		
+		return javaType;
+	}
+	
+	public static String mapToJava(Type type) throws Exception {
+		String javaType = "";
+
+		if (type.isRestrictedCharacterStringType()) {
+            javaType = "String";
+		} else if (type.isIntegerType()) {
+			javaType = "Integer";
+		} else if (type.isBitStringType()) {
+			javaType = "java.util.BitSet";
+		} else if (type.isBooleanType()) {
+			javaType = "Boolean";
+		} else if (type.isNullType()) {
+			javaType = "Object";
+		} else if (type.isOctetStringType()) {
+			javaType = "byte[]";
+		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {
+			javaType = "long[]";
+		} else {
+			throw new Exception("Type not mapped: " + type.getName());
+		}
+
+		return javaType;
 	}
 
 }

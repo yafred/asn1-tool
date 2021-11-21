@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import com.yafred.asn1.generator.common.Utils;
+
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.Type;
@@ -128,7 +130,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("writer.writeComponent(\"" + namedType.getName() + "\");");
@@ -157,7 +159,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			
 			output.println("if(componentName == null) componentName = reader.readIdentifier();");
@@ -200,7 +202,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("writer.writeComponent(\"" + namedType.getName() + "\");");
@@ -228,7 +230,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("case \"" + namedType.getName() + "\":");
 			switchDecodeComponent(namedType.getType(), componentName, componentClassName);
@@ -247,7 +249,7 @@ public class ASNValueHelper {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
-			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
+			elementClassName = Generator.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
 		else if(Utils.isConstructed(listOfType.getElement().getType())) {
@@ -281,7 +283,7 @@ public class ASNValueHelper {
 		
 		if(!Utils.isConstructed(elementType)) {
 			if(!elementType.isEnumeratedType()) {
-				javaType= Utils.mapToJava(elementType);
+				javaType= Generator.mapToJava(elementType);
 			}
 			else {
 				if(elementClassName.equals("")) {
@@ -326,7 +328,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("writer.writeSelection(\"" + namedType.getName() + "\");");
@@ -350,7 +352,7 @@ public class ASNValueHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("case \"" + namedType.getName() + "\":");
 			output.println("if(\":\".equals(reader.lookAheadToken())) reader.readToken();"); // read optional ':'
@@ -369,7 +371,7 @@ public class ASNValueHelper {
 		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
-			referencedClassName = Utils.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
+			referencedClassName = Generator.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
 			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		
@@ -712,7 +714,7 @@ public class ASNValueHelper {
 			
 			if(!Utils.isConstructed(elementType)) {
 				if(!elementType.isEnumeratedType()) {
-					javaType= Utils.mapToJava(elementType);
+					javaType= Generator.mapToJava(elementType);
 				}
 				else {
 					if(elementClassName.equals("")) {

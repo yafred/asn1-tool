@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import com.yafred.asn1.generator.common.Utils;
+
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.Type;
 import com.yafred.asn1.model.constraint.Size;
@@ -90,7 +92,7 @@ public class ValidationHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			processComponent(namedType.getType(), componentName, componentClassName);
 		}
@@ -111,7 +113,7 @@ public class ValidationHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			processComponent(namedType.getType(), componentName, componentClassName);
 		}
@@ -122,7 +124,7 @@ public class ValidationHelper {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
-			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
+			elementClassName = Generator.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
 		else if(Utils.isConstructed(listOfType.getElement().getType())) {
@@ -174,7 +176,7 @@ public class ValidationHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			processComponent(namedType.getType(), componentName, componentClassName);
@@ -187,7 +189,7 @@ public class ValidationHelper {
 		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
-			referencedClassName = Utils.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
+			referencedClassName = Generator.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
 			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		

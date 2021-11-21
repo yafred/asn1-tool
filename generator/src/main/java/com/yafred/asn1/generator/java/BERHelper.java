@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.yafred.asn1.generator.common.TagHelper;
+import com.yafred.asn1.generator.common.Utils;
 import com.yafred.asn1.model.Component;
 import com.yafred.asn1.model.NamedNumber;
 import com.yafred.asn1.model.Tag;
@@ -467,7 +468,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -507,7 +508,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(sequenceType.isAutomaticTaggingSelected()) {
@@ -583,7 +584,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -625,7 +626,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(setType.isAutomaticTaggingSelected()) {
@@ -670,7 +671,7 @@ public class BERHelper {
 		Type elementType = listOfType.getElement().getType();
 		String elementClassName = "";
 		if(listOfType.getElement().getType().isTypeReference()) {
-			elementClassName = Utils.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
+			elementClassName = Generator.normalizeJavaType((TypeReference)listOfType.getElement().getType(), generator.options.getPackagePrefix());
 			elementType = ((TypeReference)listOfType.getElement().getType()).getBuiltinType();
 		}
 		else if(Utils.isConstructed(listOfType.getElement().getType())) {
@@ -703,7 +704,7 @@ public class BERHelper {
 		
 		if(!Utils.isConstructed(elementType)) {
 			if(!elementType.isEnumeratedType()) {
-				javaType= Utils.mapToJava(elementType);
+				javaType= Generator.mapToJava(elementType);
 			}
 			else {
 				if(elementClassName.equals("")) {
@@ -755,7 +756,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			output.println("if(" + componentGetter + "!=null){");
 			output.println("int componentLength=0;");
@@ -782,7 +783,7 @@ public class BERHelper {
 			String componentClassName = Utils.uNormalize(namedType.getName());
 			if(namedType.getType().isTypeReference()) {
 				TypeReference typeReference = (TypeReference)namedType.getType();
-				componentClassName = Utils.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
+				componentClassName = Generator.normalizeJavaType(typeReference, generator.options.getPackagePrefix());
 			}
 			Tag automaticTag = null;
 			if(choiceType.isAutomaticTaggingSelected()) {
@@ -821,7 +822,7 @@ public class BERHelper {
 		String referencedClassName = "";
 		Type builtinType = type;
 		if(builtinType.isTypeReference()) {
-			referencedClassName = Utils.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
+			referencedClassName = Generator.normalizeJavaType((TypeReference) builtinType, generator.options.getPackagePrefix());
 			builtinType = ((TypeReference)builtinType).getBuiltinType();
 		}
 		
@@ -1051,7 +1052,7 @@ public class BERHelper {
 			
 			if(!Utils.isConstructed(elementType)) {
 				if(!elementType.isEnumeratedType()) {
-					javaType= Utils.mapToJava(elementType);
+					javaType= Generator.mapToJava(elementType);
 				}
 				else {
 					if(elementClassName.equals("")) {

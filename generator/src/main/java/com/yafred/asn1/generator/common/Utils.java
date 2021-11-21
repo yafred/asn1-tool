@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.yafred.asn1.generator.go;
+package com.yafred.asn1.generator.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class Utils {
 	}
 		
 	/**
-	 * ASN.1 name to Go name
+	 * ASN.1 name to Java/Go name
 	 */
 	public static String normalize(String name) {
 		StringBuffer buffer = new StringBuffer();
@@ -69,7 +69,7 @@ public class Utils {
 	}
 
 	/**
-	 * ASN.1 name to Go name and forces 1rst letter to Uppercase
+	 * ASN.1 name to Java/Go name and forces 1rst letter to Uppercase
 	 */
 	public static String uNormalize(String name) {
 		char[] temp = name.toCharArray();
