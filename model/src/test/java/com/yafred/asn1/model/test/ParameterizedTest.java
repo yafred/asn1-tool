@@ -47,6 +47,7 @@ import org.reflections.scanners.ResourcesScanner;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
+import com.yafred.asn1.parser.Asn1TypeLabeller;
 import com.yafred.asn1.parser.Asn1ModelValidator;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 import com.yafred.asn1.parser.SpecificationAntlrVisitor;
@@ -133,7 +134,11 @@ public class ParameterizedTest {
            	System.out.println("SHOULD PASS\n\n\n");
            	assert(!hasErrors);
         }
-	}
+
+        System.out.println("-----------------  ATTACH LABELS TO TYPES ---------------------------------------------------");
+        new Asn1TypeLabeller(true).visit(specification);
+
+    }
 
 	static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is);

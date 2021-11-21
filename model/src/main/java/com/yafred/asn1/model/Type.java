@@ -34,6 +34,8 @@ abstract public class Type {
 	ArrayList<Tag> tagList;
 		
 	TokenLocation tokenLocation;
+
+    String label; 
 	
 	Constraint constraint;
 	
@@ -53,6 +55,14 @@ abstract public class Type {
 		this.tokenLocation = tokenLocation;
 	}
 	
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
 	public Constraint getConstraint() {
 		return constraint;
 	}

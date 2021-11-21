@@ -51,6 +51,7 @@ import com.yafred.asn1.generator.java.Options;
 import com.yafred.asn1.grammar.ASNLexer;
 import com.yafred.asn1.grammar.ASNParser;
 import com.yafred.asn1.model.Specification;
+import com.yafred.asn1.parser.Asn1TypeLabeller;
 import com.yafred.asn1.parser.Asn1ModelValidator;
 import com.yafred.asn1.parser.Asn1SpecificationWriter;
 import com.yafred.asn1.parser.SpecificationAntlrVisitor;
@@ -103,6 +104,9 @@ public class ParameterizedTest {
         // validate model
         Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
        	asn1ModelValidator.visit(specification);
+
+		// attach labels to types
+		new Asn1TypeLabeller(false).visit(specification);
        	
        	assertEquals(0, asn1ModelValidator.getErrorList().size());
        	
