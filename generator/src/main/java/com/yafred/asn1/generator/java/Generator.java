@@ -60,16 +60,12 @@ public class Generator {
 	String packageName;
 	File packageDirectory;
 	PrintWriter output;
-	ArrayList<String> breadCrumbs;
-	StringBuffer breadCrumbsBuffer;
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
 	ValidationHelper validationHelper;
 	
 	
 	public Generator() {
-		breadCrumbs = new ArrayList<String>();
-		breadCrumbsBuffer = new StringBuffer();
 		berHelper = new BERHelper(this);
 		asnValueHelper = new ASNValueHelper(this);
 		validationHelper = new ValidationHelper(this);
@@ -99,9 +95,7 @@ public class Generator {
 		ArrayList<ModuleDefinition> moduleDefinitionList = specification.getModuleDefinitionList();
 
 		for (ModuleDefinition moduleDefinition : moduleDefinitionList) {
-			breadCrumbs.add(moduleDefinition.getModuleIdentifier().getModuleReference());
 			processModuleDefinition(moduleDefinition);
-			breadCrumbs.remove(breadCrumbs.size()-1);
 		}
 	}
 
@@ -164,7 +158,6 @@ public class Generator {
 		Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(typeAssignment.getReference(), options.getPackagePrefix() + packageName + "." + className);
 		typeMap.add(entry);
 
-		breadCrumbs.add(typeAssignment.getReference());
 		if (typeAssignment.getType().isTypeReference()) {
 			String parentClassName = normalizeJavaType((TypeReference) typeAssignment.getType(), options.getPackagePrefix());
 			output.println("public class " + className + " extends " + parentClassName);
@@ -177,7 +170,6 @@ public class Generator {
 
 		// add encoding and decoding methods to the POJO
 		this.addEncodingMethods(typeAssignment.getType(), className, false);
-		breadCrumbs.remove(breadCrumbs.size()-1);
 
 		output.println("}");
 		output.close();
@@ -329,15 +321,12 @@ public class Generator {
 		for(Component component : componentList) {
 			if(!component.isNamedType()) throw new Exception("Generator.processTypeWithComponentsAssignment: Component can only be a NamedType here");
 			NamedType namedType = (NamedType)component;
-			breadCrumbs.add(namedType.getName());
 			switchProcessNamedType(namedType);
-			breadCrumbs.remove(breadCrumbs.size()-1);
 		}
 	}
 	
 	
 	private void processListOfTypeAssignment(ListOfType listOfType, String className) throws Exception {
-		breadCrumbs.add("item");
 		Type type = listOfType.getElement().getType();
 		if(type.isIntegerType()) {
 			processIntegerType((IntegerType)listOfType.getElement().getType(), "value", true, false);
@@ -371,7 +360,6 @@ public class Generator {
 		else {
 			throw new Exception("Generator.processListOfTypeAssignment: Code generation not supported for Type " + listOfType.getElement().getType().getName());
 		}
-		breadCrumbs.remove(breadCrumbs.size()-1);
 	}
 	
 	
@@ -604,21 +592,6 @@ public class Generator {
 			throw new Exception("No mapping found for: " + type.getName());
 		}
 		return javaType;
-	}
-
-	public String getBreadCrumbsAsString() {
-		breadCrumbsBuffer.delete(0, breadCrumbsBuffer.length());
-
-		boolean isFirst = true;
-		for(String breadCrumb : breadCrumbs) {
-			if(!isFirst) {
-				breadCrumbsBuffer.append(".");
-			}
-			isFirst = false;
-			breadCrumbsBuffer.append(breadCrumb);
-		}
-
-		return breadCrumbsBuffer.toString();
 	}
 
 }
