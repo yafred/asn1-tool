@@ -192,10 +192,10 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 
 		if (configComments != null) {
 			for (String configComment : configComments) {
-				// format is: '--> directive value'
+				// format is: 'directive value'
 				String[] splitComment = configComment.split(" ");
-				if (splitComment.length > 2) {
-					specification.getDirectives().put(splitComment[1].strip(), splitComment[2].strip());
+				if (splitComment.length > 1) {
+					specification.getDirectives().put(splitComment[0].strip(), splitComment[1].strip());
 				}
 			}
 		}

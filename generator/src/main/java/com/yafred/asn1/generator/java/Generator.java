@@ -63,6 +63,7 @@ public class Generator {
 	BERHelper berHelper;
 	ASNValueHelper asnValueHelper;
 	ValidationHelper validationHelper;
+	Map<String, String> directives;
 	
 	
 	public Generator() {
@@ -92,6 +93,8 @@ public class Generator {
 	
 	
 	public void processSpecification(Specification specification) throws Exception {
+		this.directives = specification.getDirectives();
+	
 		ArrayList<ModuleDefinition> moduleDefinitionList = specification.getModuleDefinitionList();
 
 		for (ModuleDefinition moduleDefinition : moduleDefinitionList) {
@@ -577,7 +580,7 @@ public class Generator {
 		if (type.isRestrictedCharacterStringType()) {
             javaType = "String";
 		} else if (type.isIntegerType()) {
-			javaType = "Integer";
+			javaType = mapToJava((IntegerType)type);
 		} else if (type.isBitStringType()) {
 			javaType = "java.util.BitSet";
 		} else if (type.isBooleanType()) {
@@ -594,4 +597,29 @@ public class Generator {
 		return javaType;
 	}
 
+	public String mapToJava(IntegerType type) throws Exception {
+		String javaType = "";
+		int integerSize = 4;
+		String directive = type.getLabel() + ".integerSize";
+		if (directives.get(directive) != null) {
+			switch (directives.get(directive)) {
+			case "1":
+				javaType = "Byte";
+				break;
+			case "2":
+				javaType = "Short";
+				break;
+			case "4":
+				javaType = "Integer";
+				break;
+			case "8":
+				javaType = "Long";
+				break;
+			default:
+				javaType = "java.math.BigInteger";
+			}
+		}
+		return "Integer";
+		//return javaType;
+	}
 }

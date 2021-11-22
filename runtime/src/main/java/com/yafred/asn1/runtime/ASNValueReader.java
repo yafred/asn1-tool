@@ -128,9 +128,29 @@ public class ASNValueReader {
 		return stringBuffer.toString();
 	}
 	
+	public Byte readByte() throws Exception {
+		String integerAsString = readIdentifier(); 
+		return Byte.valueOf(integerAsString);
+	}
+
+	public Short readShort() throws Exception {
+		String integerAsString = readIdentifier(); 
+		return Short.valueOf(integerAsString);
+	}
+
 	public Integer readInteger() throws Exception {
 		String integerAsString = readIdentifier(); 
 		return Integer.valueOf(integerAsString);
+	}
+
+	public Long readLong() throws Exception {
+		String integerAsString = readIdentifier(); 
+		return Long.valueOf(integerAsString);
+	}
+
+	public java.math.BigInteger readBigInteger() throws Exception {
+		String integerAsString = readIdentifier(); 
+		return new java.math.BigInteger(integerAsString);
 	}
 
 	// readBitString assumes 'xxx'B or 'xxx'H is in the reader

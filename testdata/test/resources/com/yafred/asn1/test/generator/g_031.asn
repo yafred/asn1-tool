@@ -1,0 +1,21 @@
+-- Testing directives to change size of INTEGER in implementation
+
+--> integerSize 8 // global value (this will be a Long in Java)
+--> G-031.Small-Integer.integerSize 1 
+--> G-031.List-of-positive.item.integerSize 1 
+--> G-031.Plane.seats.integerSize 2
+
+G-031 DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Small-Integer ::= INTEGER (-32..32)
+
+List-of-small-integer ::= SEQUENCE OF Small-Integer
+
+List-of-positive ::= SEQUENCE OF INTEGER(0..MAX)
+
+Plane ::= SEQUENCE {
+   seats INTEGER (0..500)
+}
+
+END

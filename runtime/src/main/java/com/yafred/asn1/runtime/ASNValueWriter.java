@@ -90,7 +90,27 @@ public class ASNValueWriter {
         isWaitingForChoiceValue = true;
     }
 
+    public void writeInteger(Byte value) {
+        indentValue();
+        writer.println(value);
+    }
+
+    public void writeInteger(Short value) {
+        indentValue();
+        writer.println(value);
+    }
+
     public void writeInteger(Integer value) {
+        indentValue();
+        writer.println(value);
+    }
+
+    public void writeInteger(Long value) {
+        indentValue();
+        writer.println(value);
+    }
+
+    public void writeInteger(java.math.BigInteger value) {
         indentValue();
         writer.println(value);
     }
