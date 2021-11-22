@@ -22,6 +22,7 @@
 package com.yafred.asn1.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -30,6 +31,11 @@ import java.util.ArrayList;
  */
 public class Specification {
 	private ArrayList<ModuleDefinition> moduleDefinitionList = null;
+	private HashMap<String,String> directives = new HashMap<String,String>();
+
+	public HashMap<String,String> getDirectives() {
+		return directives;
+	}
 
     public ArrayList<ModuleDefinition> getModuleDefinitionList() {
 		return moduleDefinitionList;

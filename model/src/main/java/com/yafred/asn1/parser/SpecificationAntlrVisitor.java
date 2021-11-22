@@ -180,14 +180,27 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 	
 	@Override
 	public Specification visitSpecification(SpecificationContext ctx) {
-		if(ctx.configComments() != null) {
-			ArrayList<String> comments = ctx.configComments().accept(new ConfigCommentsVisitor());
+		ArrayList<String> configComments = null;
+		if (ctx.configComments() != null) {
+			configComments = ctx.configComments().accept(new ConfigCommentsVisitor());
 		}
 		ArrayList<ModuleDefinition> moduleDefinitionList = new ArrayList<ModuleDefinition>();
-		for ( ModuleDefinitionContext moduleDefinitionContext : ctx.moduleDefinition()) {
+		for (ModuleDefinitionContext moduleDefinitionContext : ctx.moduleDefinition()) {
 			moduleDefinitionList.add(moduleDefinitionContext.accept(new ModuleDefinitionVisitor()));
 		}
-		return new Specification(moduleDefinitionList);
+		Specification specification = new Specification(moduleDefinitionList);
+
+		if (configComments != null) {
+			for (String configComment : configComments) {
+				// format is: '--> directive value'
+				String[] splitComment = configComment.split(" ");
+				if (splitComment.length > 2) {
+					specification.getDirectives().put(splitComment[1].strip(), splitComment[2].strip());
+				}
+			}
+		}
+
+		return specification;
 	}
 	
 	static class ConfigCommentsVisitor extends ASNBaseVisitor<ArrayList<String>> {
