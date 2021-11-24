@@ -382,7 +382,11 @@ public class ASNValueHelper {
 		}
 		else if(builtinType.isIntegerType()) {
 			IntegerType integerType = (IntegerType)builtinType;
-			if (integerType.getNamedNumberList() != null) {
+			String integerJavaType = generator.mapToJava(integerType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}			
+			if (integerType.getNamedNumberList() != null && integerJavaType.equals("Integer")) {
 				output.println("{");
 				output.println("switch(" +  componentGetter + ") {");
 				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
@@ -500,7 +504,11 @@ public class ASNValueHelper {
 		}
 		else if(elementType.isIntegerType()) {
 			IntegerType integerType = (IntegerType)elementType;
-			if (integerType.getNamedNumberList() != null) {
+			String integerJavaType = generator.mapToJava(integerType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}			
+			if (integerType.getNamedNumberList() != null && integerJavaType.equals("Integer")) {
 				output.println("switch(" + componentGetter + ".get(i)) {");
 				for (NamedNumber namedNumber : integerType.getNamedNumberList()) {
 					output.println("case " + namedNumber.getNumber() + ":");
@@ -601,7 +609,11 @@ public class ASNValueHelper {
 		}
 		else if(builtinType.isIntegerType()) {
 			IntegerType integerType = (IntegerType)builtinType;
-			if (integerType.getNamedNumberList() != null) {
+			String integerJavaType = generator.mapToJava(integerType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}			
+			if (integerType.getNamedNumberList() != null && integerJavaType.equals("Integer")) {
 				output.println("{");
 				output.println("String namedNumber = reader.readIdentifier();");
 				output.println("switch(namedNumber) {");
@@ -616,7 +628,7 @@ public class ASNValueHelper {
 				output.println("}");
 			}
 			else {
-				output.println(componentSetter + "reader.readInteger());");
+				output.println(componentSetter + "reader.read" + integerJavaType + "());");
 			}
 		}
 		else if(builtinType.isBooleanType()) {
@@ -758,7 +770,11 @@ public class ASNValueHelper {
 		}
 		else if(elementType.isIntegerType()) {
 			IntegerType integerType = (IntegerType)elementType;
-			if (integerType.getNamedNumberList() != null) {
+			String integerJavaType = generator.mapToJava(integerType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}			
+			if (integerType.getNamedNumberList() != null && integerJavaType.equals("Integer")) {
 				output.println("{");
 				output.println("String namedNumber = reader.readIdentifier();");
 				output.println("switch(namedNumber) {");
@@ -773,7 +789,7 @@ public class ASNValueHelper {
 				output.println("}");
 			}
 			else {
-				output.println(componentGetter + ".add(reader.readInteger());");
+				output.println(componentGetter + ".add(reader.read" + integerJavaType + "());");
 			}
 		}
 		else if(elementType.isBooleanType()) {

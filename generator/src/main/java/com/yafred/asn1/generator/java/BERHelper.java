@@ -978,7 +978,11 @@ public class BERHelper {
 			output.println(componentSetter + "reader.readRestrictedCharacterString(componentLength));");
 		}
 		else if(builtinType.isIntegerType()) {
-			output.println(componentSetter + "reader.readInteger(componentLength));");
+			String integerJavaType = generator.mapToJava(builtinType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}
+			output.println(componentSetter + "reader.read" + integerJavaType + "(componentLength));");
 		}
 		else if(builtinType.isBooleanType()) {
 			output.println(componentSetter + "reader.readBoolean(componentLength));");
@@ -1093,7 +1097,11 @@ public class BERHelper {
 			output.println(componentGetter + ".add(reader.readRestrictedCharacterString(componentLength));");	
 		}
 		else if(elementType.isIntegerType()) {
-			output.println(componentGetter + ".add(reader.readInteger(componentLength));");	
+			String integerJavaType = generator.mapToJava(elementType);
+			if (integerJavaType.endsWith("BigInteger")) {
+				integerJavaType = "BigInteger";
+			}
+			output.println(componentGetter + ".add(reader.read" +  integerJavaType + "(componentLength));");	
 		}
 		else if(elementType.isBooleanType()) {
 			output.println(componentGetter + ".add(reader.readBoolean(componentLength));");	

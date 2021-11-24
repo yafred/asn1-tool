@@ -182,3 +182,46 @@ INTEGER (100..200))
 ```
 SEQUENCE (SIZE(0..10)) OF IA5String
 ```
+
+
+### Compiler directives
+
+You can put some directives to influence the way code is generated.
+
+Directives are written as ASN.1 comments at the top of the specification file. Their format is:
+```
+--> name value
+```
+name can be prefixed with the path to a single element in the specification (see example)
+
+As of now only changing INTEGER type mapping is supported. Directive is `integerSize`
+
+#### Example
+
+* Specification
+```
+--> integerSize 8 // global value. This will be a Long in Java
+--> My-Module.Plane.seats.integerSize 2  // this will be a Short in Java
+--> My-Module.Plane.unique-id.integerSize huge   // this will be a java.math.BigInteger in Java
+
+My-Module DEFINITIONS AUTOMATIC TAGS ::= 
+BEGIN 
+
+Default-Integer ::= INTEGER   -- size 8
+
+Plane ::= SEQUENCE {
+   unique-id INTEGER,       -- size huge
+   seats INTEGER (0..500)   -- size 2
+}
+
+END
+```
+
+* Using the generated code
+```
+Plane obj = new Plane();
+obj.setUniqueId(new java.math.BigInteger("123456789123456789123456789"));
+obj.setSeats(Short.parseShort("100"));
+```
+
+

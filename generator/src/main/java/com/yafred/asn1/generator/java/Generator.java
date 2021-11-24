@@ -598,8 +598,28 @@ public class Generator {
 	}
 
 	public String mapToJava(IntegerType type) throws Exception {
-		String javaType = "";
-		int integerSize = 4;
+		String javaType = "Integer";
+
+		String defaultSize = "integerSize";
+		if (directives.get(defaultSize) != null) {
+			switch (directives.get(defaultSize)) {
+			case "1":
+				javaType = "Byte";
+				break;
+			case "2":
+				javaType = "Short";
+				break;
+			case "4":
+				javaType = "Integer";
+				break;
+			case "8":
+				javaType = "Long";
+				break;
+			default:
+				javaType = "java.math.BigInteger";
+			}
+		}
+
 		String directive = type.getLabel() + ".integerSize";
 		if (directives.get(directive) != null) {
 			switch (directives.get(directive)) {
@@ -619,7 +639,6 @@ public class Generator {
 				javaType = "java.math.BigInteger";
 			}
 		}
-		return "Integer";
-		//return javaType;
+		return javaType;
 	}
 }

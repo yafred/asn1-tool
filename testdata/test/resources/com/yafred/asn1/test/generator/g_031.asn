@@ -1,21 +1,28 @@
 -- Testing directives to change size of INTEGER in implementation
 
 --> integerSize 8 // global value (this will be a Long in Java)
+--> G-031.Big-Integer.integerSize huge
 --> G-031.Small-Integer.integerSize 1 
---> G-031.List-of-positive.item.integerSize 1 
+--> G-031.List-of-positive.item.integerSize 4
 --> G-031.Plane.seats.integerSize 2
+--> G-031.Plane.unique-id.integerSize huge
 
 G-031 DEFINITIONS AUTOMATIC TAGS ::= 
 BEGIN 
 
-Small-Integer ::= INTEGER (-32..32)
+Default-Integer ::= INTEGER   -- size 8
 
-List-of-small-integer ::= SEQUENCE OF Small-Integer
+Big-Integer ::= INTEGER  -- size huge
 
-List-of-positive ::= SEQUENCE OF INTEGER(0..MAX)
+Small-Integer ::= INTEGER (-32..32)   -- size 1
+
+List-of-small-integer ::= SEQUENCE OF Small-Integer   -- item has size 1 (like the referenced type)
+
+List-of-positive ::= SEQUENCE OF INTEGER(0..MAX)  -- item has size 4 
 
 Plane ::= SEQUENCE {
-   seats INTEGER (0..500)
+   unique-id INTEGER,       -- size huge
+   seats INTEGER (0..500)   -- size 2
 }
 
 END
