@@ -31,18 +31,20 @@ AlgorithmIdentifier  ::=  SEQUENCE  {
 Name ::= CHOICE { -- only one possibility for now --
      rdnSequence  RDNSequence }
 
-   RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
+RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
 
-   RelativeDistinguishedName ::=
-     SET OF AttributeTypeAndValue
+RelativeDistinguishedName ::= SET OF AttributeTypeAndValue
 
-     AttributeTypeAndValue ::= SEQUENCE {
+AttributeTypeAndValue ::= SEQUENCE {
      type     AttributeType,
      value    AttributeValue }
 
-   AttributeType ::= OBJECT IDENTIFIER
+AttributeType ::= OBJECT IDENTIFIER
 
-   AttributeValue ::= PrintableString -- ANY
+AttributeValue ::= CHOICE { -- ANY
+     printableString PrintableString,
+     utf8String UTF8String,
+     ia5String IA5String }
 
 CertificateSerialNumber  ::=  INTEGER
 
