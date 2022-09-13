@@ -122,9 +122,6 @@
                             <goal>aggregate</goal>
                         </goals>
                         <phase>site</phase>
-                        <configuration>
-                            <excludePackageNames>com.yafred.asn1.grammar</excludePackageNames>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
