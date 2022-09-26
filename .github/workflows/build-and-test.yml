@@ -17,6 +17,7 @@ jobs:
       - name: Set up JDK ${{ matrix.Java }}
         uses: actions/setup-java@v3
         with:
+          distribution: '<distribution>'
           java-version: ${{ matrix.Java }}
 
       - name: Build with Maven
