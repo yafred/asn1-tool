@@ -47,131 +47,133 @@ import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 
 public class Compiler {
 	private Specification model;
-	
+
 	public static void main(String[] args) throws Exception {
-		new Compiler().process(args);
+		try {
+			new Compiler().process(args);
+		} catch (java.lang.IllegalAccessError e) {
+			e.printStackTrace();
+			System.err.println(
+					"Note that beautifier uses com.google.googlejavaformat and only works with jdk 11 maximum");
+		}
 	}
-	
-	
+
 	void process(String[] args) throws Exception {
 		Properties gitProperties = new Properties();
 		try {
-			gitProperties.load(Compiler.class.getClassLoader().getResourceAsStream("com/yafred/asn1/tool/git.properties"));
+			gitProperties
+					.load(Compiler.class.getClassLoader().getResourceAsStream("com/yafred/asn1/tool/git.properties"));
+		} catch (Exception e) {
 		}
-		catch(Exception e) {
-		}
-		
+
 		boolean hasJavaFormatter = true;
 		try {
 			Class.forName("com.google.googlejavaformat.java.Formatter");
 		} catch (ClassNotFoundException e) {
 			hasJavaFormatter = false;
 		}
-		
+
 		// create the command line parser
 		CommandLineParser parser = new DefaultParser();
 
 		// create the Options
 		Options options = new Options();
-		options.addOption( "f", "file", true, "File containing ASN.1 modules.");
-		options.addOption( "jo", "java-output-dir", true, "Folder where Java code is generated.");
-		options.addOption( "jp", "java-output-package", true, "Java package prefix for the Java code.");
-		if(hasJavaFormatter) {
-			options.addOption( "jb", "java-beautify", false, "Format generated code.");
+		options.addOption("f", "file", true, "File containing ASN.1 modules.");
+		options.addOption("jo", "java-output-dir", true, "Folder where Java code is generated.");
+		options.addOption("jp", "java-output-package", true, "Java package prefix for the Java code.");
+		if (hasJavaFormatter) {
+			options.addOption("jb", "java-beautify", false, "Format generated code.");
 		}
-		options.addOption( "p", "print-asn1", false, "Print the validated model." );
-		options.addOption( "v", "print-version", false, "Print the version text for this compiler." );
+		options.addOption("p", "print-asn1", false, "Print the validated model.");
+		options.addOption("v", "print-version", false, "Print the version text for this compiler.");
 
-	    // parse the command line arguments
-	    CommandLine line = parser.parse( options, args );
+		// parse the command line arguments
+		CommandLine line = parser.parse(options, args);
 
-	    // version text
-  		String version = "No version (probably not built from a git checkout)";
+		// version text
+		String version = "No version (probably not built from a git checkout)";
 
-       	if(gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
-       			version = gitProperties.getProperty("git.tags");
-       	}
-       	else 
-	       	if(gitProperties.getProperty("git.commit.id.describe") != null && !gitProperties.getProperty("git.commit.id.describe").equals("")) {
-		    	version = gitProperties.getProperty("git.commit.id.describe");	       			
-       	}
-       	
-      	if(line.getOptions().length == 0) {
-		    String header = "";
-	    	String footer = "\nVersion: " + version + "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
-	    	HelpFormatter formatter = new HelpFormatter();
-	    	formatter.printHelp( "java -jar asn1-compiler.jar", header, options, footer, true );
-	    	System.exit(0);
-	    }
+		if (gitProperties.getProperty("git.tags") != null && !gitProperties.getProperty("git.tags").equals("")) {
+			version = gitProperties.getProperty("git.tags");
+		} else if (gitProperties.getProperty("git.commit.id.describe") != null
+				&& !gitProperties.getProperty("git.commit.id.describe").equals("")) {
+			version = gitProperties.getProperty("git.commit.id.describe");
+		}
 
-    	if(line.hasOption("v")) {
-    		System.out.println(version);
-    		System.exit(0);
-    	}
+		if (line.getOptions().length == 0) {
+			String header = "";
+			String footer = "\nVersion: " + version
+					+ "\nPlease report issues at https://github.com/yafred/asn1-tool/issues";
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("java -jar asn1-compiler.jar", header, options, footer, true);
+			System.exit(0);
+		}
 
-    	validate(line.getOptionValue("f"));
-    	if(line.hasOption("p")) {
-    		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    	    String utf8 = StandardCharsets.UTF_8.name();
-    	    PrintStream printStream = new PrintStream(byteArrayOutputStream, true, utf8);
-    		new Asn1SpecificationWriter(printStream).visit(model);
-    		System.out.println(byteArrayOutputStream.toString(utf8));
-    	}
-    	
-    	if(line.hasOption("jo")) {
-    		com.yafred.asn1.generator.java.Options generatorOptions = new com.yafred.asn1.generator.java.Options();
-           	Generator generator = new Generator();
-           	generatorOptions.setOutputPath(line.getOptionValue("jo"));
-        	if(line.hasOption("jp")) {
-        		generatorOptions.setPackagePrefix(line.getOptionValue("jp"));
-        	}
-        	if(line.hasOption("jb")) {
-        		generatorOptions.setBeautify(true);
-        	}
-        	else {
-        		if(!hasJavaFormatter) {
-        			generatorOptions.setBeautify(false);
-        		}
-        	}
-        	generatorOptions.setWatermark("Generated using https://github.com/yafred/asn1-tool " + version);
-        	generator.setOptions(generatorOptions);
-          	generator.processSpecification(model);	
-    	}
+		if (line.hasOption("v")) {
+			System.out.println(version);
+			System.exit(0);
+		}
+
+		validate(line.getOptionValue("f"));
+		if (line.hasOption("p")) {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			String utf8 = StandardCharsets.UTF_8.name();
+			PrintStream printStream = new PrintStream(byteArrayOutputStream, true, utf8);
+			new Asn1SpecificationWriter(printStream).visit(model);
+			System.out.println(byteArrayOutputStream.toString(utf8));
+		}
+
+		if (line.hasOption("jo")) {
+			com.yafred.asn1.generator.java.Options generatorOptions = new com.yafred.asn1.generator.java.Options();
+			Generator generator = new Generator();
+			generatorOptions.setOutputPath(line.getOptionValue("jo"));
+			if (line.hasOption("jp")) {
+				generatorOptions.setPackagePrefix(line.getOptionValue("jp"));
+			}
+			if (line.hasOption("jb")) {
+				generatorOptions.setBeautify(true);
+			} else {
+				if (!hasJavaFormatter) {
+					generatorOptions.setBeautify(false);
+				}
+			}
+			generatorOptions.setWatermark("Generated using https://github.com/yafred/asn1-tool " + version);
+			generator.setOptions(generatorOptions);
+			generator.processSpecification(model);
+		}
 	}
-	
 
 	void validate(String resourceName) throws Exception {
-		
-		// Parse grammar
-        CharStream charStream = CharStreams.fromFileName(resourceName);
 
-        ASNLexer lexer = new ASNLexer(charStream);
-        TokenStream tokens = new CommonTokenStream(lexer);
-        ASNParser parser = new ASNParser(tokens);
-        ParseTree tree = parser.specification();
-        
-        if(0 != parser.getNumberOfSyntaxErrors()) {
-        	System.exit(1);
-        }
-        
-        // Build model
-        SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
-        model = visitor.visit(tree);
-                  
-        // Validate model
-        Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
-        asn1ModelValidator.visit(model);
-        for(String error : asn1ModelValidator.getWarningList()) {
-        	System.out.println(error);
-        }
-        for(String error : asn1ModelValidator.getErrorList()) {
-        	System.err.println(error);
-        }
-        
-        if(0 != asn1ModelValidator.getErrorList().size()) {
-        	System.exit(1);
-        }
-        
+		// Parse grammar
+		CharStream charStream = CharStreams.fromFileName(resourceName);
+
+		ASNLexer lexer = new ASNLexer(charStream);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		ASNParser parser = new ASNParser(tokens);
+		ParseTree tree = parser.specification();
+
+		if (0 != parser.getNumberOfSyntaxErrors()) {
+			System.exit(1);
+		}
+
+		// Build model
+		SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
+		model = visitor.visit(tree);
+
+		// Validate model
+		Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
+		asn1ModelValidator.visit(model);
+		for (String error : asn1ModelValidator.getWarningList()) {
+			System.out.println(error);
+		}
+		for (String error : asn1ModelValidator.getErrorList()) {
+			System.err.println(error);
+		}
+
+		if (0 != asn1ModelValidator.getErrorList().size()) {
+			System.exit(1);
+		}
 
 	}
 

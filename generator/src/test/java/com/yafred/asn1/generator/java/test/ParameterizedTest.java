@@ -25,7 +25,6 @@
 
 package com.yafred.asn1.generator.java.test;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -67,65 +66,66 @@ public class ParameterizedTest {
 	}
 
 	String resourceName;
-	
+
 	public ParameterizedTest(String resourceName) {
 		this.resourceName = resourceName;
 	}
-	
+
 	@Test
-    public void generateCode() throws Exception {
-    	// load test data
-        InputStream inStream = getClass().getClassLoader().getResourceAsStream(resourceName);
+	public void generateCode() throws Exception {
+		// load test data
+		InputStream inStream = getClass().getClassLoader().getResourceAsStream(resourceName);
 
-        System.out.println(resourceName);
-        
-        if (inStream == null) {
-            throw new RuntimeException("Resource not found: " + resourceName);
-        }
+		System.out.println(resourceName);
 
-        // create a CharStream that reads from standard input
-        CharStream input = CharStreams.fromStream(inStream);
-        
-        // create a lexer that feeds off of input CharStream
-        ASNLexer lexer = new ASNLexer(input);
-        // create a buffer of tokens pulled from the lexer
-        TokenStream tokens = new CommonTokenStream(lexer);
-        // create a parser that feeds off the tokens buffer
-        ASNParser parser = new ASNParser(tokens);
-        ParseTree tree = parser.specification(); // begin parsing at specification rule
-        inStream.close();
-       
-        assertEquals(0, parser.getNumberOfSyntaxErrors());
-        
-        // create model
-        SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
-        Specification specification = visitor.visit(tree);
-        
-        // validate model
-        Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
-       	asn1ModelValidator.visit(specification);
+		if (inStream == null) {
+			throw new RuntimeException("Resource not found: " + resourceName);
+		}
+
+		// create a CharStream that reads from standard input
+		CharStream input = CharStreams.fromStream(inStream);
+
+		// create a lexer that feeds off of input CharStream
+		ASNLexer lexer = new ASNLexer(input);
+		// create a buffer of tokens pulled from the lexer
+		TokenStream tokens = new CommonTokenStream(lexer);
+		// create a parser that feeds off the tokens buffer
+		ASNParser parser = new ASNParser(tokens);
+		ParseTree tree = parser.specification(); // begin parsing at specification rule
+		inStream.close();
+
+		assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+		// create model
+		SpecificationAntlrVisitor visitor = new SpecificationAntlrVisitor();
+		Specification specification = visitor.visit(tree);
+
+		// validate model
+		Asn1ModelValidator asn1ModelValidator = new Asn1ModelValidator();
+		asn1ModelValidator.visit(specification);
 
 		// attach labels to types
 		new Asn1TypeLabeller(false).visit(specification);
-       	
-       	assertEquals(0, asn1ModelValidator.getErrorList().size());
-       	
-       	// create output dir
-       	String outputPath = System.getProperty("buildDirectory") + File.separator + "generator-output" + File.separator + "java";
-       	File outputPathFile = new File(outputPath);
-       	outputPathFile.mkdirs();
-        	
-       	// generate code
-       	Generator generator = new Generator();
-       	Options options = new Options();
-       	options.setOutputPath(outputPath);
-       	options.setBeautify(true);
-       	generator.setOptions(options);
-       	generator.processSpecification(specification);	
-       	
-       	// attach asn.1 specification to generated code
-       	String tokenizedResourceName[] = resourceName.split("/");
-       	File asnFile = new File(outputPath + File.separator + tokenizedResourceName[tokenizedResourceName.length-1]);
-       	new Asn1SpecificationWriter(new PrintStream(asnFile)).visit(specification);
+
+		assertEquals(0, asn1ModelValidator.getErrorList().size());
+
+		// create output dir
+		String outputPath = System.getProperty("buildDirectory") + File.separator + "generator-output" + File.separator
+				+ "java";
+		File outputPathFile = new File(outputPath);
+		outputPathFile.mkdirs();
+
+		// generate code
+		Generator generator = new Generator();
+		Options options = new Options();
+		options.setOutputPath(outputPath);
+		// options.setBeautify(true);
+		generator.setOptions(options);
+		generator.processSpecification(specification);
+
+		// attach asn.1 specification to generated code
+		String tokenizedResourceName[] = resourceName.split("/");
+		File asnFile = new File(outputPath + File.separator + tokenizedResourceName[tokenizedResourceName.length - 1]);
+		new Asn1SpecificationWriter(new PrintStream(asnFile)).visit(specification);
 	}
 }

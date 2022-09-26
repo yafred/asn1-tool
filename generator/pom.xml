@@ -62,7 +62,7 @@
 		    <!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
 		    <groupId>com.google.googlejavaformat</groupId>
 		    <artifactId>google-java-format</artifactId>
-		    <version>1.10.0</version>
+		    <version>1.15.0</version>
 		</dependency>
     </dependencies>
 </project>
