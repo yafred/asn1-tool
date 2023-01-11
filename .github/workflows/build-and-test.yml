@@ -25,7 +25,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots test jacoco:report
 
       - name: Coveralls report
-        run: mvn coveralls:report -DrepoToken=${{ secrets.COVERALL_REPO_TOKEN }}
+        run: mvn coveralls:report -DrepoToken=${{ secrets.COVERALL_REPO_SECRET }}
 
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v3
