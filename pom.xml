@@ -91,9 +91,22 @@
             </plugin>
             <plugin>
                 <!-- https://mvnrepository.com/artifact/org.eluder.coveralls/coveralls-maven-plugin -->
+                <!-- mvn clean jacoco:prepare-agent test jacoco:report coveralls:report -DrepoToken=xxxx -->
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
+                <configuration>
+                    <repoToken>${repoToken}</repoToken>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+                        <!-- work-around for missing class in coveralls -->
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->

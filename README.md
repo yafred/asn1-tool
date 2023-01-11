@@ -1,6 +1,7 @@
 # ASN.1 Tool
 
 [![Build and test](https://github.com/yafred/asn1-tool/workflows/Build%20and%20test/badge.svg)](https://github.com/yafred/asn1-tool/actions?query=workflow%3A%22Build+and+test%22)
+[![Coverage Status](https://coveralls.io/repos/github/yafred/asn1-tool/badge.svg?branch=master)](https://coveralls.io/github/yafred/asn1-tool?branch=master)
 
 
 ## Quick start
