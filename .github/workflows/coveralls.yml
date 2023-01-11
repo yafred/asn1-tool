@@ -1,0 +1,19 @@
+name: Test coverage
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Coveralls report
+        run: mvn jacoco:prepare-agent test jacoco:report coveralls:report -DrepoToken=${{ secrets.COVERALL_REPO_SECRET }}
