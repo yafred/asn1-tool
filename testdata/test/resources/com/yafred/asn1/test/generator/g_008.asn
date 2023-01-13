@@ -11,4 +11,11 @@ Occupation  ::=  BIT STRING
               multi-pass (4)
           }
 
+Simple ::= BIT STRING
+
+Test ::= SEQUENCE {
+    bits Occupation,
+    morebits Simple
+}
+
 END

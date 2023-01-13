@@ -615,6 +615,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.namedBitList() != null) {
 				type.setNamedBitList(ctx.namedBitList().accept(new NamedBitListVisitor()));
 			}
+			else {
+				type.setNamedBitList(new ArrayList<NamedNumber>());
+			}
 			return type;
 		}
 	}
