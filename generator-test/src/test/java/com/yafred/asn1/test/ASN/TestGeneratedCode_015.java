@@ -1,6 +1,6 @@
 /*******************************************************************************
 
- * Copyright (C) 2022 Fred D7e (https://github.com/yafred)
+ * Copyright (C) 2023 Fred D7e (https://github.com/yafred)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
