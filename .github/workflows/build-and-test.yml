@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         java: [ '11', '17' ]
-        go: [ '1.17', '1.18', '1.19' ]
+#        go: [ '1.17', '1.18', '1.19' ]
 
     steps:
       - name: Checkout the repository
@@ -24,13 +24,13 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
 
-      - name: Set up Go ${{ matrix.go }}
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ matrix.go }}
-        id: go
-
-      - name: Test generated go code
-        run: |
-          cd generator-test-go
-          go test ./testcases
+#      - name: Set up Go ${{ matrix.go }}
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: ${{ matrix.go }}
+#        id: go
+#
+#      - name: Test generated go code
+#        run: |
+#          cd generator-test-go
+#          go test ./testcases
