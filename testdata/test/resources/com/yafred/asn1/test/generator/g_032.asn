@@ -1,5 +1,5 @@
 
-G-008 DEFINITIONS ::= 
+G-032 DEFINITIONS ::= 
 BEGIN 
 
 Occupation  ::=  BIT STRING
@@ -11,5 +11,12 @@ Occupation  ::=  BIT STRING
               multi-pass (4)
           }
 
+Simple ::= BIT STRING
+
+-- SEQUENCE of BIT STRING components
+Test ::= SEQUENCE {
+    bits Occupation,
+    morebits Simple
+}
 
 END
