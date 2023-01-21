@@ -50,7 +50,7 @@
       <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>0.10.2</version>
+      <version>0.9.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
