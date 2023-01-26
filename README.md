@@ -4,6 +4,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/yafred/asn1-tool/badge.svg?branch=master)](https://coveralls.io/github/yafred/asn1-tool?branch=master)
 
 
+## Introduction
+
+This tool compiles ASN.1 specifications into Java source code. You can then use the generated Java objects in your own code to serialize ASN.1 values (encode with Basic Encoding Rules) and deserialize them (decode with BER). 
+
 ## Quick start
 
 Use a web interface to validate and compile your specification, convert data (ASN value to/from BER) and download generated Java code: it's [here](https://github.com/yafred/asn1-playground)
@@ -87,6 +91,10 @@ obj.setDestination("London");
 obj.setSeats(Integer.valueOf(250));
 obj.setCrewFormat(Flight.CrewFormat.EIGHT);
 ```
+
+### Add asn1-runtime.jar to your classpath
+
+To compile and execute your code, you will need to add asn1-runtime.jar in your classpath
 
 ### Use the BER encoders/decoders to serialize/deserialize your objects (binary)
 
