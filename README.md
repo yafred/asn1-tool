@@ -22,7 +22,8 @@ The compiler generates Java classes and encoding/decoding method from an ASN.1 s
      * -p just print the validated model.
      * -jo \<path> generate Java code in the given folder.
      * -jp \<package> use this package as a prefix for generated Java code (ASN.1 module names are added to this prefix to get the full package name).
-  * You can create an alias with alias on Linux or doskey on Windows 
+  * You can create an alias with alias on Linux or doskey on Windows
+  * Add asn1-runtime.jar in your classpath and compile the generated Java code
   
 ## Using the converter
   
