@@ -193,11 +193,15 @@ public class ASNValueWriter {
     }
     
     public void writeObjectIdentifier(long[] value) {
-    	// not implemented
+        writer.print("{ ");
+        for(long arc : value) {
+            writer.print(arc + " ");
+        }
+        writer.println("}");
     }
     
     public void writeRelativeOID(long[] value) {
-    	// not implemented
+    	writeObjectIdentifier(value);
     }
 
     public void flush() {
