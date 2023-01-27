@@ -8,7 +8,8 @@ BEGIN
 Certificate  ::=  SEQUENCE  {
      tbsCertificate       TBSCertificate,
      signatureAlgorithm   AlgorithmIdentifier,
-     signature            BIT STRING  }
+     signature            BIT STRING  
+     }
 
 TBSCertificate  ::=  SEQUENCE  {
      version         [0]  Version DEFAULT v1,
@@ -17,19 +18,26 @@ TBSCertificate  ::=  SEQUENCE  {
      issuer               Name,
      validity             Validity,
      subject              Name,
-     subjectPublicKeyInfo SubjectPublicKeyInfo }
+     subjectPublicKeyInfo SubjectPublicKeyInfo,
+     issuerUniqueID  [1]  IMPLICIT UniqueIdentifier OPTIONAL, -- If present, version MUST be v2 or v3
+     subjectUniqueID [2]  IMPLICIT UniqueIdentifier OPTIONAL, -- If present, version MUST be v2 or v3
+     extensions      [3]  EXPLICIT Extensions OPTIONAL -- If present, version MUST be v3 
+     }
 
 
 SubjectPublicKeyInfo  ::=  SEQUENCE  {
-        algorithm            AlgorithmIdentifier,
-        subjectPublicKey     BIT STRING  }
+     algorithm            AlgorithmIdentifier,
+     subjectPublicKey     BIT STRING  
+     }
 
 AlgorithmIdentifier  ::=  SEQUENCE  {
      algorithm               OBJECT IDENTIFIER,
-     parameters              NULL OPTIONAL  }
+     parameters              NULL OPTIONAL  
+     }
 
 Name ::= CHOICE { -- only one possibility for now --
-     rdnSequence  RDNSequence }
+     rdnSequence  RDNSequence 
+     }
 
 RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
 
@@ -37,25 +45,41 @@ RelativeDistinguishedName ::= SET OF AttributeTypeAndValue
 
 AttributeTypeAndValue ::= SEQUENCE {
      type     AttributeType,
-     value    AttributeValue }
+     value    AttributeValue 
+     }
 
 AttributeType ::= OBJECT IDENTIFIER
 
 AttributeValue ::= CHOICE { -- ANY
      printableString PrintableString,
      utf8String UTF8String,
-     ia5String IA5String }
+     ia5String IA5String 
+     }
 
 CertificateSerialNumber  ::=  INTEGER
 
 Validity ::= SEQUENCE {
      notBefore      Time,
-     notAfter       Time  }
+     notAfter       Time  
+     }
 
 Time ::= CHOICE {
      utcTime        UTCTime,
      generalTime    GeneralizedTime }
 
 Version  ::=  INTEGER  {  v1(0), v2(1), v3(2)  }
+
+UniqueIdentifier  ::=  BIT STRING
+
+Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
+
+Extension  ::=  SEQUENCE  {
+     extnID      OBJECT IDENTIFIER,
+     critical    BOOLEAN DEFAULT FALSE,
+     extnValue   OCTET STRING
+                    -- contains the DER encoding of an ASN.1 value
+                    -- corresponding to the extension type identified
+                    -- by extnID
+     }
 
 END
