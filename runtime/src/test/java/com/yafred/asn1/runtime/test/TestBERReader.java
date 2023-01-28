@@ -21,6 +21,7 @@
  ******************************************************************************/
 package com.yafred.asn1.runtime.test;
 
+import com.yafred.asn1.runtime.BERDumper;
 import com.yafred.asn1.runtime.BERReader;
 
 import java.io.ByteArrayInputStream;

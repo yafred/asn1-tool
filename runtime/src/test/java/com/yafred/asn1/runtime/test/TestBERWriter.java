@@ -31,6 +31,7 @@ import java.util.BitSet;
 
 import org.junit.Test;
 
+import com.yafred.asn1.runtime.BERDumper;
 import com.yafred.asn1.runtime.BERWriter;
 
 public class TestBERWriter  {
