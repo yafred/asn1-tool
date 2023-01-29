@@ -37,11 +37,9 @@
     <build>
         <plugins>
             <plugin>
-                <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-maven-plugin -->
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.11.1</version>
-                <executions>
+                 <executions>
                     <execution>
                         <goals>
                             <goal>antlr4</goal>
