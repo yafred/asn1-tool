@@ -36,8 +36,8 @@
          <scope>runtime</scope>
          <includes>
             <include>commons-cli:commons-cli</include>
-            <include>com.yafred.asn1:tool</include>
-            <include>com.yafred.asn1:runtime</include>
+            <include>io.github.yafred:tool</include>
+            <include>io.github.yafred:runtime</include>
          </includes>
       </dependencySet>
    </dependencySets>

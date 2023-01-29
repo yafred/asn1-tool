@@ -37,10 +37,10 @@
          <includes>
             <include>commons-cli:commons-cli</include>
             <include>org.antlr:antlr4-runtime</include>
-            <include>com.yafred.asn1:grammar</include>
-            <include>com.yafred.asn1:model</include>
-            <include>com.yafred.asn1:generator</include>
-            <include>com.yafred.asn1:tool</include>
+            <include>io.github.yafred:grammar</include>
+            <include>io.github.yafred:model</include>
+            <include>io.github.yafred:generator</include>
+            <include>io.github.yafred:tool</include>
           </includes>
       </dependencySet>
    </dependencySets>
