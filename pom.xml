@@ -30,10 +30,10 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>runtime</module>
         <module>testdata</module>
         <module>grammar</module>
         <module>model</module>
-        <module>runtime</module>
         <module>generator</module>
         <module>generator-test</module>
         <module>tool</module>
