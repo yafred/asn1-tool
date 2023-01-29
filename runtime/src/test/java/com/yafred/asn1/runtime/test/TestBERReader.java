@@ -697,4 +697,18 @@ public class TestBERReader  {
             e.printStackTrace();
         }  	
     }
+
+	@Test
+    public void test_biginteger2_base64() {
+    	String hexaString = "/oKHwA==";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	java.math.BigInteger intValue = reader.readBigInteger(4);
+        	assertEquals(-25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
 }

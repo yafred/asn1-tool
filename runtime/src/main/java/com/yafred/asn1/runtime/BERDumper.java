@@ -33,16 +33,16 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import java.util.ArrayList;
-
+import java.util.Base64;
 
 public class BERDumper {
     static private final String INDENT = " ";
 
     /**
-    *
-    * @param hexaText
-    * @return
-    */
+     *
+     * @param hexaText
+     * @return
+     */
     final static String hexTable = "0123456789abcdef";
     PrintWriter writer = null;
 
@@ -93,7 +93,7 @@ public class BERDumper {
 
     private void dumpTag(byte[] tag, String indent) {
         writer.println(indent + "T: " + bytesToString(tag) + " (" +
-            new BERTag(tag).toString() + ")");
+                new BERTag(tag).toString() + ")");
     }
 
     private void dumpLength(int length, String indent) {
@@ -111,19 +111,19 @@ public class BERDumper {
             String byteText = Integer.toHexString((int) buffer[i]);
 
             switch (byteText.length()) {
-            case 1:
-                byteText = "0" + byteText;
+                case 1:
+                    byteText = "0" + byteText;
 
-                break;
+                    break;
 
-            case 2:
-                break;
+                case 2:
+                    break;
 
-            default:
-                byteText = byteText.substring(byteText.length() - 2,
-                        byteText.length());
+                default:
+                    byteText = byteText.substring(byteText.length() - 2,
+                            byteText.length());
 
-                break;
+                    break;
             }
 
             if (i == 0) {
@@ -137,8 +137,26 @@ public class BERDumper {
     }
 
     static public byte[] bytesFromString(String hexaText) {
-        boolean isNextHigh = true;
+
+        // if it is not a valid hexa string we assume it is base64 encoded
+        String hexaChars = " 0123456789abcdefABCDEF";
+        StringBuffer base64Text = new StringBuffer();
+        boolean isBase64Text = false;
+        for (int i = 0; i < hexaText.length(); i++) {
+            char c = hexaText.charAt(i);
+            if (-1 == hexaChars.indexOf(c)) {
+                isBase64Text = true;
+            }
+            if (c != ' ' && c != '\n' && c != '\r' && c != '\t') {
+                base64Text.append(c);
+            }
+        }
+        if (isBase64Text) {
+            return Base64.getDecoder().decode(base64Text.toString());
+        }
+
         hexaText = hexaText.toLowerCase();
+        boolean isNextHigh = true;
 
         int[] byteAsChars = null;
         ArrayList<int[]> byteList = new ArrayList<int[]>();
@@ -161,11 +179,11 @@ public class BERDumper {
         }
 
         byte[] ret = new byte[byteList.size()];
-        
-        int i=0;
-        for (int[]byteListItem : byteList) {
-             ret[i] = (byte) ((16 * byteListItem[0]) + byteListItem[1]);
-             i++;
+
+        int i = 0;
+        for (int[] byteListItem : byteList) {
+            ret[i] = (byte) ((16 * byteListItem[0]) + byteListItem[1]);
+            i++;
         }
 
         return ret;
@@ -176,30 +194,29 @@ public class BERDumper {
             System.err.println("src file needed");
             System.exit(1);
         }
-        
-        if(!new File(args[0]).exists()) {
-        	// not a file, consider it is a hex string
-        	String hexaText = args[0].replace('A', 'a');
-        	hexaText = hexaText.replace('B', 'b');
-        	hexaText = hexaText.replace('C', 'c');
-        	hexaText = hexaText.replace('D', 'd');
-        	hexaText = hexaText.replace('E', 'e');
-        	hexaText = hexaText.replace('F', 'f');
-           	InputStream input = new ByteArrayInputStream(bytesFromString(hexaText));
-           	try {
-				new BERDumper(new OutputStreamWriter(System.out)).dump(input);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-        else {
-	        try {
-	            InputStream input = new FileInputStream(args[0]);
-	            new BERDumper(new OutputStreamWriter(System.out)).dump(input);
-	        } catch (EOFException eof) {
-	        } catch (Exception exc) {
-	            System.err.println(exc.getMessage());
-	        }
+
+        if (!new File(args[0]).exists()) {
+            // not a file, consider it is a hex string
+            String hexaText = args[0].replace('A', 'a');
+            hexaText = hexaText.replace('B', 'b');
+            hexaText = hexaText.replace('C', 'c');
+            hexaText = hexaText.replace('D', 'd');
+            hexaText = hexaText.replace('E', 'e');
+            hexaText = hexaText.replace('F', 'f');
+            InputStream input = new ByteArrayInputStream(bytesFromString(hexaText));
+            try {
+                new BERDumper(new OutputStreamWriter(System.out)).dump(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                InputStream input = new FileInputStream(args[0]);
+                new BERDumper(new OutputStreamWriter(System.out)).dump(input);
+            } catch (EOFException eof) {
+            } catch (Exception exc) {
+                System.err.println(exc.getMessage());
+            }
         }
     }
 }
