@@ -33,7 +33,7 @@
   <artifactId>model</artifactId>
   <packaging>jar</packaging>
 
- 
+
   <dependencies>
     <dependency>
       <groupId>com.yafred.asn1</groupId>
@@ -47,11 +47,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
-      <version>0.9.12</version>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 </project>

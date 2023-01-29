@@ -21,8 +21,7 @@
   SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -39,7 +38,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                 <executions>
+                <executions>
                     <execution>
                         <goals>
                             <goal>antlr4</goal>
@@ -50,23 +49,28 @@
                     <listener>true</listener>
                     <visitor>true</visitor>
                 </configuration>
-            </plugin>  
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
-		<dependency>
-			<groupId>com.yafred.asn1</groupId>
-			<artifactId>testdata</artifactId>
-		    <version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-		    <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
-		    <groupId>org.reflections</groupId>
-		    <artifactId>reflections</artifactId>
-		    <version>0.9.12</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yafred.asn1</groupId>
+            <artifactId>testdata</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 </project>
