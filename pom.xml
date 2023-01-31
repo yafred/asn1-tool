@@ -37,6 +37,7 @@
         <module>generator</module>
         <module>generator-test</module>
         <module>tool</module>
+        <module>asn1-maven-plugin</module>
     </modules>
 
     <dependencyManagement>
