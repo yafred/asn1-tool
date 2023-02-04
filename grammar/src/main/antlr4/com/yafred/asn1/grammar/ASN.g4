@@ -365,6 +365,7 @@ componentType:
     namedType
     | namedType OPTIONAL_LITERAL
     | namedType DEFAULT_LITERAL value
+    | LCASE_ID ANY_LITERAL (DEFINED_LITERAL BY_LITERAL LCASE_ID)? (OPTIONAL_LITERAL)?
     | COMPONENTS_LITERAL OF_LITERAL type
 ;
 
@@ -805,6 +806,18 @@ UTCTime_LITERAL:
 
 ObjectDescriptor_LITERAL:
     'ObjectDescriptor'
+;
+
+ANY_LITERAL:
+    'ANY' 
+;
+
+DEFINED_LITERAL:
+    'DEFINED' 
+;
+
+BY_LITERAL:
+    'BY' 
 ;
 
 /*--------------------- Lexical Items -----------------------------------------------*/

@@ -121,6 +121,7 @@ import com.yafred.asn1.model.ValueReference;
 import com.yafred.asn1.model.constraint.ConstraintElement;
 import com.yafred.asn1.model.constraint.Size;
 import com.yafred.asn1.model.constraint.ValueRange;
+import com.yafred.asn1.model.type.AnyType;
 import com.yafred.asn1.model.type.BMPStringType;
 import com.yafred.asn1.model.type.BitStringType;
 import com.yafred.asn1.model.type.BooleanType;
@@ -919,6 +920,9 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			if(ctx.COMPONENTS_LITERAL() != null) {
 				component = new ComponentsOf(ctx.type().accept(new TypeVisitor()));
 				component.setTokenLocation(new TokenLocation(ctx.COMPONENTS_LITERAL().getSymbol().getLine(), ctx.COMPONENTS_LITERAL().getSymbol().getCharPositionInLine()+1));
+			}
+			if(ctx.ANY_LITERAL() != null) {
+				component = new NamedType(ctx.LCASE_ID(0).getText(), new AnyType(), isOptional);
 			}
 			return component;
 		}

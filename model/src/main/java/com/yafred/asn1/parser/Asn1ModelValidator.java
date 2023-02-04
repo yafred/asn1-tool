@@ -594,19 +594,25 @@ public class Asn1ModelValidator {
 						if(component.isNamedType()) { // it should be unless there are errors
 							NamedType namedType = (NamedType)component;
 							Tag tag = namedType.getType().getFirstTag();
-							if(tag == null) {
+							if(tag == null) {  // CHOICE or ANY
 								ChoiceType choiceType = null;
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									choiceType = (ChoiceType)typeReference.getBuiltinType();
+									if(typeReference.getBuiltinType().isChoiceType())  {  // could be ANY type
+										choiceType = (ChoiceType)typeReference.getBuiltinType();
+									}
 								}
 								else {
-									choiceType = (ChoiceType)namedType.getType();
+									if(namedType.getType().isChoiceType()) { // could be ANY type
+										choiceType = (ChoiceType)namedType.getType();
+									}
 								}
-								visitChoiceAlternative(choiceType.getRootAlternativeList(), optionalNamedTypeList, moduleDefinition);
-								if(choiceType.getAdditionalAlternativeList() != null) {
-									visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), optionalNamedTypeList, moduleDefinition);
+								if(choiceType != null) {
+									visitChoiceAlternative(choiceType.getRootAlternativeList(), optionalNamedTypeList, moduleDefinition);
+									if(choiceType.getAdditionalAlternativeList() != null) {
+										visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), optionalNamedTypeList, moduleDefinition);
+									}
 								}
 							}
 							for(NamedType previousNamedType : optionalNamedTypeList) {
@@ -667,14 +673,20 @@ public class Asn1ModelValidator {
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									choiceType = (ChoiceType)typeReference.getBuiltinType();
+									if(typeReference.getBuiltinType().isChoiceType()) {  // could be ANY type
+										choiceType = (ChoiceType)typeReference.getBuiltinType();
+									}
 								}
 								else {
-									choiceType = (ChoiceType)namedType.getType();
+									if(namedType.getType().isChoiceType()) {  // could be ANY type
+										choiceType = (ChoiceType)namedType.getType();
+									}
 								}
-								visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
-								if(choiceType.getAdditionalAlternativeList() != null) {
-									visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+								if(choiceType != null) {
+									visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
+									if(choiceType.getAdditionalAlternativeList() != null) {
+										visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+									}
 								}
 							}
 							for(NamedType previousNamedType : previousNamedTypeList) {

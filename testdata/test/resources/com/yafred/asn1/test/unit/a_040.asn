@@ -1,0 +1,23 @@
+
+-- ANY
+
+My-module DEFINITIONS ::=
+BEGIN
+
+  Sequence-1 ::= SEQUENCE {
+      fieldId INTEGER,
+      field ANY
+  }
+
+
+  Sequence-2 ::= SEQUENCE {
+      fieldId INTEGER,
+      field ANY DEFINED BY fieldId
+  }
+
+  Sequence-3 ::= SET {
+      fieldId OBJECT IDENTIFIER,
+      field ANY DEFINED BY fieldId OPTIONAL
+  }
+
+END
