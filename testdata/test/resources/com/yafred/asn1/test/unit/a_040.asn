@@ -1,7 +1,7 @@
 
 -- ANY
 
-My-module DEFINITIONS ::=
+My-module DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
   Sequence-1 ::= SEQUENCE {
@@ -17,7 +17,15 @@ BEGIN
 
   Sequence-3 ::= SET {
       fieldId OBJECT IDENTIFIER,
-      field ANY DEFINED BY fieldId OPTIONAL
+      field ANY DEFINED BY fieldId 
   }
+
+  Sequence-4 ::= SEQUENCE {
+      text IA5String OPTIONAL,
+      fieldId OBJECT IDENTIFIER,
+      field ANY DEFINED BY fieldId
+  }
+
+
 
 END

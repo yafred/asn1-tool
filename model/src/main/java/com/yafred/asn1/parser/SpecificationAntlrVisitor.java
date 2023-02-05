@@ -923,6 +923,7 @@ public class SpecificationAntlrVisitor extends ASNBaseVisitor<Specification> {
 			}
 			if(ctx.ANY_LITERAL() != null) {
 				component = new NamedType(ctx.LCASE_ID(0).getText(), new AnyType(), isOptional);
+				component.setTokenLocation(new TokenLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()+1));
 			}
 			return component;
 		}

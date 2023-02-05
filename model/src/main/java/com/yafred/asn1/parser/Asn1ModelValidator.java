@@ -587,6 +587,7 @@ public class Asn1ModelValidator {
 			// Check tags are unique (following rules of SequenceType)
 			ArrayList<NamedType> optionalNamedTypeList = new ArrayList<NamedType>();
 			boolean firstNonOptionalInAdditionChecked = false;
+			NamedType previousComponent = null;
 			for(int i=0; i<componentLists.size(); i++) {
 				ArrayList<Component> componentList = componentLists.get(i);
 				if(componentList != null) {
@@ -599,13 +600,16 @@ public class Asn1ModelValidator {
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									if(typeReference.getBuiltinType().isChoiceType())  {  // could be ANY type
-										choiceType = (ChoiceType)typeReference.getBuiltinType();
-									}
+									choiceType = (ChoiceType)typeReference.getBuiltinType(); // reference to ANY not supported
 								}
 								else {
-									if(namedType.getType().isChoiceType()) { // could be ANY type
+									if(namedType.getType().isChoiceType()) { 
 										choiceType = (ChoiceType)namedType.getType();
+									}
+									else { // ANY type
+										if(previousComponent != null && previousComponent.isOptional()) {
+											errorList.add(namedType.getTokenLocation() + ": '" + namedType.getName() + "' should be tagged because '" + previousComponent.getName() + "' is OPTIONAL");
+										}
 									}
 								}
 								if(choiceType != null) {
@@ -640,6 +644,7 @@ public class Asn1ModelValidator {
 									}
 								}
 							}
+							previousComponent = namedType;
 						}
 					}
 				}
@@ -673,13 +678,14 @@ public class Asn1ModelValidator {
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									if(typeReference.getBuiltinType().isChoiceType()) {  // could be ANY type
-										choiceType = (ChoiceType)typeReference.getBuiltinType();
-									}
+									choiceType = (ChoiceType)typeReference.getBuiltinType(); // reference to ANY not supported
 								}
 								else {
-									if(namedType.getType().isChoiceType()) {  // could be ANY type
+									if(namedType.getType().isChoiceType()) {  
 										choiceType = (ChoiceType)namedType.getType();
+									}
+									else { // ANY type
+										errorList.add(namedType.getTokenLocation() + ": '" + namedType.getName() + "' is an untagged ANY type (ambiguous)");					 
 									}
 								}
 								if(choiceType != null) {

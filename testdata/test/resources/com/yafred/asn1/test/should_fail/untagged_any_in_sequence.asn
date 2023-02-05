@@ -1,0 +1,15 @@
+-- FAILS: ambiguity between field and text
+
+My-module DEFINITIONS  ::=
+BEGIN
+
+  Sequence-3 ::= SEQUENCE {
+      text IA5String OPTIONAL,
+      field ANY DEFINED BY fieldId,
+      fieldId OBJECT IDENTIFIER
+
+  }
+
+END
+
+	

@@ -1,0 +1,11 @@
+-- FAILS: ambiguity between field and fieldId
+
+My-module DEFINITIONS  ::=
+BEGIN
+
+  Sequence-3 ::= SET {
+      fieldId OBJECT IDENTIFIER,
+      field ANY DEFINED BY fieldId 
+  }
+
+END

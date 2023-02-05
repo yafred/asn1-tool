@@ -1,0 +1,18 @@
+-- FAILS: ambiguity between int1 and int2
+
+Example DEFINITIONS  ::= 
+BEGIN 
+
+Untagged-Choice ::= CHOICE {
+    int1 INTEGER,
+    string IA5String
+}
+
+
+Set ::= SET {
+   int2 INTEGER,
+   choice Untagged-Choice
+}
+
+END		
+	
