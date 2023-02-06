@@ -186,6 +186,10 @@ abstract public class Type {
     public boolean isTypeReference() {
         return false;
     }
+
+    public boolean isAnyType() {
+        return false;
+    }
     
     abstract public String getName();
     

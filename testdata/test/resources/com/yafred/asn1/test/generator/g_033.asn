@@ -1,0 +1,13 @@
+
+G-033 DEFINITIONS ::= 
+BEGIN 
+
+Example-1 ::= SEQUENCE {
+    num INTEGER,
+    fieldId INTEGER,
+    field ANY DEFINED BY fieldId,
+    name IA5String
+}
+
+
+END

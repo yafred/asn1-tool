@@ -1,0 +1,31 @@
+
+-- ANY
+
+My-module DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+  Sequence-1 ::= SEQUENCE {
+      fieldId INTEGER,
+      field ANY
+  }
+
+
+  Sequence-2 ::= SEQUENCE {
+      fieldId INTEGER,
+      field ANY DEFINED BY fieldId
+  }
+
+  Sequence-3 ::= SET {
+      fieldId OBJECT IDENTIFIER,
+      field ANY DEFINED BY fieldId 
+  }
+
+  Sequence-4 ::= SEQUENCE {
+      text IA5String OPTIONAL,
+      fieldId OBJECT IDENTIFIER,
+      field ANY DEFINED BY fieldId
+  }
+
+
+
+END

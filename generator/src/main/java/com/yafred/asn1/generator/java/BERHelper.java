@@ -529,13 +529,20 @@ public class BERHelper {
 					output.println("reader.setTagMatched(false);");
 					output.println("componentLength=reader.getLengthValue();");
 				}
+				if(namedType.getType().isAnyType()) { // tagged ANY
+					output.println("reader.readTag();");
+					output.println("length -= reader.getTagLength();");
+					output.println("reader.readLength();");
+					output.println("length -= reader.getLengthLength();");
+					output.println("componentLength=reader.getLengthValue();");
+				}
 				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
 				output.println("if(length!=-1) length-=componentLength;");
 				if(namedType.isOptional()) {
 					output.println("}");
 				}
 			}
-			else {
+			else if(namedType.getType().isChoiceType() || (namedType.getType().isTypeReference() && ((TypeReference)namedType.getType()).getBuiltinType().isChoiceType())) {
 				output.println("// component is an untagged CHOICE");	
 				writeUntaggedChoiceTagsLookAhead(namedType.getType());
 				output.println("{");
@@ -549,7 +556,16 @@ public class BERHelper {
 				if(!namedType.isOptional()) {
 					output.println("// we need to validate " + componentName + " is not null");
 				}
-			}	
+			}
+			else if(namedType.getType().isAnyType()) { // untagged ANY
+				output.println("{");
+				output.println("reader.readLength();");
+				output.println("length -= reader.getLengthLength();");
+				output.println("componentLength=reader.getLengthValue();");
+				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
+				output.println("length-=componentLength;");
+				output.println("}");				
+			}
 		}
 		
 		output.println("if(length==-1) {");
@@ -637,6 +653,13 @@ public class BERHelper {
 			if(hasTags) {
 				output.println("if(reader.isTagMatched()){");
 				output.println("componentLength=reader.getLengthValue();");
+				if(namedType.getType().isAnyType()){
+					output.println("reader.readTag();");
+					output.println("length -= reader.getTagLength();");
+					output.println("reader.readLength();");
+					output.println("length -= reader.getLengthLength();");
+					output.println("componentLength=reader.getLengthValue();");
+				}				
 				switchDecodeComponent(namedType.getType(), componentName, componentClassName);
 				output.println("if(length!=-1) length-=componentLength;");
 				output.println("continue;");
@@ -852,6 +875,9 @@ public class BERHelper {
 		else if(builtinType.isNullType()) {
 			// do nothing
 		}
+		else if(builtinType.isAnyType()) {
+			output.println("componentLength=writer.writeOctetString(" +  componentGetter + ");");			
+		}
 		else if(builtinType.isEnumeratedType()) {
 			output.println("int intValue=-1;");
 			output.println("switch(" +  componentGetter + ") {");
@@ -992,6 +1018,9 @@ public class BERHelper {
 		}
 		else if(builtinType.isOctetStringType()) {
 			output.println(componentSetter + "reader.readOctetString(componentLength));");
+		}
+		else if(builtinType.isAnyType()) {
+			output.println(componentSetter + "reader.readAny(componentLength));");
 		}
 		else if(builtinType.isObjectIdentifierType()) {
 			output.println(componentSetter + "reader.readObjectIdentifier(componentLength));");

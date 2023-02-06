@@ -379,7 +379,7 @@ public class Generator {
 		else if (type.isEnumeratedType()) {
 			processEnumeratedType((EnumeratedType)type, componentName, uComponentName, false);
 		}
-		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType()) {
+		else if (type.isNullType() || type.isBooleanType() || type.isOctetStringType() || type.isRestrictedCharacterStringType() || type.isObjectIdentifierType() || type.isRelativeOIDType() || type.isAnyType()) {
 			processBasicType(type, componentName, false);
 		}
 		else if (type.isTypeWithComponents()) {
@@ -588,6 +588,8 @@ public class Generator {
 		} else if (type.isNullType()) {
 			javaType = "Object";
 		} else if (type.isOctetStringType()) {
+			javaType = "byte[]";
+		} else if (type.isAnyType()) {
 			javaType = "byte[]";
 		} else if (type.isObjectIdentifierType() || type.isRelativeOIDType()) {
 			javaType = "long[]";

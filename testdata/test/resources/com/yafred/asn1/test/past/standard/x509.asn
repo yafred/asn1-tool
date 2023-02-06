@@ -1,5 +1,5 @@
 -- simplified version of rfc5280
-
+--> integerSize huge
 
 X509  DEFINITIONS EXPLICIT TAGS ::=
 
@@ -30,9 +30,11 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
      subjectPublicKey     BIT STRING  
      }
 
+-- https://www.ietf.org/rfc/rfc3279.txt
+-- https://stackoverflow.com/questions/43276082/how-to-use-asn-1-defined-the-x509-algorithmidentifier
 AlgorithmIdentifier  ::=  SEQUENCE  {
-     algorithm               OBJECT IDENTIFIER,
-     parameters              NULL OPTIONAL  
+        algorithm               OBJECT IDENTIFIER,
+        parameters              ANY DEFINED BY algorithm OPTIONAL  -- Reminder: ANY is obsolete but useful for specification holes
      }
 
 Name ::= CHOICE { -- only one possibility for now --
@@ -81,5 +83,47 @@ Extension  ::=  SEQUENCE  {
                     -- corresponding to the extension type identified
                     -- by extnID
      }
+
+
+
+
+
+-- Elliptic curve algorithm
+-- https://www.ietf.org/rfc/rfc3279.txt
+
+EcpkParameters ::= CHOICE {
+     ecParameters  ECParameters,
+     namedCurve    OBJECT IDENTIFIER,
+     implicitlyCA  NULL 
+     }
+
+ECParameters ::= SEQUENCE {
+     version   ECPVer,          -- version is always 1
+     fieldID   FieldID,         -- identifies the finite field over
+                                -- which the curve is defined
+     curve     Curve,           -- coefficients a and b of the
+                                -- elliptic curve
+     base      ECPoint,         -- specifies the base point P
+                                -- on the elliptic curve
+     order     INTEGER,         -- the order n of the base point
+     cofactor  INTEGER OPTIONAL -- The integer h = #E(Fq)/n
+     }
+
+ECPVer ::= INTEGER {ecpVer1(1)}
+
+FieldID ::= SEQUENCE {
+     fieldType   OBJECT IDENTIFIER,
+     parameters  ANY DEFINED BY fieldType -- Reminder: ANY is obsolete
+     }
+
+Curve ::= SEQUENCE {
+     a         FieldElement,
+     b         FieldElement,
+     seed      BIT STRING OPTIONAL 
+     }
+
+FieldElement ::= OCTET STRING
+
+ECPoint ::= OCTET STRING
 
 END

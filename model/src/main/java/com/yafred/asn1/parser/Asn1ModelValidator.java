@@ -587,6 +587,7 @@ public class Asn1ModelValidator {
 			// Check tags are unique (following rules of SequenceType)
 			ArrayList<NamedType> optionalNamedTypeList = new ArrayList<NamedType>();
 			boolean firstNonOptionalInAdditionChecked = false;
+			NamedType previousComponent = null;
 			for(int i=0; i<componentLists.size(); i++) {
 				ArrayList<Component> componentList = componentLists.get(i);
 				if(componentList != null) {
@@ -594,19 +595,28 @@ public class Asn1ModelValidator {
 						if(component.isNamedType()) { // it should be unless there are errors
 							NamedType namedType = (NamedType)component;
 							Tag tag = namedType.getType().getFirstTag();
-							if(tag == null) {
+							if(tag == null) {  // CHOICE or ANY
 								ChoiceType choiceType = null;
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									choiceType = (ChoiceType)typeReference.getBuiltinType();
+									choiceType = (ChoiceType)typeReference.getBuiltinType(); // reference to ANY not supported
 								}
 								else {
-									choiceType = (ChoiceType)namedType.getType();
+									if(namedType.getType().isChoiceType()) { 
+										choiceType = (ChoiceType)namedType.getType();
+									}
+									else { // ANY type
+										if(previousComponent != null && previousComponent.isOptional()) {
+											errorList.add(namedType.getTokenLocation() + ": '" + namedType.getName() + "' should be tagged because '" + previousComponent.getName() + "' is OPTIONAL");
+										}
+									}
 								}
-								visitChoiceAlternative(choiceType.getRootAlternativeList(), optionalNamedTypeList, moduleDefinition);
-								if(choiceType.getAdditionalAlternativeList() != null) {
-									visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), optionalNamedTypeList, moduleDefinition);
+								if(choiceType != null) {
+									visitChoiceAlternative(choiceType.getRootAlternativeList(), optionalNamedTypeList, moduleDefinition);
+									if(choiceType.getAdditionalAlternativeList() != null) {
+										visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), optionalNamedTypeList, moduleDefinition);
+									}
 								}
 							}
 							for(NamedType previousNamedType : optionalNamedTypeList) {
@@ -634,6 +644,7 @@ public class Asn1ModelValidator {
 									}
 								}
 							}
+							previousComponent = namedType;
 						}
 					}
 				}
@@ -667,14 +678,21 @@ public class Asn1ModelValidator {
 								if(namedType.getType().isTypeReference()) {
 									TypeReference typeReference = (TypeReference)namedType.getType();
 									visitTypeReference(typeReference, moduleDefinition);
-									choiceType = (ChoiceType)typeReference.getBuiltinType();
+									choiceType = (ChoiceType)typeReference.getBuiltinType(); // reference to ANY not supported
 								}
 								else {
-									choiceType = (ChoiceType)namedType.getType();
+									if(namedType.getType().isChoiceType()) {  
+										choiceType = (ChoiceType)namedType.getType();
+									}
+									else { // ANY type
+										errorList.add(namedType.getTokenLocation() + ": '" + namedType.getName() + "' is an untagged ANY type (ambiguous)");					 
+									}
 								}
-								visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
-								if(choiceType.getAdditionalAlternativeList() != null) {
-									visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+								if(choiceType != null) {
+									visitChoiceAlternative(choiceType.getRootAlternativeList(), previousNamedTypeList, moduleDefinition);
+									if(choiceType.getAdditionalAlternativeList() != null) {
+										visitChoiceAlternative(choiceType.getAdditionalAlternativeList(), previousNamedTypeList, moduleDefinition);
+									}
 								}
 							}
 							for(NamedType previousNamedType : previousNamedTypeList) {

@@ -224,6 +224,8 @@ public class ValidationHelper {
 		}
 		else if(builtinType.isNullType()) {
 		}
+		else if(builtinType.isAnyType()) {
+		}
 		else if(builtinType.isEnumeratedType()) {
 		}
 		else if(type.isTypeReference()) {
