@@ -542,7 +542,7 @@ public class BERHelper {
 					output.println("}");
 				}
 			}
-			else if(namedType.getType().isChoiceType()) {
+			else if(namedType.getType().isChoiceType() || (namedType.getType().isTypeReference() && ((TypeReference)namedType.getType()).getBuiltinType().isChoiceType())) {
 				output.println("// component is an untagged CHOICE");	
 				writeUntaggedChoiceTagsLookAhead(namedType.getType());
 				output.println("{");
