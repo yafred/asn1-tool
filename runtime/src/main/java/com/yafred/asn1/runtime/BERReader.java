@@ -36,8 +36,9 @@ public class BERReader {
     /**
      * Length
      */
-    int lengthLength;
-    int lengthValue;
+    private int lengthLength;
+    private int lengthValue;
+    private byte[] lengthBuffer = new byte[10];
 
     /**
      * Tag
@@ -199,8 +200,10 @@ public class BERReader {
         lengthLength = 0; // length of length
         lengthValue = 0; // value of length
 
+        int lengthBufferIndex = 0;
         int aByte = readChar();
-
+        lengthBuffer[lengthBufferIndex++] = (byte)aByte;
+ 
         if (aByte == 0x80) {
             lengthLength = 1;
             lengthValue = -1;
@@ -219,6 +222,7 @@ public class BERReader {
 
                 for (int i = nBytes; i > 0; i--) {
                     aByte = readChar();
+                    lengthBuffer[lengthBufferIndex++] = (byte)aByte;
                     lengthValue += (aByte << ((i - 1) * 8));
                 }
             } else { // short form
@@ -394,6 +398,15 @@ public class BERReader {
         return ret;
     }
 
+    public byte[] readAny(int nBytes) throws IOException {
+        byte[] ret = new byte[tagNumBytes + lengthLength + nBytes];
+
+        System.arraycopy(tagBuffer, 0, ret, 0, tagNumBytes);
+        System.arraycopy(lengthBuffer, 0, ret, tagNumBytes, lengthLength);
+        System.arraycopy(readOctetString(nBytes), 0, ret, tagNumBytes + lengthLength, nBytes);
+        return ret;
+    }
+
     public byte[] readOctetString(int nBytes) throws IOException {
         byte[] result = new byte[nBytes];
 
@@ -465,6 +478,13 @@ public class BERReader {
 
     public int getLengthValue() {
         return lengthValue;
+    }
+
+    public byte[] getLength() {
+        byte[] ret = new byte[lengthLength];
+        System.arraycopy(lengthBuffer, 0, ret, 0, lengthLength);
+
+        return ret;
     }
 
     /*

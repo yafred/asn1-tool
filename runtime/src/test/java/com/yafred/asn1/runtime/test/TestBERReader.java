@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.BitSet;
 
 import org.junit.Test;
-
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -86,6 +86,7 @@ public class TestBERReader  {
 
         assertEquals(reader.getLengthLength(), 1);
         assertEquals(reader.getLengthValue(), 15);
+		assertEquals(reader.getLength()[0], 0x0f);
     }
 
     @Test
@@ -706,6 +707,21 @@ public class TestBERReader  {
         try {        	
         	java.math.BigInteger intValue = reader.readBigInteger(4);
         	assertEquals(-25000000, intValue.intValue());
+        } catch (IOException e) {
+            assertTrue("Test should succeed", false);
+            e.printStackTrace();
+        }  	
+    }
+
+	@Test
+    public void test_any() {
+    	String hexaString = "0a 02 05 05";
+        BERReader reader = makeReader(hexaString);
+        
+        try {        	
+        	reader.readTag();
+			reader.readLength();
+			assertArrayEquals(new byte[] { 0x0a, 0x02, 0x05, 0x05}, reader.readAny(2));
         } catch (IOException e) {
             assertTrue("Test should succeed", false);
             e.printStackTrace();

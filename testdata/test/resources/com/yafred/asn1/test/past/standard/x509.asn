@@ -1,5 +1,5 @@
 -- simplified version of rfc5280
-
+--> integerSize huge
 
 X509  DEFINITIONS EXPLICIT TAGS ::=
 
@@ -34,8 +34,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 -- https://stackoverflow.com/questions/43276082/how-to-use-asn-1-defined-the-x509-algorithmidentifier
 AlgorithmIdentifier  ::=  SEQUENCE  {
         algorithm               OBJECT IDENTIFIER,
-        parmeters NULL OPTIONAL -- FIXME when ANY is supported
-        -- parameters              ANY DEFINED BY algorithm OPTIONAL  -- Reminder: ANY is obsolete but useful for specification holes
+        parameters              ANY DEFINED BY algorithm OPTIONAL  -- Reminder: ANY is obsolete but useful for specification holes
      }
 
 Name ::= CHOICE { -- only one possibility for now --
@@ -114,8 +113,7 @@ ECPVer ::= INTEGER {ecpVer1(1)}
 
 FieldID ::= SEQUENCE {
      fieldType   OBJECT IDENTIFIER,
-     parameters NULL OPTIONAL -- FIXME when ANY is supported
-         -- parameters  ANY DEFINED BY fieldType -- Reminder: ANY is obsolete
+     parameters  ANY DEFINED BY fieldType -- Reminder: ANY is obsolete
      }
 
 Curve ::= SEQUENCE {

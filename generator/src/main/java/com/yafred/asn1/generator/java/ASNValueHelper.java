@@ -443,6 +443,9 @@ public class ASNValueHelper {
 		else if(builtinType.isNullType()) {
 			output.println("writer.writeNull();");
 		}
+		else if(builtinType.isAnyType()) {
+			output.println("writer.writeOctetString(" +  componentGetter + ");");	
+		}		
 		else if(builtinType.isEnumeratedType()) {
 			output.println("switch(" +  componentGetter + ") {");
 			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
@@ -671,6 +674,9 @@ public class ASNValueHelper {
 		}
 		else if(builtinType.isNullType()) {
 			output.println(componentSetter + "reader.readNull());");
+		}
+		else if(builtinType.isAnyType()) {
+			output.println(componentSetter + "reader.readOctetString());");
 		}
 		else if(builtinType.isEnumeratedType()) {
 			EnumeratedType enumeratedType = (EnumeratedType)builtinType;
