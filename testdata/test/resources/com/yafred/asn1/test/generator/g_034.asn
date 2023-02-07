@@ -1,0 +1,14 @@
+-- SEQUENCE of SEQUENCE
+
+
+G-034 DEFINITIONS ::= 
+BEGIN 
+
+Example-1 ::= SEQUENCE {
+    field SEQUENCE {
+        num INTEGER
+    }
+}
+
+
+END

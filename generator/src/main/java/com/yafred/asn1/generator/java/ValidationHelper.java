@@ -229,10 +229,14 @@ public class ValidationHelper {
 		else if(builtinType.isEnumeratedType()) {
 		}
 		else if(type.isTypeReference()) {
+			output.println("if(" + componentGetter + " != null) {");
 			output.println(referencedClassName + ".validate(" + componentGetter + ");");		
+			output.println("}");
 		}
 		else if(type.isTypeWithComponents()) {
-			output.println(Utils.uNormalize(componentName) + ".validate(" + componentGetter + ");");		
+			output.println("if(" + componentGetter + " != null) {");
+			output.println(Utils.uNormalize(componentName) + ".validate(" + componentGetter + ");");	
+			output.println("}");
 		}
 		else if(type.isListOfType()) {
 			ListOfType listOfType = (ListOfType)type;
