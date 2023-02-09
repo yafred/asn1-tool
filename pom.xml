@@ -29,16 +29,46 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>runtime</module>
-        <module>testdata</module>
-        <module>grammar</module>
-        <module>model</module>
-        <module>generator</module>
-        <module>generator-test</module>
-        <module>tool</module>
-        <module>asn1-maven-plugin</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>runtime</module>
+                <module>testdata</module>
+                <module>grammar</module>
+                <module>model</module>
+                <module>generator</module>
+                <module>generator-test</module>
+                <module>tool</module>
+                <module>asn1-maven-plugin</module>
+                <module>asn1-maven-plugin-usage</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>plugin</id>
+            <modules>
+                <module>asn1-maven-plugin</module>
+                <module>asn1-maven-plugin-usage</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>quick</id>
+            <modules>
+                <module>runtime</module>
+                <module>testdata</module>
+                <module>grammar</module>
+                <module>model</module>
+                <module>generator</module>
+                <module>tool</module>
+            </modules>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
