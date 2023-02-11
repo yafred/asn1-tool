@@ -8,3 +8,4 @@ null
 .vscode
 .metals
 .bloop
+mvn.log
