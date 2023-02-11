@@ -50,10 +50,10 @@ import com.yafred.asn1.parser.SpecificationAntlrVisitor;
 public class CompilerMojo extends AbstractMojo {
 
     /**
-     * The directory where the ASN.1 specification ({@code *.asn}) are located.
+     * The location of the file that contains the ASN.1 specification (only one file at the moment).
      */
-    @Parameter(defaultValue = "${basedir}/src/main/asn")
-    private File sourceDirectory;
+    @Parameter(property = "compile.inputFile")
+    private File inputFile;
 
     /**
      * Specify output directory where the Java files are generated.
@@ -63,8 +63,8 @@ public class CompilerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        if (!sourceDirectory.isDirectory()) {
-            getLog().info(sourceDirectory.getAbsolutePath() + "does not exist.");
+        if (!inputFile.isFile()) {
+            getLog().info("No such file: "+ inputFile.getAbsolutePath());
             return;
         }
 
@@ -73,8 +73,6 @@ public class CompilerMojo extends AbstractMojo {
         }
 
         try {
-            // we support only one file for now
-            File inputFile = new File(sourceDirectory.getAbsolutePath(), "test.asn");
             InputStream inputStream = new FileInputStream(inputFile);
 
             CharStream input = CharStreams.fromStream(inputStream);

@@ -46,7 +46,10 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                </executions>
+                 </executions>
+                 <configuration>
+                 <inputFile>${project.basedir}/../testdata/test/resources/com/yafred/asn1/test/past/standard/x509.asn</inputFile>
+                 </configuration>
             </plugin>
         </plugins>
     </build>
