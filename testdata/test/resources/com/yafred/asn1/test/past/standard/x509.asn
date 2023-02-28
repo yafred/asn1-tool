@@ -75,6 +75,7 @@ UniqueIdentifier  ::=  BIT STRING
 
 Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
 
+-- https://www.rfc-editor.org/rfc/rfc5280.txt
 Extension  ::=  SEQUENCE  {
      extnID      OBJECT IDENTIFIER,
      critical    BOOLEAN DEFAULT FALSE,
