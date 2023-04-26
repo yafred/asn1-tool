@@ -174,12 +174,12 @@
                 </plugin>
                 <plugin>
                     <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
-                    <!-- mvn javadoc:aggregate -->
+                    <!-- mvn clean package javadoc:aggregate -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.4.1</version>
                     <configuration>
-                        <excludePackageNames>com.yafred.asn1.grammar:com.yafred.asn1.generator*:com.yafred.asn1.tool:com.yafred.asn1.parser</excludePackageNames>
+                        <excludePackageNames>com.yafred.asn1.grammar:com.yafred.asn1.generator*:com.yafred.asn1.tool:com.yafred.asn1.parser::com.yafred.asn1.maven</excludePackageNames>
                     </configuration>
                     <executions>
                         <execution>
